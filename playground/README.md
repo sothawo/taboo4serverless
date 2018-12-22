@@ -16,15 +16,25 @@ just a HTML file that is uploaded to a S3 bucket
 
 for the first step, leave SSL away for the webapp; evaluate Cloudfront later
 
-## API Gateway
+## API Gateway for webapp
 
 * create API Gateway
 
 ### proxy to webapp
 
 * add /{poxy+} resource with ANY method and set it up to the URL of the S3 bucket
+* 
 * deploy it to a stage named _test_
 
 https://1wdkvhfy09.execute-api.eu-central-1.amazonaws.com/test/index.html
 
-**Finding:** no need to put the webapp behind the API Gateway, because it has to be public anyway, and using API gateway just adds unnecessay stage name in the path.
+**Finding:** no need to put the webapp behind the API Gateway, because it has to be public anyway, and using API gateway just adds unnecessay stage name in the path, making the app itself more complex
+
+# dynamodb
+
+## local
+
+* running in docker, exposed to port 8080
+* needs AWS credentials, any fake credential in the environment will do
+
+works without problems with a sample node js app.
