@@ -25,6 +25,16 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
   stackName: ${self:service}-${self:provider.stage}
+  apiKeys:
+    - ${self:provider.stackName}-apikey
+  usagePlan:
+    quota:
+      limit: 5000
+      offset: 2
+      period: MONTH
+    throttle:
+      burstLimit: 100
+      rateLimit:  50
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
 #    - Effect: "Allow"
@@ -66,6 +76,7 @@ functions:
           path: helloAsync
           method: get
           cors: true
+          private: true
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -99,6 +110,7 @@ functions:
           path: helloSync
           method: get
           cors: true
+          private: true
 
 # you can add CloudFormation resource templates here
 #resources:
