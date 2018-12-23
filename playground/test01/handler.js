@@ -5,7 +5,7 @@ function hello(mode) {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(mode + ' executed successfully')
-        }, 2000)
+        }, 30)
     });
 }
 

@@ -61,10 +61,11 @@ functions:
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
-#    events:
-#      - http:
-#          path: users/create
-#          method: get
+    events:
+      - http:
+          path: helloAsync
+          method: get
+          cors: true
 #      - s3: ${env:BUCKET}
 #      - schedule: rate(10 minutes)
 #      - sns: greeter-topic
@@ -93,6 +94,11 @@ functions:
 
   helloSync:
     handler: handler.helloSync
+    events:
+      - http:
+          path: helloSync
+          method: get
+          cors: true
 
 # you can add CloudFormation resource templates here
 #resources:
