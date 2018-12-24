@@ -6,9 +6,13 @@
   "description": "A simple Node.js application showing usage of the AWS SDK for Node.js.",
   "version": "1.0.1",
   "main": "dynamoTest01.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test-unit",
+    "test-unit": "NODE_ENV=test mocha './**/*.spec.js'"
   },
   "author": "P.J.",
   "license": "ISC"

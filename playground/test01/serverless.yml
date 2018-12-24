@@ -151,7 +151,7 @@ resources:
           -
             AttributeName: id
             KeyType: HASH
-        // could be changed to OnDemand in AWS console, not possible in Cloudformation at the moment
+        # could be changed to OnDemand in AWS console, not possible in Cloudformation at the moment
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

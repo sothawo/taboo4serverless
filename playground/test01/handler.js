@@ -1,25 +1,34 @@
 'use strict';
 
 
-function hello(mode) {
+/**
+ * a hello function that answers with a delay, returning a promise.
+ * @param mode
+ * @returns {Promise<String>}
+ */
+module.exports.hello = (mode) => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(mode + ' executed successfully')
+            resolve('hello from ' + mode)
         }, 30)
     });
+};
+
+function buildResponse(answer, event) {
+    return {
+        statusCode: 200,
+        body:
+            JSON.stringify({
+                message: answer,
+                input: event
+            })
+    }
 }
 
 module.exports.helloAsync = async (event, context) => {
 
-    var response = {
-        statusCode: 200,
-        body: JSON.stringify({
-            message: await hello('helloAsync'),
-            input: event,
-        }),
-    };
-
-    return response;
+    let answer = await this.hello('helloAsync');
+    return buildResponse(answer, event);
 
     // Use this code if you don't use the http event with the LAMBDA-PROXY integration
     // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
@@ -27,20 +36,9 @@ module.exports.helloAsync = async (event, context) => {
 
 module.exports.helloSync = (event, context, callback) => {
 
-
-    hello('helloSync')
-        .then(result => {
-            var response = {
-                statusCode: 200,
-                body: JSON.stringify({
-                    message: result,
-                    input: event,
-                }),
-            };
-            callback(null, response)
+    this.hello('helloSync')
+        .then(answer => {
+            callback(null, buildResponse(answer, event))
         })
-        .catch(e => {
-            callback(e, null)
-        });
-
+        .catch(e => callback(e, null));
 };
