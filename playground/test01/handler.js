@@ -3,13 +3,13 @@
 
 /**
  * a hello function that answers with a delay, returning a promise.
- * @param mode
+ * @param who
  * @returns {Promise<String>}
  */
-module.exports.hello = (mode) => {
+module.exports.hello = (who) => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve('hello from ' + mode)
+            resolve('hello from ' + who)
         }, 30)
     });
 };

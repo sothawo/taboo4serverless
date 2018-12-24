@@ -1,9 +1,8 @@
-var chai = require('chai').should();
+require("chai").should();
+const handler = require("./handler.js");
 
-hello = require('./handler.js').hello;
-
-describe('hello', function () {
-    it('returns a promise that resolves to a hello message', async function() {
-        (await hello('test')).should.equal('hello from test');
+describe('hello', () => {
+    it('returns a promise that resolves to a hello message', async () => {
+        (await handler.hello('test')).should.equal('hello from test');
     })
 });
