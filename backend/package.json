@@ -1,5 +1,7 @@
 {
-  "dependencies": {},
+  "dependencies": {
+    "md5": "^2.2.1"
+  },
   "name": "taboo4",
   "description": "tagged bookmark service",
   "version": "1.0.0",
