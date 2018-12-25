@@ -50,7 +50,7 @@ provider:
 
 functions:
   ping:
-    handler: AWSHandler.ping
+    handler: awshandler.ping
 
     events:
       - http:
@@ -61,21 +61,27 @@ functions:
 
 resources:
   Resources:
-    Test01DynamoDbTable:
+    Taboo4DynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
 #      DeletionPolicy: Retain
       DeletionPolicy: Delete
       Properties:
         AttributeDefinitions:
           -
-            AttributeName: id
+            AttributeName: partition
+            AttributeType: S
+          -
+            AttributeName: sort
             AttributeType: S
         KeySchema:
           -
-            AttributeName: id
+            AttributeName: partition
             KeyType: HASH
+          -
+            AttributeName: sort
+            KeyType: RANGE
         # could be changed to OnDemand in AWS console, not possible in Cloudformation at the moment
         ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+          ReadCapacityUnits: 20
+          WriteCapacityUnits: 20
         TableName: ${self:provider.environment.DYNAMODB_TABLE}

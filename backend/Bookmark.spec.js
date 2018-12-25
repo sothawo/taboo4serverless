@@ -1,6 +1,6 @@
 require("chai").should();
 const md5 = require("md5");
-const Bookmark = require("./bookmark");
+const Bookmark = require("./Bookmark");
 
 describe("a Bookmark", () => {
 
