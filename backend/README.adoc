@@ -1,3 +1,10 @@
+= taboo4 serverless backend
+:toc:
+:toclevels: 4
+
+the whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is set up with use off the  https://servelsess.com[serveless framework]. In this document the short command `sls` is used instead of `serverless`.
+
+
 = Setup
 
 == AWS credentials
@@ -21,7 +28,56 @@ $ npm test
 
 == Local integration tests
 
-_to be done_
+=== DynamoDB
+
+To set up DynamoDB running in docker, exposed to port 8000:
+
+[source,shell]
+----
+$ docker run --name dynamodb -d -p 8000:8000 amazon/dynamodb-local
+----
+
+To access this instance, AWS credentials must be set, any fake credential in the environment will do.
+
+=== Running functions locally
+
+To test the functions locally, the DynamoDB endpoint must be passed as an environment variable to the serverless command, i.e.:
+
+[source,shell]
+----
+$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f config
+----
+
+=== Preparing the table in the local DynamoDB
+
+==== Create the table
+
+To create the table, a serverless function is implemented which can be called like so:
+
+[source,shell]
+----
+$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f createTable
+----
+
+This function is not available via an endpoint and can only be invoked with the `sls` command.
+
+==== Listing tables
+
+[source,shell]
+----
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+----
+
+==== Delete the table
+
+The table can be deleted by running:
+
+[source,shell]
+----
+$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f deleteTable
+----
+
+This function as well is only callable by using the `sls` command.
 
 = Deployment
 

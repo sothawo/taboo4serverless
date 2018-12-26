@@ -57,6 +57,10 @@ functions:
           method: get
           cors: true
           private: true
+  createTable:
+    handler: awshandler.createTable
+  deleteTable:
+    handler: awshandler.deleteTable
 
 resources:
   Resources:
@@ -81,6 +85,6 @@ resources:
             KeyType: RANGE
         # could be changed to OnDemand in AWS console, not possible in Cloudformation at the moment
         ProvisionedThroughput:
-          ReadCapacityUnits: 20
-          WriteCapacityUnits: 20
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
