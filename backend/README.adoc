@@ -1,0 +1,47 @@
+= Setup
+
+== AWS credentials
+
+Before testing against a local Dynamo DB or deploying the AWS credentials need to be set up, so that the relevant environamtn variables are set:
+
+* AWS_PROFILE
+* AWS_REGION
+* AWS_DEFAULT_REGION=eu-central-1
+
+= Testing
+
+== Unit Tests
+
+unit tests can be run with
+
+[source,shell]
+----
+$ npm test
+----
+
+== Local integration tests
+
+_to be done_
+
+= Deployment
+
+The service with all it's functions and resources is deployed to AWS with:
+
+[source,shell]
+----
+$ sls deploy
+----
+
+By default, it is deployed to the _dev_ stage, to change this, the stage can be set with an argument:
+
+[source,shell]
+----
+$ sls -stage=prod deploy
+----
+
+After deployment a simple test to do is to call the _config_ function:
+
+[source,shell]
+----
+$ sls -stage=prod invoke config
+----

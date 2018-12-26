@@ -49,12 +49,11 @@ provider:
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
-  ping:
-    handler: awshandler.ping
-
+  config:
+    handler: awshandler.config
     events:
       - http:
-          path: ping
+          path: config
           method: get
           cors: true
           private: true
