@@ -2,7 +2,7 @@
 :toc:
 :toclevels: 4
 
-the whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is set up with use off the  https://servelsess.com[serveless framework]. In this document the short command `sls` is used instead of `serverless`.
+the whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is set up with use of the  https://servelsess.com[serveless framework]. In this document the short command `sls` is used instead of `serverless`.
 
 
 = Setup
