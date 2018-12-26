@@ -34,6 +34,7 @@ class Taboo4Service {
             Item: dbEntry
         };
 
+        // todo: error handling
         this.dynamoDBcDocClient.put(params, (err, data) => {
         });
     }
