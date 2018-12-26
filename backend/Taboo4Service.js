@@ -1,7 +1,11 @@
-
+// @formatter:off
 const DBEntry = require("./DBEntry");
+// @formatter:on
 
-class Taboo4 {
+/**
+ * the taboo4 service implementing the logic for managing the bookmarks.
+ */
+class Taboo4Service {
 
     constructor(dynamoDBcDocClient, tableName) {
         this.dynamoDBcDocClient = dynamoDBcDocClient;
@@ -35,4 +39,4 @@ class Taboo4 {
     }
 }
 
-module.exports = Taboo4;
+module.exports = Taboo4Service;

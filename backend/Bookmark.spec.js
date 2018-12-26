@@ -1,6 +1,8 @@
+// @formatter:off
 require("chai").should();
-const md5 = require("md5");
-const Bookmark = require("./Bookmark");
+const md5       = require("md5");
+const Bookmark  = require("./Bookmark");
+// @formatter:on
 
 describe("a Bookmark", () => {
 

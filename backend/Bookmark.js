@@ -1,9 +1,10 @@
+// @formatter:off
+const md5 = require('md5');
+// @formatter:on
+
 /**
  * a class defining our Bookmark.
  */
-
-const md5 = require('md5');
-
 class Bookmark {
     constructor(url, title, tags) {
         this.url = url;
