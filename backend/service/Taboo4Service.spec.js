@@ -2,10 +2,10 @@
 const should            = require("chai").should();
 const sinon             = require("sinon");
 
-const Bookmark          = require("./Bookmark");
-const DBEntry           = require("./DBEntry");
-const DynamoDBDocClient = require("./DynamoDBDocClient");
-const Taboo4Service     = require("./Taboo4Service");
+const Bookmark          = require("../data/Bookmark");
+const DBEntry           = require("../data/DBEntry");
+const DynamoDBDocClient = require("../data/DynamoDBDocClient");
+const Taboo4Service     = require("../service/Taboo4Service");
 
 const TableName         = "TestTable";
 // @formatter:on
@@ -20,13 +20,14 @@ describe("a Taboo4Service", () => {
 
         const docClient = new DynamoDBDocClient();
 
-        it("a single DBEntry calls the documentclient", () => {
-            const docClientFuncPut = sinon.spy(docClient, "put");
+        it("a single DBEntry calls the documentclient", async () => {
+            const docClientFuncPut = sinon.stub(docClient, "put");
+            docClientFuncPut.callsArg(1);
             const taboo4Service = new Taboo4Service(docClient, TableName);
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
             const dbEntry = new DBEntry(bookmark.id, "", bookmark);
 
-            taboo4Service.saveDBEntry(dbEntry);
+            await taboo4Service.saveDBEntry(dbEntry);
 
             docClientFuncPut.calledOnce.should.be.true;
 
@@ -37,18 +38,19 @@ describe("a Taboo4Service", () => {
             params.Item.bookmark.should.equal(bookmark);
         });
 
-        it("a bookmark saves DBEntry objects for the id and for each tag", () => {
+        it("a bookmark saves DBEntry objects for the id and for each tag", async () => {
             const taboo4Service = new Taboo4Service(docClient, TableName);
-            const taboo4ServiceFuncSaveDbEntry = sinon.spy(taboo4Service, "saveDBEntry");
+            const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+            taboo4ServiceFuncSaveDbEntry.resolves("success");
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
 
-            taboo4Service.saveBookmark(bookmark);
+            await taboo4Service.saveBookmark(bookmark);
 
             taboo4ServiceFuncSaveDbEntry.callCount.should.equal(3);
 
             let dbEntry = taboo4ServiceFuncSaveDbEntry.getCall(0).args[0];
             dbEntry.partition.should.equal(bookmark.id);
-            dbEntry.sort.should.equal("");
+            dbEntry.sort.should.equal("id");
             dbEntry.bookmark.should.equal(bookmark);
 
             dbEntry = taboo4ServiceFuncSaveDbEntry.getCall(1).args[0];

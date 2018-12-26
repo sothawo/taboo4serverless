@@ -15,6 +15,12 @@ Before testing against a local Dynamo DB or deploying the AWS credentials need t
 * AWS_REGION
 * AWS_DEFAULT_REGION=eu-central-1
 
+= API functions
+
+The API offers the following functions (without an API Gateway deployment stage prefix):
+
+_**TODO**_
+
 = Testing
 
 == Unit Tests
@@ -77,7 +83,25 @@ The table can be deleted by running:
 $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f deleteTable
 ----
 
+==== Add an entry to the table
+
+There is a sample event in the _testdata_ directory with which an event can be created:
+
+[source,shell]
+----
+$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
+----
+
 This function as well is only callable by using the `sls` command.
+
+==== List table content
+
+Only feasible for small tables in local development:
+
+[source,shell]
+----
+$ aws dynamodb scan --table-name taboo4-dev --endpoint=http://localhost:8000
+----
 
 = Deployment
 

@@ -50,17 +50,19 @@ provider:
 
 functions:
   config:
-    handler: awshandler.config
+    handler: aws/config.handler
     events:
       - http:
           path: config
           method: get
           cors: true
           private: true
+  postBookmark:
+    handler: aws/bookmark/post.handler
   createTable:
-    handler: awshandler.createTable
+    handler: aws/dynamodb/createtable.handler
   deleteTable:
-    handler: awshandler.deleteTable
+    handler: aws/dynamodb/deletetable.handler
 
 resources:
   Resources:
