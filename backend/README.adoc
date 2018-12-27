@@ -1,29 +1,29 @@
 = taboo4 serverless backend
 :toc:
-:toclevels: 4
+:toclevels: 5
 
 the whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is set up with use of the  https://servelsess.com[serveless framework]. In this document the short command `sls` is used instead of `serverless`.
 
 
-= Setup
+== Setup
 
-== AWS credentials
+=== AWS credentials
 
-Before testing against a local Dynamo DB or deploying the AWS credentials need to be set up, so that the relevant environamtn variables are set:
+Before testing against a local Dynamo DB or deploying the AWS credentials need to be set up, so that the relevant environment variables are set:
 
 * AWS_PROFILE
 * AWS_REGION
 * AWS_DEFAULT_REGION=eu-central-1
 
-= API functions
+== API functions
 
 The API offers the following functions (without an API Gateway deployment stage prefix):
 
 _**TODO**_
 
-= Testing
+== Testing
 
-== Unit Tests
+=== Unit Tests
 
 unit tests can be run with
 
@@ -32,9 +32,9 @@ unit tests can be run with
 $ npm test
 ----
 
-== Local integration tests
+=== Local integration tests
 
-=== DynamoDB
+==== DynamoDB
 
 To set up DynamoDB running in docker, exposed to port 8000:
 
@@ -45,7 +45,7 @@ $ docker run --name dynamodb -d -p 8000:8000 amazon/dynamodb-local
 
 To access this instance, AWS credentials must be set, any fake credential in the environment will do.
 
-=== Running functions locally
+==== Running functions locally
 
 To test the functions locally, the DynamoDB endpoint must be passed as an environment variable to the serverless command, i.e.:
 
@@ -54,9 +54,9 @@ To test the functions locally, the DynamoDB endpoint must be passed as an enviro
 $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f config
 ----
 
-=== Preparing the table in the local DynamoDB
+==== Preparing the table in the local DynamoDB
 
-==== Create the table
+===== Create the table
 
 To create the table, a serverless function is implemented which can be called like so:
 
@@ -67,14 +67,14 @@ $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f createTable
 
 This function is not available via an endpoint and can only be invoked with the `sls` command.
 
-==== Listing tables
+===== Listing tables
 
 [source,shell]
 ----
 aws dynamodb list-tables --endpoint-url http://localhost:8000
 ----
 
-==== Delete the table
+===== Delete the table
 
 The table can be deleted by running:
 
@@ -83,7 +83,7 @@ The table can be deleted by running:
 $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f deleteTable
 ----
 
-==== Add an entry to the table
+===== Add an entry to the table
 
 There is a sample event in the _testdata_ directory with which an event can be created:
 
@@ -94,7 +94,7 @@ $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f postBookmark -p testdat
 
 This function as well is only callable by using the `sls` command.
 
-==== List table content
+===== List table content
 
 Only feasible for small tables in local development:
 
@@ -103,7 +103,7 @@ Only feasible for small tables in local development:
 $ aws dynamodb scan --table-name taboo4-dev --endpoint=http://localhost:8000
 ----
 
-= Deployment
+== Deployment
 
 The service with all it's functions and resources is deployed to AWS with:
 

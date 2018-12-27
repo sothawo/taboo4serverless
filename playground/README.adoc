@@ -2,11 +2,11 @@
 
 In this directory I'll collect sample samples and scripts from the first findings when setting up the basic infrastructure in AWS - first with the AWS console.
 
-= the webapp
+== the webapp
 
 just a HTML file that is uploaded to a S3 bucket
 
-== the bucket
+=== the bucket
 
 * in the AWS console, creating a bucket named _com.sothawo.t4s.playground.001_, region Frankfurt, no special options, in the first setup no public access
 * upload index.html and error.html
@@ -16,11 +16,11 @@ just a HTML file that is uploaded to a S3 bucket
 
 for the first step, leave SSL away for the webapp; evaluate Cloudfront later
 
-== API Gateway for webapp
+=== API Gateway for webapp
 
 * create API Gateway
 
-=== proxy to webapp
+==== proxy to webapp
 
 * add /{poxy+} resource with ANY method and set it up to the URL of the S3 bucket
 * 

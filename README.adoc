@@ -6,16 +6,16 @@ After OpenShift stopped its developer program where I had my taboo3 app running 
 
 This version now will be build for running on AWS using Lambdas, API Gateway, S3 and DynamoDB.
 
-=  subdirectories
+==  subdirectories
 
-== playground
+=== playground
 
 this is where I try things
 
-== backend
+=== backend
 
 the backend service with the lambdas and serverless configuration
 
-== frontend
+=== frontend
 
 the frontend single page app
