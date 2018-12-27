@@ -1,5 +1,5 @@
 // @formatter:off
-const MD5       = require("MD5");
+const MD5       = require("md5");
 const TabooSet  = require("./TabooSet");
 // @formatter:on
 

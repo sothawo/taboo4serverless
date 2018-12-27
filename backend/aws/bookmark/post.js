@@ -25,14 +25,18 @@ const docClient = new AWS.DynamoDB.DocumentClient();
  * @returns {Promise<{body, statusCode}>}
  */
 module.exports.handler = async (event, context) => {
-    // todo create Bookmark from event data
-    const body = event.body;
+    const body = JSON.parse(event.body);
     const bookmark = new Bookmark(body.url, body.title, body.tags);
 
     const savedBookmark = await new Taboo4Service(docClient, TableName).saveBookmark(bookmark);
 
     return {
         statusCode: 201,
-        body: JSON.stringify(savedBookmark)
+        body: JSON.stringify({
+            url: savedBookmark.url,
+            title: savedBookmark.title,
+            id: savedBookmark.id,
+            tags: savedBookmark.tags.getElements()
+        })
     };
 };

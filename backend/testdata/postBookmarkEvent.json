@@ -1,12 +1,5 @@
 {
-  "body": {
-    "url": "http://bookmark.bkm",
-    "title": "a bookmark",
-    "tags": [
-      "bkmtag01",
-      "bkmtag02"
-    ]
-  },
+  "body": "{ \"url\": \"http://bookmark.bkm\", \"title\": \"a bookmark\", \"tags\": [ \"bkmtag01\", \"bkmtag02\" ] }",
   "resource": "/bookmark",
   "path": "/path/to/bookmark",
   "httpMethod": "POST",

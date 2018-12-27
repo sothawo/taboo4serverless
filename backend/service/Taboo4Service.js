@@ -20,10 +20,13 @@ class Taboo4Service {
      */
     async saveBookmark(bookmark) {
         await this.saveDBEntry(new DBEntry(bookmark.id, "id", bookmark));
-        bookmark.tags.getElements().forEach(async (tag) => {
-            await this.saveDBEntry(new DBEntry(tag, bookmark.id, bookmark));
-        });
+        await Promise.all(
+            bookmark.tags.getElements()
+                .map(async (tag) => {
+                    await this.saveDBEntry(new DBEntry(tag, bookmark.id, bookmark));
 
+                })
+        );
         return bookmark;
     }
 

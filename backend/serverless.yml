@@ -3,8 +3,9 @@ service: taboo4
 
 package:
   exclude:
-    - testdata/**
-    - README.adoc
+    - "testdata/**"
+    - "**/*.spec.js"
+    - "README.adoc"
 
 provider:
   name: aws
@@ -47,6 +48,12 @@ functions:
           private: true
   postBookmark:
     handler: aws/bookmark/post.handler
+    events:
+      - http:
+          path: bookmark
+          method: post
+          cors: true
+          private: true
   createTable:
     handler: aws/dynamodb/createtable.handler
   deleteTable:

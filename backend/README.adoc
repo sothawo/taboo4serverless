@@ -9,7 +9,9 @@ the whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is s
 
 === AWS credentials
 
-Before testing against a local Dynamo DB or deploying the AWS credentials need to be set up, so that the relevant environment variables are set:
+efore testing against a local Dynamo DB or deploying the AWS credentials need to be set up,`/bookmark` endpoint:
+
+so that the relevant environment variables are set:
 
 * AWS_PROFILE
 * AWS_REGION
@@ -17,7 +19,61 @@ Before testing against a local Dynamo DB or deploying the AWS credentials need t
 
 == API functions
 
-The API offers the following functions (without an API Gateway deployment stage prefix):
+.API Key
+When the service is deployed with `sls deploy` an API Key is generated, the value is shown in the output. This API key must be passed as the value of a HTTP header named `x-api-key`, otherwise the API Gateway rejects the call with an error code 403
+
+
+The API offers the following functions (examples are shown with an API Gateway endpoint deployed to a _dev_ stage and some API key ):
+
+=== Create a Bookmark
+
+A bookmark is created by POSTing a bookmark object to the `/bookmark` endpoint:
+
+.curl
+[source,shell]
+----
+curl -X "POST" "https://hom0160ulj.execute-api.eu-central-1.amazonaws.com/dev/bookmark" \
+     -H 'x-api-key: EjOp1Yag551q6hQuA8QEA5e8A7k6ZkwJ9Wl8EUSO' \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "url": "https://www.sothawo.com",
+  "title": "sothawo",
+  "tags": [
+    "cool",
+    "must-see"
+  ]
+}'
+----
+
+On Success a status code of *201* is returned with a body containing the created bookmark:
+
+.httpie
+[source,shell]
+----
+http --json POST 'https://hom0160ulj.execute-api.eu-central-1.amazonaws.com/dev/bookmark' \
+    'x-api-key':'EjOp1Yag551q6hQuA8QEA5e8A7k6ZkwJ9Wl8EUSO' \
+    'Content-Type':'application/json; charset=utf-8' \
+    url="https://www.sothawo.com" \
+    title="sothawo" \
+    tags:="[
+  \"cool\",
+  \"must-see\"
+]"
+----
+
+.Response
+[source,json]
+----
+{
+  "url": "https://www.sothawo.com",
+  "title": "sothawo",
+  "id": "4e838186c8e40cbe9ec698501f223608",
+  "tags": [
+    "cool",
+    "must-see"
+  ]
+}
+----
 
 _**TODO**_
 
