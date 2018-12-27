@@ -2,6 +2,7 @@
 const should            = require("chai").should();
 const sinon             = require("sinon");
 
+const TabooSet          = require("../data/TabooSet");
 const Bookmark          = require("../data/Bookmark");
 const DBEntry           = require("../data/DBEntry");
 const DynamoDBDocClient = require("../data/DynamoDBDocClient");
@@ -35,7 +36,7 @@ describe("a Taboo4Service", () => {
             params.TableName.should.equal(TableName);
             params.Item.partition.should.equal(bookmark.id)
             params.Item.sort.should.equal("");
-            params.Item.bookmark.should.equal(bookmark);
+            params.Item.getBookmark().should.deep.equal(bookmark);
         });
 
         it("a bookmark saves DBEntry objects for the id and for each tag", async () => {
@@ -44,24 +45,25 @@ describe("a Taboo4Service", () => {
             taboo4ServiceFuncSaveDbEntry.resolves("success");
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
 
+            const expectedPrimaryKeys = new TabooSet();
+            expectedPrimaryKeys.add([bookmark.id, "id"]);
+            expectedPrimaryKeys.add(["tag01", bookmark.id]);
+            expectedPrimaryKeys.add(["tag02", bookmark.id]);
+
             await taboo4Service.saveBookmark(bookmark);
 
             taboo4ServiceFuncSaveDbEntry.callCount.should.equal(3);
+            const realPrimaryKeys = new TabooSet();
+            taboo4ServiceFuncSaveDbEntry
+                .getCalls()
+                .map(it => it.args[0])
+                .forEach(dbEntry => {
+                    realPrimaryKeys.add([dbEntry.partition, dbEntry.sort]);
+                    dbEntry.getBookmark().should.deep.equal(bookmark);
+                });
 
-            let dbEntry = taboo4ServiceFuncSaveDbEntry.getCall(0).args[0];
-            dbEntry.partition.should.equal(bookmark.id);
-            dbEntry.sort.should.equal("id");
-            dbEntry.bookmark.should.equal(bookmark);
+            realPrimaryKeys.should.deep.equal(expectedPrimaryKeys);
 
-            dbEntry = taboo4ServiceFuncSaveDbEntry.getCall(1).args[0];
-            dbEntry.partition.should.equal(bookmark.tags[0]);
-            dbEntry.sort.should.equal(bookmark.id);
-            dbEntry.bookmark.should.equal(bookmark);
-
-            dbEntry = taboo4ServiceFuncSaveDbEntry.getCall(2).args[0];
-            dbEntry.partition.should.equal(bookmark.tags[1]);
-            dbEntry.sort.should.equal(bookmark.id);
-            dbEntry.bookmark.should.equal(bookmark);
         });
     });
 });
