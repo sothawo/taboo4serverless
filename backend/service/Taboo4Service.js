@@ -16,7 +16,7 @@ class Taboo4Service {
     /**
      * saves a bookmark to the database. creates an entry for the ID and one for each tag.
      * @param bookmark the bookmark to save
-     * @return {Promise<Bookemark>}
+     * @return {Promise<Bookmark>}
      */
     async saveBookmark(bookmark) {
         await this.saveDBEntry(new DBEntry(bookmark.id, "id", bookmark));
