@@ -1,9 +1,13 @@
 = taboo4 serverless backend
-:toc:
+:toc: preamble
 :toclevels: 5
+:sample-url: https://amt0758ulj.execute-api.eu-central-1.amazonaws.com/dev
+:sample-api-key: DjOp5Yag351q8hQuA8QEA5h8A7k6ZkwX9Wl8EUS5
 
-the whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is set up with use of the  https://servelsess.com[serveless framework]. In this document the short command `sls` is used instead of `serverless`.
+Description of the backend for the _taboo4_ tagged bookmark service.
 
+
+The whole taboo4 backend is implemented with AWS Lambdas and a DynamoDB. It is set up with use of the  https://servelsess.com[serveless framework]. In this document the short command `sls` is used instead of `serverless`.
 
 == Setup
 
@@ -30,10 +34,10 @@ The API offers the following functions (examples are shown with an API Gateway e
 A bookmark is created by POSTing a bookmark object to the `/bookmark` endpoint:
 
 .curl
-[source,shell]
+[source,shell,subs="attributes"]
 ----
-curl -X "POST" "https://hom0160ulj.execute-api.eu-central-1.amazonaws.com/dev/bookmark" \
-     -H 'x-api-key: EjOp1Yag551q6hQuA8QEA5e8A7k6ZkwJ9Wl8EUSO' \
+curl -X "POST" "{sample-url}/bookmark" \
+     -H 'x-api-key: {sample-api-key}' \
      -H 'Content-Type: application/json; charset=utf-8' \
      -d $'{
   "url": "https://www.sothawo.com",
@@ -45,13 +49,11 @@ curl -X "POST" "https://hom0160ulj.execute-api.eu-central-1.amazonaws.com/dev/bo
 }'
 ----
 
-On Success a status code of *201* is returned with a body containing the created bookmark:
-
 .httpie
-[source,shell]
+[source,shell,subs="attributes"]
 ----
-http --json POST 'https://hom0160ulj.execute-api.eu-central-1.amazonaws.com/dev/bookmark' \
-    'x-api-key':'EjOp1Yag551q6hQuA8QEA5e8A7k6ZkwJ9Wl8EUSO' \
+http --json POST '{sample-url}/bookmark' \
+    'x-api-key':'{sample-api-key}' \
     'Content-Type':'application/json; charset=utf-8' \
     url="https://www.sothawo.com" \
     title="sothawo" \
@@ -60,6 +62,8 @@ http --json POST 'https://hom0160ulj.execute-api.eu-central-1.amazonaws.com/dev/
   \"must-see\"
 ]"
 ----
+
+On Success a status code of *201* is returned with a body containing the created bookmark:
 
 .Response
 [source,json]
@@ -139,16 +143,16 @@ The table can be deleted by running:
 $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f deleteTable
 ----
 
+This function as well is only callable by using the `sls` command.
+
 ===== Add an entry to the table
 
-There is a sample event in the _testdata_ directory with which an event can be created:
+There is a sample event in the _testdata_ directory with which a bookmark can be created:
 
 [source,shell]
 ----
 $ DYNAMODB_URL=http://localhost:8000 sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
 ----
-
-This function as well is only callable by using the `sls` command.
 
 ===== List table content
 
