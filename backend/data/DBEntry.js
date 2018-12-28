@@ -10,14 +10,11 @@ class DBEntry {
     constructor(partition, sort, bookmark) {
         this.partition = partition;
         this.sort = sort;
-        this.bookmarkId = bookmark.id;
-        this.bookmarkUrl = bookmark.url;
-        this.bookmarkTitle = bookmark.title;
-        this.bookmarkTags = bookmark.tags.getElements();
+        this.bookmark = bookmark;
     }
 
     getBookmark() {
-        return new Bookmark(this.bookmarkUrl, this.bookmarkTitle, this.bookmarkTags)
+        return  this.bookmark
     }
 }
 

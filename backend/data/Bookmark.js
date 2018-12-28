@@ -25,6 +25,15 @@ class Bookmark {
     joinedTags() {
         return this.tags.getElements().join(", ");
     }
+
+    simplify() {
+        return {
+            url: this.url,
+            title: this.title,
+            id: this.id,
+            tags: this.tags.getElements()
+        };
+    }
 }
 
 module.exports = Bookmark;

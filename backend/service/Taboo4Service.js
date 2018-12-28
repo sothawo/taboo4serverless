@@ -1,5 +1,6 @@
 // @formatter:off
-const DBEntry = require("../data/DBEntry");
+const DBEntry   = require("../data/DBEntry");
+const Bookmark  = require("../data/Bookmark");
 // @formatter:on
 
 /**
@@ -36,7 +37,7 @@ class Taboo4Service {
      * @returns {Promise<String>}
      */
     async saveDBEntry(dbEntry) {
-        let params = {
+        const params = {
             TableName: this.tableName,
             Item: dbEntry
         };
@@ -50,6 +51,39 @@ class Taboo4Service {
                 }
             });
         });
+    }
+
+    /**
+     * retrieves a Bookmark.
+     * @param id the Bookmark id
+     * @return {Promise<Bookmark>}
+     */
+    async loadBookmark(id) {
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                partition: id,
+                sort: "id"
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+                this.dynamoDBcDocClient.get(params, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        if (data.Item && data.Item.bookmark) {
+                            const found = data.Item.bookmark;
+                            resolve(new Bookmark(found.url, found.title, found.tags.bag_))
+                        } else {
+                            resolve({});
+                        }
+                    }
+                });
+            }
+        )
+            ;
     }
 }
 

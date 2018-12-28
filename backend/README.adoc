@@ -79,7 +79,41 @@ On Success a status code of *201* is returned with a body containing the created
 }
 ----
 
-_**TODO**_
+=== Retrieve a Bookmark
+
+A bookmark is retrieved by GETing a bookmark id on the `/bookmark/{id}` endpoint:
+
+.curl
+[source,shell,subs="attributes"]
+----
+curl -X "GET" "{sample-url}/bookmark/4e838186c8e40cbe9ec698501f223608" \
+     -H 'x-api-key: {sample-api-key}'
+----
+
+.httpie
+[source,shell,subs="attributes"]
+----
+http GET '{sample-url}/bookmark/4e838186c8e40cbe9ec698501f223608' \
+    'x-api-key':'{sample-api-key}'
+----
+
+On Success a status code of *200* is returned with a body containing the bookmark:
+
+.Response
+[source,json]
+----
+{
+  "url": "https://www.sothawo.com",
+  "title": "sothawo",
+  "id": "4e838186c8e40cbe9ec698501f223608",
+  "tags": [
+    "cool",
+    "must-see"
+  ]
+}
+----
+
+IMPORTANT: **TODO** add other calls
 
 == Testing
 

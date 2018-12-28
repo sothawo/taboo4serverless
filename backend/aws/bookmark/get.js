@@ -20,22 +20,24 @@ if (DynamoDBURL !== undefined) {
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 /**
- * stores a Bookmark in the database.
+ * loads a Bookmark from the database.
  * @param event
  * @returns {Promise<{body, statusCode}>}
  */
 module.exports.handler = async (event) => {
-    const body = JSON.parse(event.body);
-    const bookmark = new Bookmark(body.url, body.title, body.tags);
+    const id = event.pathParameters.id;
 
-    const savedBookmark = await new Taboo4Service(docClient, TableName).saveBookmark(bookmark);
+    const bookmark = await new Taboo4Service(docClient, TableName).loadBookmark(id);
 
-    return {
-        statusCode: 201,
-        headers: {
-            // Location header is relative to the URL used to create the bookmark
-            "Location": savedBookmark.id
-        },
-        body: JSON.stringify(savedBookmark.simplify())
-    };
+    if (bookmark && bookmark.id) {
+        return {
+            statusCode: 200,
+            body: JSON.stringify(bookmark.simplify())
+        };
+    } else {
+        return {
+            statusCode: 404,
+            body: "bookmark with id " + id + " not found"
+        }
+    }
 };

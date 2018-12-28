@@ -3,6 +3,7 @@
  */
 class DynamoDBDocClient {
     put(params, callback) {}
+    get(params, callback) {}
 }
 
 module.exports = DynamoDBDocClient;

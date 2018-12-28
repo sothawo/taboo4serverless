@@ -1,5 +1,7 @@
 // @formatter:off
-const should            = require("chai").should();
+const chai              = require("chai");
+const expect            = chai.expect;
+const should            = chai.should();
 const sinon             = require("sinon");
 
 const TabooSet          = require("../data/TabooSet");
@@ -17,16 +19,16 @@ afterEach(() => {
 
 describe("a Taboo4Service", () => {
 
-    describe("when storing", () => {
+    const docClient = new DynamoDBDocClient();
 
-        const docClient = new DynamoDBDocClient();
+    describe("when storing", () => {
 
         it("a single DBEntry calls the documentclient", async () => {
             const docClientFuncPut = sinon.stub(docClient, "put");
-            docClientFuncPut.callsArg(1);
+            docClientFuncPut.callsArg(1); // let the stub call the callback function that is passed as second arg
             const taboo4Service = new Taboo4Service(docClient, TableName);
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
-            const dbEntry = new DBEntry(bookmark.id, "", bookmark);
+            const dbEntry = new DBEntry(bookmark.id, "id", bookmark);
 
             await taboo4Service.saveDBEntry(dbEntry);
 
@@ -35,7 +37,7 @@ describe("a Taboo4Service", () => {
             const params = docClientFuncPut.firstCall.args[0];
             params.TableName.should.equal(TableName);
             params.Item.partition.should.equal(bookmark.id)
-            params.Item.sort.should.equal("");
+            params.Item.sort.should.equal("id");
             params.Item.getBookmark().should.deep.equal(bookmark);
         });
 
@@ -63,7 +65,32 @@ describe("a Taboo4Service", () => {
                 });
 
             realPrimaryKeys.should.deep.equal(expectedPrimaryKeys);
+        });
+    });
 
+    describe("when retrieving", () => {
+
+        it("returns an existing bookmark", async () => {
+            const docClientFuncGet = sinon.stub(docClient, "get");
+            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const dbEntry = new DBEntry(bookmark.id, "", bookmark);
+            docClientFuncGet.callsArgWith(1, null, {Item: dbEntry}); // let the stub call the callback function that is passed as second arg
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+
+            const foundBookmark = await taboo4Service.loadBookmark("someid");
+
+            foundBookmark.should.deep.equal(bookmark);
+        });
+
+        it("returns empty object on an no existing bookmark", async () => {
+            const docClientFuncGet = sinon.stub(docClient, "get");
+            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            docClientFuncGet.callsArgWith(1, null, {}); // let the stub call the callback function that is passed as second arg
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+
+            const foundBookmark = await taboo4Service.loadBookmark("someid");
+
+            foundBookmark.should.deep.equal({})
         });
     });
 });

@@ -10,6 +10,7 @@ package:
 provider:
   name: aws
   runtime: nodejs8.10
+  memorySize: 128
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
@@ -52,6 +53,18 @@ functions:
       - http:
           path: bookmark
           method: post
+          cors: true
+          private: true
+  getBookmark:
+    handler: aws/bookmark/get.handler
+    events:
+      - http:
+          path: bookmark/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
           cors: true
           private: true
   createTable:

@@ -71,6 +71,19 @@ describe("a Bookmark", () => {
         const bookmark = new Bookmark(url, title, tags);
 
         bookmark.joinedTags().should.equal("tag1, tag2");
-    })
-    ;
+    });
+
+    it("has a simplified version with an array of tags", () => {
+        const url = "http://some.url";
+        const title = " a test title";
+        const tags = ["tag1", "tag2"];
+
+        const simplifiedBookmark = new Bookmark(url, title, tags).simplify();
+
+        simplifiedBookmark.id.should.equal(md5(url));
+        simplifiedBookmark.url.should.equal(url);
+        simplifiedBookmark.title.should.equal(title);
+        simplifiedBookmark.tags.should.deep.equal(tags)
+
+    });
 });
