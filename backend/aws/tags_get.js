@@ -19,18 +19,18 @@ if (DynamoDBURL !== undefined) {
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 /**
- * loads all Bookmarks from the database.
+ * loads all tags from the database.
  * @param event
  * @returns {Promise<{body, statusCode}>}
  */
 module.exports.handler = async (event) => {
 
-    const bookmarks = await new Taboo4Service(docClient, TableName).allBookmarks();
+    const tags = await new Taboo4Service(docClient, TableName).allTags();
 
-    if (bookmarks) {
+    if (tags) {
         return {
             statusCode: 200,
-            body: JSON.stringify(bookmarks.map(it => it.simplify()))
+            body: JSON.stringify(tags)
         };
     } else {
         return {

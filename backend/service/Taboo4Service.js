@@ -1,6 +1,8 @@
 // @formatter:off
-const DBEntry   = require("../data/DBEntry");
-const Bookmark  = require("../data/Bookmark");
+const DBEntry = require("../data/DBEntry");
+const Bookmark = require("../data/Bookmark");
+const TabooSet = require("../data/TabooSet");
+
 // @formatter:on
 
 /**
@@ -94,8 +96,7 @@ class Taboo4Service {
         const params = {
             TableName: this.tableName,
             FilterExpression: "sort = :srt",
-            ExpressionAttributeValues: {":srt": "id"},
-            PageSize: 1
+            ExpressionAttributeValues: {":srt": "id"}
         };
 
         return new Promise((resolve, reject) => {
@@ -119,6 +120,20 @@ class Taboo4Service {
             };
             this.dynamoDBcDocClient.scan(params, onScan);
         });
+    }
+
+    /**
+     * retrieves all tags as sorted array.
+     * @return {Promise<[String]>}
+     */
+    async allTags() {
+        return this.allBookmarks().then(bookmarks => {
+            let tagSet = new TabooSet();
+            bookmarks.forEach(bookmark => {
+                tagSet = tagSet.union(bookmark.tags);
+            });
+            return tagSet.bag_;
+        })
     }
 }
 
