@@ -84,8 +84,7 @@ class Taboo4Service {
                     }
                 });
             }
-        )
-            ;
+        );
     }
 
     /**
@@ -134,6 +133,58 @@ class Taboo4Service {
             });
             return tagSet.bag_;
         })
+    }
+
+    /**
+     * returns all Bookmarks for the given tags.
+     * @param tags
+     * @returns {Promise<[Bookmark]>}
+     */
+    async bookmarksByTags(tags) {
+        const allBookmarks = new Map();
+        if (tags) {
+            await Promise.all(
+                tags.map(async tag => {
+                    let bookmarks = (await this.bookmarkByTag(tag));
+                    bookmarks
+                        .forEach(it => allBookmarks.set(it.id, it));
+                })
+            );
+        }
+        return Array.from(allBookmarks.values())
+    }
+
+    /**
+     * returns all Bookmarks for a single tag.
+     * @param tag
+     * @returns {Promise<[Bookmark]>}
+     */
+    async bookmarkByTag(tag) {
+        const params = {
+            TableName: this.tableName,
+            KeyConditionExpression: "#prt = :prt",
+            ExpressionAttributeNames: {"#prt": "partition"},
+            ExpressionAttributeValues: {":prt": tag}
+        };
+
+        return new Promise((resolve, reject) => {
+                this.dynamoDBcDocClient.query(params, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        if (data.Items) {
+                            resolve(data.Items
+                                .map(it => it.bookmark)
+                                .map(it => new Bookmark(it.url, it.title, it.tags.bag_))
+                            );
+                        } else {
+                            resolve({});
+                        }
+                    }
+                });
+            }
+        );
     }
 }
 

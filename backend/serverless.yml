@@ -49,6 +49,14 @@ functions:
           method: get
           cors: true
           private: true
+  dumpevents:
+    handler: aws/dumpevent.handler
+    events:
+      - http:
+          path: dumpevent
+          method: get
+          cors: true
+          private: true
   postBookmark:
     handler: aws/bookmark_post.handler
     events:
@@ -75,6 +83,14 @@ functions:
       - http:
           path: bookmarks
           method: get
+          cors: true
+          private: true
+  getBookmarksByTags:
+    handler: aws/bookmarksquery_post.handler
+    events:
+      - http:
+          path: bookmarks/query
+          method: post
           cors: true
           private: true
   getTags:

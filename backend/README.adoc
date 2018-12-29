@@ -29,7 +29,7 @@ When the service is deployed with `sls deploy` an API Key is generated, the valu
 
 The API offers the following functions (examples are shown with an API Gateway endpoint deployed to a _dev_ stage and some API key ):
 
-=== Create a Bookmark
+=== Create a bookmark
 
 A bookmark is created by POSTing a bookmark object to the `/bookmark` endpoint:
 
@@ -79,7 +79,7 @@ On Success a status code of *201* is returned with a body containing the created
 }
 ----
 
-=== Retrieve a Bookmark
+=== Retrieve a bookmark
 
 A bookmark is retrieved by GETing a bookmark id on the `/bookmark/{id}` endpoint:
 
@@ -113,7 +113,7 @@ On Success a status code of *200* is returned with a body containing the bookmar
 }
 ----
 
-=== Retrieve all Bookmarks
+=== Retrieve all bookmarks
 
 All bookmarks are retrieved by GETing  the `/bookmarks` endpoint:
 
@@ -167,7 +167,91 @@ On Success a status code of *200* is returned with a body containing an array of
 ]
 ----
 
-IMPORTANT: **TODO** add other calls
+=== Retrieve all tags
+
+All tags are retrieved by GETing  the `/tags` endpoint:
+
+.curl
+[source,shell,subs="attributes"]
+----
+curl -X "GET" "{sample-url}/tags" \
+     -H 'x-api-key: {sample-api-key}'
+----
+
+.httpie
+[source,shell,subs="attributes"]
+----
+http GET '{sample-url}/tags' \
+    'x-api-key':'{sample-api-key}'
+----
+
+On Success a status code of *200* is returned with a body containing an array of tags (which might be empty):
+
+.Response
+[source,json]
+----
+[
+  "active",
+  "cool",
+  "inactive",
+  "must-see",
+  "work"
+]
+----
+
+=== Query for bookmarks
+
+A query to retrieve bookmarks must be POSTed to the `/bookmarks/query` endpoint. The query parameters must be sent as the request body. At the moment the only supported request parameters are tags:
+
+.curl
+[source,shell,subs="attributes"]
+----
+curl -X "POST" "{sample-url}/bookmarks/query" \
+     -H 'x-api-key: {sample-api-key}' \
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{
+  "tags": [
+    "work"
+  ]
+}'
+----
+
+.httpie
+[source,shell,subs="attributes"]
+----
+http --json POST '{sample-url}/bookmarks/query' \
+    'x-api-key':'{sample-api-key}' \
+    'Content-Type':'application/json; charset=utf-8' \
+    tags:="[
+  \"work\"
+]"
+----
+
+On Success a status code of *200* is returned with a body containing an array of bookmarks (which might be empty):
+
+[source, json]
+----
+[
+  {
+    "url": "https://www.codecentric.de",
+    "title": "codecentric",
+    "id": "b3e1c377adf8a80fcfda8ed100a8f886",
+    "tags": [
+      "active",
+      "work"
+    ]
+  },
+  {
+    "url": "https://www.hlx.com",
+    "title": "hlx",
+    "id": "afeb91fd58e0ebc0b4b471a9320a8c27",
+    "tags": [
+      "inactive",
+      "work"
+    ]
+  }
+]
+----
 
 == Testing
 

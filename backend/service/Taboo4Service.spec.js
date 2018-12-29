@@ -1,16 +1,16 @@
 // @formatter:off
-const chai              = require("chai");
-const expect            = chai.expect;
-const should            = chai.should();
-const sinon             = require("sinon");
+const chai = require("chai");
+const expect = chai.expect;
+const should = chai.should();
+const sinon = require("sinon");
 
-const TabooSet          = require("../data/TabooSet");
-const Bookmark          = require("../data/Bookmark");
-const DBEntry           = require("../data/DBEntry");
+const TabooSet = require("../data/TabooSet");
+const Bookmark = require("../data/Bookmark");
+const DBEntry = require("../data/DBEntry");
 const DynamoDBDocClient = require("../data/DynamoDBDocClient");
-const Taboo4Service     = require("../service/Taboo4Service");
+const Taboo4Service = require("../service/Taboo4Service");
 
-const TableName         = "TestTable";
+const TableName = "TestTable";
 // @formatter:on
 
 afterEach(() => {
@@ -126,5 +126,35 @@ describe("a Taboo4Service", () => {
 
             foundTags.should.deep.equal(["tag06", "tag07", "tag08", "tag09"]);
         });
+
+        describe ("by tags", () => {
+            it("returns empty array for unknown tags", async () => {
+                const docClientFuncQuery = sinon.stub(docClient, "query");
+                docClientFuncQuery.onCall(0).callsArgWith(1, null, {Items: []});
+                docClientFuncQuery.onCall(1).callsArgWith(1, null, {Items: []});
+                const taboo4Service = new Taboo4Service(docClient, TableName);
+
+                const foundBookmarks = await taboo4Service.bookmarksByTags(["tag01", "tag02"]);
+
+                foundBookmarks.should.deep.equal([]);
+            });
+
+            it("finds bookmarks for given tags", async () => {
+                const bookmark1 = new Bookmark("url01", "title01", ["tag09", "tag07"]);
+                const bookmark3 = new Bookmark("url03", "title03", ["tag07", "tag08"]);
+                const dbEntry1 = new DBEntry(bookmark1.id, "id", bookmark1);
+                const dbEntry3 = new DBEntry(bookmark3.id, "id", bookmark3);
+                const docClientFuncQuery = sinon.stub(docClient, "query");
+                docClientFuncQuery.onCall(0).callsArgWith(1, null, {Items: [dbEntry1, dbEntry3]});
+                docClientFuncQuery.onCall(1).callsArgWith(1, null, {Items: [dbEntry1]});
+                const taboo4Service = new Taboo4Service(docClient, TableName);
+
+                const foundBookmarks = await taboo4Service.bookmarksByTags(["tag07", "tag09"]);
+
+                foundBookmarks.length.should.equal(2);
+                foundBookmarks.should.deep.include(bookmark1);
+                foundBookmarks.should.deep.include(bookmark3);
+            });
+        })
     });
 });
