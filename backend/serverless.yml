@@ -10,11 +10,13 @@ package:
 provider:
   name: aws
   runtime: nodejs8.10
-  memorySize: 128
+  memorySize: 256
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
   stackName: ${self:service}-${self:provider.stage}
+  tags:
+    app: "taboo4"
   environment:
     DYNAMODB_TABLE: ${self:provider.stackName}
   apiKeys:
@@ -48,7 +50,7 @@ functions:
           cors: true
           private: true
   postBookmark:
-    handler: aws/bookmark/post.handler
+    handler: aws/bookmark_post.handler
     events:
       - http:
           path: bookmark
@@ -56,7 +58,7 @@ functions:
           cors: true
           private: true
   getBookmark:
-    handler: aws/bookmark/get.handler
+    handler: aws/bookmark_get.handler
     events:
       - http:
           path: bookmark/{id}
@@ -67,10 +69,18 @@ functions:
                 id: true
           cors: true
           private: true
+  getBookmarks:
+    handler: aws/bookmarks_get.handler
+    events:
+      - http:
+          path: bookmarks
+          method: get
+          cors: true
+          private: true
   createTable:
-    handler: aws/dynamodb/createtable.handler
+    handler: aws/dynamodb_createtable.handler
   deleteTable:
-    handler: aws/dynamodb/deletetable.handler
+    handler: aws/dynamodb_deletetable.handler
 
 resources:
   Resources:

@@ -2,8 +2,8 @@
 
 // @formatter:off
 const AWS           = require("aws-sdk");
-const Taboo4Service = require("../../service/Taboo4Service");
-const Bookmark      = require("../../data/Bookmark");
+const Taboo4Service = require("../service/Taboo4Service");
+const Bookmark      = require("../data/Bookmark");
 
 const TableName     = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion     = process.env.AWS_REGION || "eu-central-1";

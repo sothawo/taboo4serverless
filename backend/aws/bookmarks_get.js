@@ -2,8 +2,8 @@
 
 // @formatter:off
 const AWS           = require("aws-sdk");
-const Taboo4Service = require("../../service/Taboo4Service");
-const Bookmark      = require("../../data/Bookmark");
+const Taboo4Service = require("../service/Taboo4Service");
+const Bookmark      = require("../data/Bookmark");
 
 const TableName     = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
@@ -20,24 +20,23 @@ if (DynamoDBURL !== undefined) {
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 /**
- * loads a Bookmark from the database.
+ * loads all Bookmarks from the database.
  * @param event
  * @returns {Promise<{body, statusCode}>}
  */
 module.exports.handler = async (event) => {
-    const id = event.pathParameters.id;
 
-    const bookmark = await new Taboo4Service(docClient, TableName).loadBookmark(id);
+    const bookmarks = await new Taboo4Service(docClient, TableName).allBookmarks();
 
-    if (bookmark && bookmark.id) {
+    if (bookmarks) {
         return {
             statusCode: 200,
-            body: JSON.stringify(bookmark.simplify())
+            body: JSON.stringify(bookmarks.map(it => it.simplify()))
         };
     } else {
         return {
-            statusCode: 404,
-            body: "bookmark with id " + id + " not found"
+            statusCode: 500,
+            body: "oops"
         }
     }
 };

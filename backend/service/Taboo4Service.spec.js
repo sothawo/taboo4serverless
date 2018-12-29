@@ -24,11 +24,11 @@ describe("a Taboo4Service", () => {
     describe("when storing", () => {
 
         it("a single DBEntry calls the documentclient", async () => {
+            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const dbEntry = new DBEntry(bookmark.id, "id", bookmark);
             const docClientFuncPut = sinon.stub(docClient, "put");
             docClientFuncPut.callsArg(1); // let the stub call the callback function that is passed as second arg
             const taboo4Service = new Taboo4Service(docClient, TableName);
-            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
-            const dbEntry = new DBEntry(bookmark.id, "id", bookmark);
 
             await taboo4Service.saveDBEntry(dbEntry);
 
@@ -42,15 +42,14 @@ describe("a Taboo4Service", () => {
         });
 
         it("a bookmark saves DBEntry objects for the id and for each tag", async () => {
-            const taboo4Service = new Taboo4Service(docClient, TableName);
-            const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
-            taboo4ServiceFuncSaveDbEntry.resolves("success");
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
-
             const expectedPrimaryKeys = new TabooSet();
             expectedPrimaryKeys.add([bookmark.id, "id"]);
             expectedPrimaryKeys.add(["tag01", bookmark.id]);
             expectedPrimaryKeys.add(["tag02", bookmark.id]);
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+            const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+            taboo4ServiceFuncSaveDbEntry.resolves("success");
 
             await taboo4Service.saveBookmark(bookmark);
 
@@ -71,9 +70,9 @@ describe("a Taboo4Service", () => {
     describe("when retrieving", () => {
 
         it("returns an existing bookmark", async () => {
-            const docClientFuncGet = sinon.stub(docClient, "get");
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
-            const dbEntry = new DBEntry(bookmark.id, "", bookmark);
+            const dbEntry = new DBEntry(bookmark.id, "id", bookmark);
+            const docClientFuncGet = sinon.stub(docClient, "get");
             docClientFuncGet.callsArgWith(1, null, {Item: dbEntry}); // let the stub call the callback function that is passed as second arg
             const taboo4Service = new Taboo4Service(docClient, TableName);
 
@@ -83,14 +82,34 @@ describe("a Taboo4Service", () => {
         });
 
         it("returns empty object on an no existing bookmark", async () => {
-            const docClientFuncGet = sinon.stub(docClient, "get");
             const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const docClientFuncGet = sinon.stub(docClient, "get");
             docClientFuncGet.callsArgWith(1, null, {}); // let the stub call the callback function that is passed as second arg
             const taboo4Service = new Taboo4Service(docClient, TableName);
 
             const foundBookmark = await taboo4Service.loadBookmark("someid");
 
             foundBookmark.should.deep.equal({})
+        });
+
+        it("returns all bookmarks", async () => {
+            const bookmark1 = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const bookmark2 = new Bookmark("url02", "title02", ["tag02", "tag03"]);
+            const bookmark3 = new Bookmark("url03", "title03", ["tag03", "tag04"]);
+            const dbEntry1 = new DBEntry(bookmark1.id, "id", bookmark1);
+            const dbEntry2 = new DBEntry(bookmark2.id, "id", bookmark2);
+            const dbEntry3 = new DBEntry(bookmark3.id, "id", bookmark3);
+            const expectedBookmarks = new TabooSet([bookmark1, bookmark2, bookmark3]);
+            // the stub returns the three bookmarks in single pages to check that the service handles paging
+            const docClientFuncScan = sinon.stub(docClient, "scan");
+            docClientFuncScan.onCall(0).callsArgWith(1, null, {LastEvaluatedKey: 1, Items: [dbEntry1]});
+            docClientFuncScan.onCall(1).callsArgWith(1, null, {LastEvaluatedKey: 2, Items: [dbEntry2]});
+            docClientFuncScan.onCall(2).callsArgWith(1, null, {Items: [dbEntry3]});
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+
+            const foundBookmarks = await taboo4Service.allBookmarks();
+
+            expectedBookmarks.should.deep.equal(new TabooSet(foundBookmarks));
         });
     });
 });

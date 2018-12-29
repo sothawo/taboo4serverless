@@ -43,7 +43,7 @@ class Taboo4Service {
         };
 
         return new Promise((resolve, reject) => {
-            this.dynamoDBcDocClient.put(params, function (err, data) {
+            this.dynamoDBcDocClient.put(params, (err, data) => {
                 if (err) {
                     reject(new Error("Unable to store DBEntry. Error JSON:" + JSON.stringify(err, null, 2)));
                 } else {
@@ -68,7 +68,7 @@ class Taboo4Service {
         };
 
         return new Promise((resolve, reject) => {
-                this.dynamoDBcDocClient.get(params, function (err, data) {
+                this.dynamoDBcDocClient.get(params, (err, data) => {
                     if (err) {
                         console.log(err);
                         reject(err);
@@ -84,6 +84,41 @@ class Taboo4Service {
             }
         )
             ;
+    }
+
+    /**
+     * retrieves all bookmarks.
+     * @return {Promise<[Bookmark]>}
+     */
+    async allBookmarks() {
+        const params = {
+            TableName: this.tableName,
+            FilterExpression: "sort = :srt",
+            ExpressionAttributeValues: {":srt": "id"},
+            PageSize: 1
+        };
+
+        return new Promise((resolve, reject) => {
+            const bookmarks = [];
+
+            const onScan = (err, data) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    data.Items
+                        .map(it => it.bookmark)
+                        .map(it => new Bookmark(it.url, it.title, it.tags.bag_))
+                        .forEach(it => bookmarks.push(it));
+                    if (typeof data.LastEvaluatedKey != "undefined") {
+                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        this.dynamoDBcDocClient.scan(params, onScan);
+                    } else {
+                        resolve(bookmarks);
+                    }
+                }
+            };
+            this.dynamoDBcDocClient.scan(params, onScan);
+        });
     }
 }
 

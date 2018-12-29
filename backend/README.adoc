@@ -113,6 +113,60 @@ On Success a status code of *200* is returned with a body containing the bookmar
 }
 ----
 
+=== Retrieve all Bookmarks
+
+All bookmarks are retrieved by GETing  the `/bookmarks` endpoint:
+
+.curl
+[source,shell,subs="attributes"]
+----
+curl -X "GET" "{sample-url}/bookmarks" \
+     -H 'x-api-key: {sample-api-key}'
+----
+
+.httpie
+[source,shell,subs="attributes"]
+----
+http GET '{sample-url}/bookmarks' \
+    'x-api-key':'{sample-api-key}'
+----
+
+On Success a status code of *200* is returned with a body containing an array of bookmarks:
+
+.Response
+[source,json]
+----
+[
+  {
+    "url": "https://www.codecentric.de",
+    "title": "codecentric",
+    "id": "b3e1c377adf8a80fcfda8ed100a8f886",
+    "tags": [
+      "active",
+      "work"
+    ]
+  },
+  {
+    "url": "https://www.sothawo.com",
+    "title": "sothawo",
+    "id": "4e838186c8e40cbe9ec698501f223608",
+    "tags": [
+      "cool",
+      "must-see"
+    ]
+  },
+  {
+    "url": "https://www.hlx.com",
+    "title": "hlx",
+    "id": "afeb91fd58e0ebc0b4b471a9320a8c27",
+    "tags": [
+      "inactive",
+      "work"
+    ]
+  }
+]
+----
+
 IMPORTANT: **TODO** add other calls
 
 == Testing

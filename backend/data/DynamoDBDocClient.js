@@ -4,6 +4,7 @@
 class DynamoDBDocClient {
     put(params, callback) {}
     get(params, callback) {}
+    scan(params, callback) {}
 }
 
 module.exports = DynamoDBDocClient;
