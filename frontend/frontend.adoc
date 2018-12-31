@@ -1,0 +1,10 @@
+= taboo4 serverless frontend
+:toc: preamble
+:toclevels: 5
+
+Description of the frontend for the _taboo4_ tagged bookmark service.
+
+
+== Technology
+
+The frontend is implemented using Angular
