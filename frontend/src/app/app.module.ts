@@ -1,14 +1,20 @@
-import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {FormsModule} from "@angular/forms";
+import {WebStorageModule} from "ngx-store";
 
 import {AppComponent} from './app.component';
+import {SettingsComponent} from './settings/settings.component';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        SettingsComponent
     ],
     imports: [
-        BrowserModule
+        BrowserModule,
+        FormsModule,
+        WebStorageModule
     ],
     providers: [],
     bootstrap: [AppComponent]
