@@ -4,6 +4,7 @@
 const AWS = require("aws-sdk");
 const Taboo4Service = require("../service/Taboo4Service");
 const TabooSet = require("../data/TabooSet");
+const corsResponse  = require("./utils").corsResponse;
 
 const TableName = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion = process.env.AWS_REGION || "eu-central-1";
@@ -34,8 +35,5 @@ module.exports.handler = async (event) => {
             .forEach(it => bookmarks.add(it));
     }
 
-    return {
-        statusCode: 200,
-        body: JSON.stringify(bookmarks.getElements().map(it => it.simplify()))
-    };
+    return corsResponse(200, bookmarks.getElements().map(it => it.simplify()));
 };

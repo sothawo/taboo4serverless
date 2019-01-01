@@ -5,6 +5,7 @@ import {WebStorageModule} from "ngx-store";
 
 import {AppComponent} from './app.component';
 import {SettingsComponent} from './settings/settings.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
     declarations: [
@@ -14,7 +15,8 @@ import {SettingsComponent} from './settings/settings.component';
     imports: [
         BrowserModule,
         FormsModule,
-        WebStorageModule
+        WebStorageModule,
+        HttpClientModule
     ],
     providers: [],
     bootstrap: [AppComponent]

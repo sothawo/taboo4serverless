@@ -2,6 +2,7 @@
 
 // @formatter:off
 const AWS           = require("aws-sdk");
+const corsResponse  = require("./utils").corsResponse;
 
 const TableName     = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
@@ -25,8 +26,5 @@ module.exports.handler = async (event, context) => {
         dynamoDBURL: DynamoDBURL,
         tableName: TableName
     };
-    return {
-        statusCode: 200,
-        body: JSON.stringify(config)
-    };
+    return corsResponse(200, config);
 };

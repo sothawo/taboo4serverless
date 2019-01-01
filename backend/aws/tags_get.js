@@ -3,6 +3,7 @@
 // @formatter:off
 const AWS           = require("aws-sdk");
 const Taboo4Service = require("../service/Taboo4Service");
+const corsResponse  = require("./utils").corsResponse;
 
 const TableName     = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
@@ -28,14 +29,8 @@ module.exports.handler = async (event) => {
     const tags = await new Taboo4Service(docClient, TableName).allTags();
 
     if (tags) {
-        return {
-            statusCode: 200,
-            body: JSON.stringify(tags)
-        };
+        return corsResponse(200, tags);
     } else {
-        return {
-            statusCode: 500,
-            body: "oops"
-        }
+        return corsResponse(500, "oops");
     }
 };

@@ -4,6 +4,7 @@
 const AWS           = require("aws-sdk");
 const Taboo4Service = require("../service/Taboo4Service");
 const Bookmark      = require("../data/Bookmark");
+const corsResponse  = require("./utils").corsResponse;
 
 const TableName     = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
@@ -30,12 +31,10 @@ module.exports.handler = async (event) => {
 
     const savedBookmark = await new Taboo4Service(docClient, TableName).saveBookmark(bookmark);
 
-    return {
-        statusCode: 201,
-        headers: {
+    return corsResponse(201,
+        savedBookmark.simplify(),
+        {
             // Location header is relative to the URL used to create the bookmark
             "Location": savedBookmark.id
-        },
-        body: JSON.stringify(savedBookmark.simplify())
-    };
+        });
 };

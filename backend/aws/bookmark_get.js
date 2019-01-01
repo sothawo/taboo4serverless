@@ -3,7 +3,7 @@
 // @formatter:off
 const AWS           = require("aws-sdk");
 const Taboo4Service = require("../service/Taboo4Service");
-const Bookmark      = require("../data/Bookmark");
+const corsResponse  = require("./utils").corsResponse;
 
 const TableName     = process.env.DYNAMODB_TABLE || "tablename-no-defined";
 const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
@@ -35,9 +35,7 @@ module.exports.handler = async (event) => {
             body: JSON.stringify(bookmark.simplify())
         };
     } else {
-        return {
-            statusCode: 404,
-            body: "bookmark with id " + id + " not found"
-        }
+        return corsResponse(404, "bookmark with id " + id + " not found");
+        
     }
 };
