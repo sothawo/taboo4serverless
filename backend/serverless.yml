@@ -127,8 +127,9 @@ resources:
           -
             AttributeName: sort
             KeyType: RANGE
-        # could be changed to OnDemand in AWS console, not possible in Cloudformation at the moment
-        ProvisionedThroughput:
-          ReadCapacityUnits: 10
-          WriteCapacityUnits: 10
+        BillingMode: PAY_PER_REQUEST
+        # alternative to billing is to set the throughput
+#        ProvisionedThroughput:
+#          ReadCapacityUnits: 10
+#          WriteCapacityUnits: 10
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
