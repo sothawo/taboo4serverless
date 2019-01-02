@@ -2,16 +2,26 @@
     <div class="navbar-brand">
         <img src="assets/sothawofant-32.png" width="32" height="32" alt="">
     </div>
-    <form class="form-inline">
-        <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="button"
-                (click)="onSettingsClicked()">settings</button>
-    </form>
+    <div class="flex-fill d-flex">
+        <button class="btn btn-outline-dark btn-sm active" type="button" data-toggle="button"
+                (click)="onSelectedTagsClicked()">selected
+        </button>
+        <button class="btn btn-outline-dark btn-sm active" type="button" data-toggle="button"
+                (click)="onAvailableTagsClicked()">available
+        </button>
+        <input class="btn btn-outline-dark btn-sm ml-auto" type="image" data-toggle="button"
+                (click)="onSettingsClicked()" src="assets/settings.svg">
+    </div>
 </nav>
 <app-settings *ngIf="settingsVisible"></app-settings>
+<app-tags *ngIf="selectedTagsVisible" header="selected tags"></app-tags>
+<app-tags *ngIf="availableTagsVisible" header="available tags"></app-tags>
 <div class="row justify-content-center">
 
     <div class="card col-sm-8">
-        <div class="card-body"><button class="btn btn-outline-dark btn-sm" (click)="onTest()">Backend Config</button> {{backendConfig}}</div>
+        <div class="card-body">
+            <button class="btn btn-outline-dark btn-sm" (click)="onTest()">Backend Config</button>
+            {{backendConfig}}</div>
     </div>
 
 </div>

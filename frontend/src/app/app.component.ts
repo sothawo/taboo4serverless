@@ -10,8 +10,9 @@ import {Config} from "./settings/config";
 })
 
 export class AppComponent {
-    title = "taboo4";
     settingsVisible = false;
+    selectedTagsVisible: boolean = true;
+    availableTagsVisible: boolean = true;
 
     backendConfig = "{?}";
     constructor(private log: LogService, private backend: BackendService) {
@@ -22,8 +23,15 @@ export class AppComponent {
         this.settingsVisible = !this.settingsVisible;
     }
 
+    onSelectedTagsClicked() {
+        this.selectedTagsVisible = !this.selectedTagsVisible;
+    }
+
+    onAvailableTagsClicked() {
+        this.availableTagsVisible = !this.availableTagsVisible;
+    }
+
     onTest() {
-        this.log.debug("Test");
         this.backend.config()
             .subscribe((config: Config) => {
                 this.log.debug(config);
