@@ -10,7 +10,6 @@ import {Config} from "./settings/config";
 })
 
 export class AppComponent {
-    title = "taboo4";
     settingsVisible = false;
 
     backendConfig = "{?}";
@@ -23,7 +22,6 @@ export class AppComponent {
     }
 
     onTest() {
-        this.log.debug("Test");
         this.backend.config()
             .subscribe((config: Config) => {
                 this.log.debug(config);

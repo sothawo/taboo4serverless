@@ -1,31 +1,63 @@
-import {async, TestBed} from '@angular/core/testing';
-import {AppComponent} from './app.component';
+import {Component} from "@angular/core";
+import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {AppComponent} from "./app.component";
+import {BackendService} from "./backend.service";
+import {LogService} from "./log.service";
+import {of} from "rxjs";
 
-describe('AppComponent', () => {
+@Component({selector: "app-settings", template: ""})
+class SettingsComponentStub {
+}
+
+describe("AppComponent", () => {
+    let component: AppComponent;
+    let fixture: ComponentFixture<AppComponent>;
+    let componentElement: HTMLElement;
+
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
-                AppComponent
+                AppComponent,
+                SettingsComponentStub
             ],
+            providers: [
+                {provide: LogService, useValue: { debug: (any) => {}}},
+                {
+                    provide: BackendService, useValue: {
+                        config: () => {
+                            return of({
+                                AWSRegion: "middleearth",
+                                tableName: "mordor"
+                            })
+                        }
+                    }
+                }
+            ]
         }).compileComponents();
+        fixture = TestBed.createComponent(AppComponent);
+        component = fixture.debugElement.componentInstance;
+        componentElement = fixture.debugElement.nativeElement;
     }));
 
-    it('should create the app', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.debugElement.componentInstance;
-        expect(app).toBeTruthy();
+    it("should create the app", () => {
+        expect(component).toBeTruthy();
     });
 
-    it(`should have as title 'frontend'`, () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.debugElement.componentInstance;
-        expect(app.title).toEqual('taboo4');
-    });
-
-    it('should render title in a h1 tag', () => {
-        const fixture = TestBed.createComponent(AppComponent);
+    it("should have a nav tag", () => {
         fixture.detectChanges();
-        const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('h1').textContent).toContain('Welcome to taboo4!');
+        expect(componentElement.querySelector("nav")).toBeTruthy();
     });
+
+    it("should toggle the settingsVisible flag", () => {
+        expect(component.settingsVisible).toBeFalsy();
+        component.onSettingsClicked();
+        expect(component.settingsVisible).toBeTruthy();
+        component.onSettingsClicked();
+        expect(component.settingsVisible).toBeFalsy();
+    });
+
+    it("should call the backend when onTest() is called", () => {
+        component.onTest();
+        expect(component.backendConfig).toBe('{"AWSRegion":"middleearth","tableName":"mordor"}');
+    })
 });
