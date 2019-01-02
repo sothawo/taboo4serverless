@@ -61,6 +61,22 @@ describe("AppComponent", () => {
         expect(component.settingsVisible).toBeFalsy();
     });
 
+    it("should toggle the selectedTagsVisible flag", () => {
+        expect(component.selectedTagsVisible).toBeTruthy();
+        component.onSelectedTagsClicked();
+        expect(component.selectedTagsVisible).toBeFalsy();
+        component.onSelectedTagsClicked();
+        expect(component.selectedTagsVisible).toBeTruthy();
+    });
+
+    it("should toggle the availableTagsVisible flag", () => {
+        expect(component.availableTagsVisible).toBeTruthy();
+        component.onAvailableTagsClicked();
+        expect(component.availableTagsVisible).toBeFalsy();
+        component.onAvailableTagsClicked();
+        expect(component.availableTagsVisible).toBeTruthy();
+    });
+
     it("should call the backend when onTest() is called", () => {
         component.onTest();
         expect(component.backendConfig).toBe('{"AWSRegion":"middleearth","tableName":"mordor"}');

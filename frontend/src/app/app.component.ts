@@ -11,6 +11,8 @@ import {Config} from "./settings/config";
 
 export class AppComponent {
     settingsVisible = false;
+    selectedTagsVisible: boolean = true;
+    availableTagsVisible: boolean = true;
 
     backendConfig = "{?}";
     constructor(private log: LogService, private backend: BackendService) {
@@ -19,6 +21,14 @@ export class AppComponent {
 
     onSettingsClicked() {
         this.settingsVisible = !this.settingsVisible;
+    }
+
+    onSelectedTagsClicked() {
+        this.selectedTagsVisible = !this.selectedTagsVisible;
+    }
+
+    onAvailableTagsClicked() {
+        this.availableTagsVisible = !this.availableTagsVisible;
     }
 
     onTest() {
