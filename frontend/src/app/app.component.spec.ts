@@ -9,6 +9,10 @@ import {of} from "rxjs";
 class SettingsComponentStub {
 }
 
+@Component({selector: "app-tags", template: ""})
+class TagsComponentStub {
+}
+
 describe("AppComponent", () => {
     let component: AppComponent;
     let fixture: ComponentFixture<AppComponent>;
@@ -18,7 +22,8 @@ describe("AppComponent", () => {
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
-                SettingsComponentStub
+                SettingsComponentStub,
+                TagsComponentStub
             ],
             providers: [
                 {provide: LogService, useValue: { debug: (any) => {}}},
