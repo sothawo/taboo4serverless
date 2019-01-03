@@ -10,6 +10,9 @@ export class TagsComponent implements OnInit {
     @Input()
     header: string;
 
+    @Input()
+    tags: string[] = [];
+
     constructor() {
     }
 

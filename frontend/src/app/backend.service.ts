@@ -35,4 +35,11 @@ export class BackendService {
         return this.http.get<Config>(url, this.httpOptions());
     }
 
+    allTags(): Observable<string[]> {
+        const url = `${this.apiUrl}/tags`;
+        this.log.debug(url);
+        this.log.debug(this.apiKey);
+
+        return this.http.get<string[]>(url, this.httpOptions());
+    }
 }

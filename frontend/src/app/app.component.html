@@ -3,6 +3,8 @@
         <img src="assets/sothawofant-32.png" width="32" height="32" alt="">
     </div>
     <div class="flex-fill d-flex">
+        <input class="btn btn-outline-dark btn-sm" type="image"
+               (click)="initialLoad()" src="assets/sync.svg">
         <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="button"
                 (click)="onSelectedTagsClicked()" [class.active]="selectedTagsVisible">selected
         </button>
@@ -10,18 +12,19 @@
                 (click)="onAvailableTagsClicked()" [class.active]="selectedTagsVisible">available
         </button>
         <input class="btn btn-outline-dark btn-sm ml-auto" type="image" data-toggle="button"
-                (click)="onSettingsClicked()" src="assets/settings.svg">
+               (click)="onSettingsClicked()" src="assets/settings.svg">
     </div>
 </nav>
 <app-settings *ngIf="settingsVisible"></app-settings>
-<app-tags *ngIf="selectedTagsVisible" header="selected tags"></app-tags>
-<app-tags *ngIf="availableTagsVisible" header="available tags"></app-tags>
+<app-tags *ngIf="selectedTagsVisible" header="selected tags" [tags]="selectedTags"></app-tags>
+<app-tags *ngIf="availableTagsVisible" header="available tags" [tags]="availableTags"></app-tags>
 <div class="row justify-content-center">
 
     <div class="card col-sm-8">
         <div class="card-body">
-            <button class="btn btn-outline-dark btn-sm" (click)="onTest()">Backend Config</button>
-            {{backendConfig}}</div>
+            <button class="btn btn-outline-dark btn-sm" (click)="onTest()">config</button>
+            {{backendConfig}}
+        </div>
     </div>
 
 </div>

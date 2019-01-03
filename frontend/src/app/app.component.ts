@@ -14,9 +14,16 @@ export class AppComponent {
     selectedTagsVisible: boolean = true;
     availableTagsVisible: boolean = true;
 
-    backendConfig = "{?}";
-    constructor(private log: LogService, private backend: BackendService) {
+    selectedTags: string[] = [];
+    availableTags: string[] = [];
 
+    backendConfig = "{?}";
+
+    constructor(private log: LogService, private backend: BackendService) {
+    }
+
+    ngOnInit() {
+        this.initialLoad();
     }
 
     onSettingsClicked() {
@@ -31,12 +38,22 @@ export class AppComponent {
         this.availableTagsVisible = !this.availableTagsVisible;
     }
 
+    private initialLoad() {
+        this.availableTags = [];
+        this.selectedTags = [];
+
+        this.backend.allTags()
+            .subscribe((tags: string[]) => {
+                this.log.debug(tags);
+                this.availableTags = tags;
+            });
+    }
+
     onTest() {
         this.backend.config()
             .subscribe((config: Config) => {
                 this.log.debug(config);
                 this.backendConfig = JSON.stringify(config);
             });
-
     }
 }

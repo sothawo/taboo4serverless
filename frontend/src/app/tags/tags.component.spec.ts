@@ -39,4 +39,22 @@ describe("TagsComponent", () => {
     it("has a .card-body", () => {
         expect(componentElement.querySelector(".card-body")).toBeTruthy();
     });
+
+    describe("when using tags", () => {
+        it("has no initial tags", () => {
+            expect(component.tags.length).toBe(0);
+            fixture.detectChanges();
+            expect(componentElement.querySelectorAll('button').length).toBe(0)
+        });
+        it("has a button for each tag", () => {
+            component.tags = ["one", "two", "three"]
+            expect(component.tags.length).toBe(3);
+            fixture.detectChanges();
+            let bottonElements = componentElement.querySelectorAll('button');
+            expect(bottonElements.length).toBe(3)
+            expect(bottonElements.item(0).textContent).toBe("one")
+            expect(bottonElements.item(1).textContent).toBe("two")
+            expect(bottonElements.item(2).textContent).toBe("three")
+        });
+    });
 });
