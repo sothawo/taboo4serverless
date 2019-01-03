@@ -3,9 +3,6 @@
 }
 
 .taglist-entry {
-    margin-left: 0.5rem;
-}
-
-.taglist-entry:first-child {
-    margin-left: 0rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
 }

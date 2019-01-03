@@ -41,6 +41,9 @@ describe("AppComponent", () => {
                                 AWSRegion: "middleearth",
                                 tableName: "mordor"
                             })
+                        },
+                        allTags: () => {
+                            return of([])
                         }
                     }
                 }
