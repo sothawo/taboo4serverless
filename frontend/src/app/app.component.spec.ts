@@ -67,25 +67,25 @@ describe("AppComponent", () => {
 
         it("the settingsVisible flag", () => {
             expect(component.settingsVisible).toBeFalsy();
-            component.onSettingsClicked();
+            component.onSettingsVisibleClicked();
             expect(component.settingsVisible).toBeTruthy();
-            component.onSettingsClicked();
+            component.onSettingsVisibleClicked();
             expect(component.settingsVisible).toBeFalsy();
         });
 
         it("the selectedTagsVisible flag", () => {
             expect(component.selectedTagsVisible).toBeTruthy();
-            component.onSelectedTagsClicked();
+            component.onSelectedTagsVisibleClicked();
             expect(component.selectedTagsVisible).toBeFalsy();
-            component.onSelectedTagsClicked();
+            component.onSelectedTagsVisibleClicked();
             expect(component.selectedTagsVisible).toBeTruthy();
         });
 
         it("the availableTagsVisible flag", () => {
             expect(component.availableTagsVisible).toBeTruthy();
-            component.onAvailableTagsClicked();
+            component.onAvailableTagsVisibleClicked();
             expect(component.availableTagsVisible).toBeFalsy();
-            component.onAvailableTagsClicked();
+            component.onAvailableTagsVisibleClicked();
             expect(component.availableTagsVisible).toBeTruthy();
         });
     });

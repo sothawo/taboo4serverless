@@ -14,8 +14,8 @@ export class AppComponent {
     selectedTagsVisible: boolean = true;
     availableTagsVisible: boolean = true;
 
-    selectedTags: string[] = [];
-    availableTags: string[] = [];
+    selectedTags:  Set<string> = new Set();
+    availableTags: Set<string> = new Set();
 
     backendConfig = "{?}";
 
@@ -26,27 +26,45 @@ export class AppComponent {
         this.initialLoad();
     }
 
-    onSettingsClicked() {
+    onSettingsVisibleClicked() {
         this.settingsVisible = !this.settingsVisible;
     }
 
-    onSelectedTagsClicked() {
+    onSelectedTagsVisibleClicked() {
         this.selectedTagsVisible = !this.selectedTagsVisible;
     }
 
-    onAvailableTagsClicked() {
+    onAvailableTagsVisibleClicked() {
         this.availableTagsVisible = !this.availableTagsVisible;
     }
 
     private initialLoad() {
-        this.availableTags = [];
-        this.selectedTags = [];
+        this.availableTags.clear();
+        this.selectedTags.clear();
 
         this.backend.allTags()
             .subscribe((tags: string[]) => {
                 this.log.debug(tags);
-                this.availableTags = tags;
+                tags.forEach(tag => this.availableTags.add(tag));
             });
+    }
+
+    onSelectedTagsClicked(tag) {
+        this.log.debug(`tag ${tag} from selected tags clicked`);
+        // remove from selected
+        this.selectedTags.delete(tag);
+        // todo: load bookmarks for selected tags, recalculate available tags
+        // for the time being, add to available
+        this.availableTags.add(tag);
+
+    }
+    
+    onAvailableTagsClicked(tag) {
+        this.log.debug(`tag ${tag} from available tags clicked`);
+        this.selectedTags.add(tag);
+        // todo: load bookmarks for selected tags, recalculate available tags
+        // for the time being, remove from available
+        this.availableTags.delete(tag);
     }
 
     onTest() {

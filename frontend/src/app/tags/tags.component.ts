@@ -1,4 +1,5 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
+import {LogService} from "../log.service";
 
 @Component({
     selector: "app-tags",
@@ -7,16 +8,22 @@ import {Component, Input, OnInit} from "@angular/core";
 })
 export class TagsComponent implements OnInit {
 
-    @Input()
-    header: string;
+    @Input() header: string;
+    @Input() tags: Set<string> = new Set()
 
-    @Input()
-    tags: string[] = [];
+    @Output() selected = new EventEmitter<string>();
 
-    constructor() {
+    constructor(private log: LogService) {
     }
 
     ngOnInit() {
     }
 
+    sortedTags() {
+        return Array.from(this.tags).sort();
+    }
+    onSelect(tag) {
+        this.log.debug(`selected ${tag}`);
+        this.selected.emit(tag);
+    }
 }

@@ -1,7 +1,8 @@
 <div class="card">
     <div class="card-header">{{header}}</div>
     <div class="card-body">
-        <button *ngFor="let tag of tags"
-                class="btn btn-outline-secondary btn-sm taglist-entry" type="button">{{tag}}</button>
+        <button *ngFor="let tag of sortedTags()"
+                class="btn btn-outline-secondary btn-sm taglist-entry" type="button"
+                (click)="onSelect(tag)">{{tag}}</button>
     </div>
 </div>
