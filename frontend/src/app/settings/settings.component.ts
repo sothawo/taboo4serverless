@@ -9,15 +9,14 @@ import {LocalStorage} from "ngx-store";
 export class SettingsComponent implements OnInit {
 
     @LocalStorage()
-    apiUrl: string;
+    apiUrl: string = "";
 
     @LocalStorage()
-    apiKey: string;
+    apiKey: string = "";
 
     constructor() {
     }
 
     ngOnInit() {
     }
-
 }

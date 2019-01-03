@@ -3,11 +3,11 @@
         <img src="assets/sothawofant-32.png" width="32" height="32" alt="">
     </div>
     <div class="flex-fill d-flex">
-        <button class="btn btn-outline-dark btn-sm active" type="button" data-toggle="button"
-                (click)="onSelectedTagsClicked()">selected
+        <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="button"
+                (click)="onSelectedTagsClicked()" [class.active]="selectedTagsVisible">selected
         </button>
-        <button class="btn btn-outline-dark btn-sm active" type="button" data-toggle="button"
-                (click)="onAvailableTagsClicked()">available
+        <button class="btn btn-outline-dark btn-sm" type="button" data-toggle="button"
+                (click)="onAvailableTagsClicked()" [class.active]="selectedTagsVisible">available
         </button>
         <input class="btn btn-outline-dark btn-sm ml-auto" type="image" data-toggle="button"
                 (click)="onSettingsClicked()" src="assets/settings.svg">

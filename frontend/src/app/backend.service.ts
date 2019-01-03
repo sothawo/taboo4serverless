@@ -10,25 +10,29 @@ import {LogService} from "./log.service";
 })
 export class BackendService {
     @LocalStorage()
-    apiUrl: string;
+    apiUrl: string = "";
 
     @LocalStorage()
-    apiKey: string;
-
-    httpOptions = {
-        headers: new HttpHeaders({
-            "Content-Type": "application/json",
-            "X-Api-Key": this.apiKey
-        })
-    };
+    apiKey: string = "";
 
     constructor(private log: LogService, private http: HttpClient) {
     }
 
+    private httpOptions() {
+        return {
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "X-Api-Key": this.apiKey
+            })
+        }
+    };
+
     config(): Observable<Config> {
         const url = `${this.apiUrl}/config`;
         this.log.debug(url);
-        return this.http.get<Config>(url, this.httpOptions);
+        this.log.debug(this.apiKey);
+
+        return this.http.get<Config>(url, this.httpOptions());
     }
 
 }
