@@ -34,12 +34,6 @@ describe("AppComponent", () => {
             ],
             providers: [
                 {
-                    provide: LogService, useValue: {
-                        debug: (any) => {
-                        }
-                    }
-                },
-                {
                     provide: BackendService, useValue: {
                         config: () => {
                             return of({

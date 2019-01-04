@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
-import {LogListener} from "./log.listener";
+
+import {LogData, LogLevel, LogListener} from "./log-listener";
 
 @Injectable({
     providedIn: "root"
@@ -7,13 +8,26 @@ import {LogListener} from "./log.listener";
 export class LogService {
 
     listeners: Set<LogListener> = new Set();
+    messages: LogData[] = [];
 
     constructor() {
+        //add a console listener
+        this.listeners.add(new class implements LogListener {
+            log(logData: LogData) {
+                console.log(logData.level, logData.data);
+            }
+        });
     }
 
-    debug(a: any) {
-        this.dispatch(`DEBUG : ${a}`);
-    }
+    static format(o: any): string {
+        let msg = "";
+        if (typeof o === "string") {
+            msg = o;
+        } else {
+            msg = JSON.stringify(o, null, 2);
+        }
+        return msg;
+    };
 
     addListener(listener: LogListener) {
         this.listeners.add(listener);
@@ -23,8 +37,28 @@ export class LogService {
         this.listeners.delete(listener);
     }
 
-    private dispatch(message: string) {
-        console.log(message);
-        this.listeners.forEach(listener => listener.add(message));
+    log(logData: LogData) {
+        this.messages.push(logData);
+        this.listeners.forEach(listener => listener.log(logData));
+    }
+
+    clear() {
+        this.messages = [];
+    }
+
+    debug(o: any) {
+        this.log(new LogData(LogLevel.DEBUG, o));
+    }
+
+    info(o: any) {
+        this.log(new LogData(LogLevel.INFO, o));
+    }
+
+    warn(o: any) {
+        this.log(new LogData(LogLevel.WARN, o));
+    }
+
+    error(o: any) {
+        this.log(new LogData(LogLevel.ERROR, o));
     }
 }

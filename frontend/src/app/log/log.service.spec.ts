@@ -1,7 +1,7 @@
 import {TestBed} from "@angular/core/testing";
 
 import {LogService} from "./log.service";
-import {LogListener} from "./log.listener";
+import {LogData, LogLevel, LogListener} from "./log-listener";
 
 describe("LogService", () => {
     let service: LogService;
@@ -16,10 +16,14 @@ describe("LogService", () => {
         expect(service).toBeTruthy();
     });
 
+    describe("has different log levels", () => {
+
+    });
+
     describe("works with Listeners", () => {
         it("can register and unregister sa listener", () => {
             let listener: LogListener = new class implements LogListener {
-                add(...messages: string[]) {
+                log(logData: LogData) {
                 }
             };
 
@@ -31,19 +35,37 @@ describe("LogService", () => {
         });
 
         it("sends messages to listeners", () => {
-            let collectedMessages: string[] = [];
+            let collectedData: LogData[] = [];
             let listener: LogListener = new class implements LogListener {
-                add(...messages: string[]) {
-                    collectedMessages.push(...messages);
+                log(logData: LogData) {
+                    collectedData.push(logData);
                 }
             };
             service.addListener(listener);
             service.debug("hello");
             service.debug("world");
 
-            expect(collectedMessages.length).toBe(2);
-            expect(collectedMessages[0]).toBe("DEBUG : hello");
-            expect(collectedMessages[1]).toBe("DEBUG : world");
+            expect(collectedData.length).toBe(2);
+        });
+    });
+
+    describe("has a message store", () => {
+        it("that is initially empty", () => {
+            expect(service.messages.length).toBe(0);
+        })
+
+        it("that collects the logData entries", () => {
+            let logData = new LogData(LogLevel.INFO, "info");
+            service.log(logData);
+            expect(service.messages.length).toBe(1)
+            expect(service.messages[0]).toBe(logData);
+        });
+
+        it("that can be cleared", () => {
+            let logData = new LogData(LogLevel.INFO, "info");
+            service.log(logData);
+            service.clear();
+            expect(service.messages.length).toBe(0)
         });
     });
 });

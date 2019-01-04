@@ -20,7 +20,7 @@ export class AppComponent {
 
     backendConfig = "{?}";
 
-    constructor(private log: LogService, private backend: BackendService) {
+    constructor(private logger: LogService, private backend: BackendService) {
     }
 
     ngOnInit() {
@@ -44,7 +44,7 @@ export class AppComponent {
     }
 
     onSelectedTagsClicked(tag) {
-        this.log.debug(`tag ${tag} from selected tags clicked`);
+        this.logger.debug(`tag ${tag} from selected tags clicked`);
         // remove from selected
         this.selectedTags.delete(tag);
         // todo: load bookmarks for selected tags, recalculate available tags
@@ -54,7 +54,7 @@ export class AppComponent {
     }
 
     onAvailableTagsClicked(tag) {
-        this.log.debug(`tag ${tag} from available tags clicked`);
+        this.logger.debug(`tag ${tag} from available tags clicked`);
         this.selectedTags.add(tag);
         // todo: load bookmarks for selected tags, recalculate available tags
         // for the time being, remove from available
@@ -62,9 +62,11 @@ export class AppComponent {
     }
 
     onTest() {
+        let start = Date.now();
         this.backend.config()
             .subscribe((config: Config) => {
-                this.log.debug(config);
+                this.logger.info(`got config after ${Date.now() - start} ms.`)
+                this.logger.debug(config);
                 this.backendConfig = JSON.stringify(config);
             });
     }
@@ -73,10 +75,15 @@ export class AppComponent {
         this.availableTags.clear();
         this.selectedTags.clear();
 
+        let start = Date.now();
         this.backend.allTags()
             .subscribe((tags: string[]) => {
-                this.log.debug(tags);
-                tags.forEach(tag => this.availableTags.add(tag));
-            });
+                    this.logger.info(`got tags after ${Date.now() - start} ms.`)
+                    this.logger.debug(tags);
+                    tags.forEach(tag => this.availableTags.add(tag));
+                },
+                error => {
+                    this.logger.error(error);
+                });
     }
 }

@@ -15,7 +15,7 @@ export class BackendService {
     @LocalStorage()
     apiKey: string = "";
 
-    constructor(private log: LogService, private http: HttpClient) {
+    constructor(private logger: LogService, private http: HttpClient) {
     }
 
     private httpOptions() {
@@ -29,17 +29,18 @@ export class BackendService {
 
     config(): Observable<Config> {
         const url = `${this.apiUrl}/config`;
-        this.log.debug(url);
-        this.log.debug(this.apiKey);
-
+        this.preCallLogging(url);
         return this.http.get<Config>(url, this.httpOptions());
     }
 
     allTags(): Observable<string[]> {
         const url = `${this.apiUrl}/tags`;
-        this.log.debug(url);
-        this.log.debug(this.apiKey);
-
+        this.preCallLogging(url);
         return this.http.get<string[]>(url, this.httpOptions());
+    }
+
+    private preCallLogging(url: string) {
+        this.logger.info(`backend call to ${url}`);
+        this.logger.debug(`api key: ${this.apiKey}`);
     }
 }

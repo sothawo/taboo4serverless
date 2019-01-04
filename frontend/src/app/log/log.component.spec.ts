@@ -3,6 +3,7 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {LogComponent} from "./log.component";
 import {DebugElement} from "@angular/core";
 import {By} from "@angular/platform-browser";
+import {LogData, LogLevel} from "./log-listener";
 
 describe("LogComponent", () => {
     let component: LogComponent;
@@ -20,6 +21,7 @@ describe("LogComponent", () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(LogComponent);
         component = fixture.componentInstance;
+        component.clear();
         fixture.detectChanges();
         debugElement = fixture.debugElement;
         nativeElement = debugElement.nativeElement;
@@ -44,7 +46,8 @@ describe("LogComponent", () => {
     it("has a element to clear the list that works", () => {
         let msg1 = "hello";
         let msg2 = "world";
-        component.add(msg1, msg2);
+        component.log(new LogData(LogLevel.INFO, msg1));
+        component.log(new LogData(LogLevel.WARN, msg2));
         expect(component.messages.length).toBe(2);
         let clearElement = debugElement.query(By.css("#clear"));
 
@@ -62,14 +65,16 @@ describe("LogComponent", () => {
         it("adds messages to the list", () => {
             let msg1 = "hello";
             let msg2 = "world";
-            component.add(msg1, msg2);
+            component.log(new LogData(LogLevel.INFO, msg1));
+            component.log(new LogData(LogLevel.WARN, msg2));
             expect(component.messages.length).toBe(2);
-            expect(component.messages[0]).toBe(msg1);
-            expect(component.messages[1]).toBe(msg2);
+            expect(component.messages[0]).toBe("INFO\nhello");
+            expect(component.messages[1]).toBe("WARN\nworld");
         });
 
         it("can clear the list", () => {
-            component.add("one", "two");
+            component.log(new LogData(LogLevel.INFO, "one"));
+            component.log(new LogData(LogLevel.WARN, "two"));
             expect(component.messages.length).toBe(2);
             component.clear();
             expect(component.messages.length).toBe(0);
@@ -78,13 +83,14 @@ describe("LogComponent", () => {
         it("puts messages in divs", () => {
             let msg1 = "hello";
             let msg2 = "world";
-            component.add(msg1, msg2);
+            component.log(new LogData(LogLevel.INFO, msg1));
+            component.log(new LogData(LogLevel.WARN, msg2));
             fixture.detectChanges();
             let cardBody = nativeElement.querySelector(".card-body");
             let messageElements = cardBody.querySelectorAll("div .msg");
             expect(messageElements.length).toBe(2);
-            expect(messageElements.item(0).textContent).toBe(msg1);
-            expect(messageElements.item(1).textContent).toBe(msg2);
+            expect(messageElements.item(0).textContent).toBe("INFO\nhello");
+            expect(messageElements.item(1).textContent).toBe("WARN\nworld");
         });
     });
 });
