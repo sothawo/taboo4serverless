@@ -1,0 +1,15 @@
+.card {
+    margin-top: 1rem;
+}
+
+div .msg {
+    border-bottom: 1px solid #ddd;
+}
+
+div .msg:first-child {
+    border-top: 1px solid #ddd;
+}
+
+div .msg pre {
+    margin-bottom: 0px;
+}

@@ -13,8 +13,9 @@ export class AppComponent {
     settingsVisible = false;
     selectedTagsVisible: boolean = true;
     availableTagsVisible: boolean = true;
+    logVisible: boolean = false;
 
-    selectedTags:  Set<string> = new Set();
+    selectedTags: Set<string> = new Set();
     availableTags: Set<string> = new Set();
 
     backendConfig = "{?}";
@@ -38,15 +39,8 @@ export class AppComponent {
         this.availableTagsVisible = !this.availableTagsVisible;
     }
 
-    private initialLoad() {
-        this.availableTags.clear();
-        this.selectedTags.clear();
-
-        this.backend.allTags()
-            .subscribe((tags: string[]) => {
-                this.log.debug(tags);
-                tags.forEach(tag => this.availableTags.add(tag));
-            });
+    onLogVisibleClicked() {
+        this.logVisible = !this.logVisible;
     }
 
     onSelectedTagsClicked(tag) {
@@ -58,7 +52,7 @@ export class AppComponent {
         this.availableTags.add(tag);
 
     }
-    
+
     onAvailableTagsClicked(tag) {
         this.log.debug(`tag ${tag} from available tags clicked`);
         this.selectedTags.add(tag);
@@ -72,6 +66,17 @@ export class AppComponent {
             .subscribe((config: Config) => {
                 this.log.debug(config);
                 this.backendConfig = JSON.stringify(config);
+            });
+    }
+
+    private initialLoad() {
+        this.availableTags.clear();
+        this.selectedTags.clear();
+
+        this.backend.allTags()
+            .subscribe((tags: string[]) => {
+                this.log.debug(tags);
+                tags.forEach(tag => this.availableTags.add(tag));
             });
     }
 }
