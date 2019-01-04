@@ -2,7 +2,7 @@ import {Component, DebugElement, Input} from "@angular/core";
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {AppComponent} from "./app.component";
 import {BackendService} from "./backend.service";
-import {LogService} from "./log.service";
+import {LogService} from "./log/log.service";
 import {of} from "rxjs";
 import {By} from "@angular/platform-browser";
 

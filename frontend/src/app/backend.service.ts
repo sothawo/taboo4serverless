@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {LocalStorage} from "ngx-store";
 import {Config} from "./settings/config";
-import {LogService} from "./log.service";
+import {LogService} from "./log/log.service";
 
 @Injectable({
     providedIn: "root"

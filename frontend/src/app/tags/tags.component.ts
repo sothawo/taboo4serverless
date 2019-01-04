@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
-import {LogService} from "../log.service";
+import {LogService} from "../log/log.service";
 
 @Component({
     selector: "app-tags",

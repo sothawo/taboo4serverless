@@ -1,5 +1,5 @@
 import {Component} from "@angular/core";
-import {LogService} from "./log.service";
+import {LogService} from "./log/log.service";
 import {BackendService} from "./backend.service";
 import {Config} from "./settings/config";
 
