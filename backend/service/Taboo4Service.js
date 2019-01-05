@@ -25,12 +25,26 @@ class Taboo4Service {
         await this.saveDBEntry(new DBEntry(bookmark.id, "id", bookmark));
         await Promise.all(
             bookmark.tags.getElements()
-                .map(async (tag) => {
+                .map(async tag => {
                     await this.saveDBEntry(new DBEntry(tag, bookmark.id, bookmark));
 
                 })
         );
         return bookmark;
+    }
+
+    /**
+     * saves an aray of bookmarks.
+     * @param bookmarks the bookmarks to save
+     * @return {Promise<string>} success message
+     */
+    async saveBookmarks(bookmarks) {
+        await Promise.all(
+            bookmarks.map(async bookmark => {
+                await this.saveBookmark(bookmark);
+            })
+        );
+        return "Bookmarks saved"
     }
 
     /**

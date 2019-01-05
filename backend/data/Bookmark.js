@@ -7,18 +7,39 @@ const TabooSet  = require("./TabooSet");
  * a class defining our Bookmark.
  */
 class Bookmark {
+
+
     constructor(url, title, tags) {
+        if (!url || !url.trim()) {
+            throw new Error("url may not be empty");
+        }
         this.url = url;
-        this.title = title;
+        if (!title || !title.trim()) {
+            this.title = url;
+        } else {
+            this.title = title;
+        }
         this.tags = new TabooSet();
-        if (tags) tags.forEach(tag => this.addTag(tag))
+        if (tags) tags.forEach(tag => this.addTag(tag));
+        if (this.tags.size() == 0) {
+            this.addTag(Bookmark.untagged);
+        }
         this.id = MD5(url);
+    }
+
+    static sanitize(tag) {
+        return (!tag) ? "": tag.trim().replace(/\s/g, "_");
     }
 
     addTag(tag) {
         if (tag) {
-            const trimmed = tag.trim();
-            if (trimmed) this.tags.add(tag.toLowerCase());
+            const sanitized = Bookmark.sanitize(tag);
+            if (sanitized) {
+                if (this.tags.size() === 1) {
+                    this.tags.remove(Bookmark.untagged)
+                }
+                this.tags.add(sanitized.toLowerCase());
+            }
         }
     }
 
@@ -35,5 +56,7 @@ class Bookmark {
         };
     }
 }
+
+Bookmark.untagged = "untagged";
 
 module.exports = Bookmark;

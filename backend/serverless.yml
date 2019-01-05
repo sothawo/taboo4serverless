@@ -11,6 +11,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   memorySize: 256
+  timeout: 30
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
@@ -62,6 +63,14 @@ functions:
     events:
       - http:
           path: bookmark
+          method: post
+          cors: true
+          private: true
+  postBookmarks:
+    handler: aws/bookmarks_post.handler
+    events:
+      - http:
+          path: bookmarks
           method: post
           cors: true
           private: true

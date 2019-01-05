@@ -1,13 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit} from "@angular/core";
 import {LocalStorage} from "ngx-store";
 import {LogData, LogLevel} from "../log/log-listener";
 import {LogService} from "../log/log.service";
-import {logger} from "codelyzer/util/logger";
 
 @Component({
-    selector: 'app-settings',
-    templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.css']
+    selector: "app-settings",
+    templateUrl: "./settings.component.html",
+    styleUrls: ["./settings.component.css"]
 })
 export class SettingsComponent implements OnInit {
 
@@ -22,7 +21,7 @@ export class SettingsComponent implements OnInit {
     @LocalStorage()
     logLevel: LogLevel = LogLevel.INFO;
 
-    constructor(private logger : LogService) {
+    constructor(private logger: LogService) {
     }
 
     ngOnInit() {
