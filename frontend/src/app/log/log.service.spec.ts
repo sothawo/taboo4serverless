@@ -17,7 +17,49 @@ describe("LogService", () => {
     });
 
     describe("has different log levels", () => {
+        it("default is INFO", () => {
+            expect(service.logLevel).toBe(LogLevel.INFO);
+        });
 
+        it("respectes level ERROR", () => {
+            service.logLevel = LogLevel.ERROR;
+            service.debug("msg");
+            service.info("msg");
+            service.warn("msg");
+            service.error("msg");
+
+            expect(service.messages.length).toBe(1);
+        })
+
+        it("respectes level WARN", () => {
+            service.logLevel = LogLevel.WARN;
+            service.debug("msg");
+            service.info("msg");
+            service.warn("msg");
+            service.error("msg");
+
+            expect(service.messages.length).toBe(2);
+        })
+
+        it("respectes level INFO", () => {
+            service.logLevel = LogLevel.INFO;
+            service.debug("msg");
+            service.info("msg");
+            service.warn("msg");
+            service.error("msg");
+
+            expect(service.messages.length).toBe(3);
+        })
+
+        it("respectes level DEBUG", () => {
+            service.logLevel = LogLevel.DEBUG;
+            service.debug("msg");
+            service.info("msg");
+            service.warn("msg");
+            service.error("msg");
+
+            expect(service.messages.length).toBe(4);
+        })
     });
 
     describe("works with Listeners", () => {
@@ -42,8 +84,8 @@ describe("LogService", () => {
                 }
             };
             service.addListener(listener);
-            service.debug("hello");
-            service.debug("world");
+            service.info("hello");
+            service.info("world");
 
             expect(collectedData.length).toBe(2);
         });

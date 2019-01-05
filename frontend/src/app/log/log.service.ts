@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 
 import {LogData, LogLevel, LogListener} from "./log-listener";
+import {LocalStorage} from "ngx-store";
 
 @Injectable({
     providedIn: "root"
@@ -9,6 +10,9 @@ export class LogService {
 
     listeners: Set<LogListener> = new Set();
     messages: LogData[] = [];
+
+    @LocalStorage()
+    logLevel: LogLevel = LogLevel.INFO;
 
     constructor() {
         //add a console listener
@@ -38,8 +42,10 @@ export class LogService {
     }
 
     log(logData: LogData) {
-        this.messages.push(logData);
-        this.listeners.forEach(listener => listener.log(logData));
+        if (this.logLevelNum(logData.level) >= this.logLevelNum(this.logLevel)) {
+            this.messages.push(logData);
+            this.listeners.forEach(listener => listener.log(logData));
+        }
     }
 
     clear() {
@@ -60,5 +66,25 @@ export class LogService {
 
     error(o: any) {
         this.log(new LogData(LogLevel.ERROR, o));
+    }
+
+    private logLevelNum(logLevel: LogLevel): number {
+        let num = -1;
+        switch (logLevel) {
+            case LogLevel.DEBUG:
+                num = 0;
+                break;
+            case LogLevel.INFO:
+                num = 1;
+                break;
+            case LogLevel.WARN:
+                num = 2;
+                break;
+            case LogLevel.ERROR:
+                num = 3;
+                break;
+
+        }
+        return num;
     }
 }
