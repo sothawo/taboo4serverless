@@ -153,7 +153,7 @@ describe("a Taboo4Service", () => {
                 foundBookmarks.should.deep.equal([]);
             });
 
-            it("finds bookmarks for given tags", async () => {
+            it("finds bookmarks for given tags that have all the tags", async () => {
                 const bookmark1 = new Bookmark("url01", "title01", ["tag09", "tag07"]);
                 const bookmark3 = new Bookmark("url03", "title03", ["tag07", "tag08"]);
                 const dbEntry1 = new DBEntry(bookmark1.id, "id", bookmark1);
@@ -165,9 +165,8 @@ describe("a Taboo4Service", () => {
 
                 const foundBookmarks = await taboo4Service.bookmarksByTags(["tag07", "tag09"]);
 
-                foundBookmarks.length.should.equal(2);
+                foundBookmarks.length.should.equal(1);
                 foundBookmarks.should.deep.include(bookmark1);
-                foundBookmarks.should.deep.include(bookmark3);
             });
         })
     });

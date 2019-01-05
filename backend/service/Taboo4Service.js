@@ -151,17 +151,22 @@ class Taboo4Service {
 
     /**
      * returns all Bookmarks for the given tags.
-     * @param tags
+     * @param array of tags
      * @returns {Promise<[Bookmark]>}
      */
     async bookmarksByTags(tags) {
         const allBookmarks = new Map();
         if (tags) {
+            const requiredTags = new TabooSet(tags);
+
             await Promise.all(
                 tags.map(async tag => {
                     let bookmarks = (await this.bookmarkByTag(tag));
-                    bookmarks
-                        .forEach(it => allBookmarks.set(it.id, it));
+                    bookmarks.forEach(bookmark => {
+                            if (bookmark.tags.intersection(requiredTags).size() == requiredTags.size()) {
+                                allBookmarks.set(bookmark.id, bookmark);
+                            }
+                        });
                 })
             );
         }
