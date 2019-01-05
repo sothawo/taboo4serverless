@@ -8,13 +8,15 @@ import {SettingsComponent} from './settings/settings.component';
 import {HttpClientModule} from "@angular/common/http";
 import { TagsComponent } from './tags/tags.component';
 import { LogComponent } from './log/log.component';
+import { BookmarkComponent } from './bookmark/bookmark.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         SettingsComponent,
         TagsComponent,
-        LogComponent
+        LogComponent,
+        BookmarkComponent
     ],
     imports: [
         BrowserModule,

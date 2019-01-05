@@ -9,7 +9,7 @@ import {LogService} from "../log/log.service";
 export class TagsComponent implements OnInit {
 
     @Input() header: string;
-    @Input() tags: Set<string> = new Set()
+    @Input() tags: Set<string> = new Set();
 
     @Output() selected = new EventEmitter<string>();
 

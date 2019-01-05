@@ -1,0 +1,7 @@
+<div class="card" [class.bg-light]="even">
+    <div class="card-body">
+        <h6 class="card-title">{{bookmark.title}}</h6>
+        <div class="card-text"><a href="{{bookmark.url}}" target="_blank">{{bookmark.url}}</a></div>
+        <div class="tags">{{bookmark.joinedTags()}}</div>
+    </div>
+</div>

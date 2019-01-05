@@ -1,10 +1,10 @@
 import {Component, DebugElement, Input} from "@angular/core";
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
+import {By} from "@angular/platform-browser";
+import {of} from "rxjs";
 import {AppComponent} from "./app.component";
 import {BackendService} from "./backend.service";
-import {LogService} from "./log/log.service";
-import {of} from "rxjs";
-import {By} from "@angular/platform-browser";
+import {Bookmark} from "./data/bookmark";
 
 @Component({selector: "app-settings", template: ""})
 class SettingsComponentStub {
@@ -12,12 +12,17 @@ class SettingsComponentStub {
 
 @Component({selector: "app-tags", template: ""})
 class TagsComponentStub {
-    @Input()
-    tags: string[]
+    @Input() tags: string[]
 }
 
 @Component({selector: "app-log", template: ""})
 class LogComponentStub {
+}
+
+@Component({selector: "app-bookmark", template: ""})
+class BookmarkComponentStub {
+    @Input() bookmark: Bookmark;
+    @Input() even: boolean;
 }
 
 describe("AppComponent", () => {
@@ -30,7 +35,7 @@ describe("AppComponent", () => {
         TestBed.configureTestingModule({
             declarations: [
                 AppComponent,
-                SettingsComponentStub, TagsComponentStub, LogComponentStub
+                SettingsComponentStub, TagsComponentStub, LogComponentStub, BookmarkComponentStub
             ],
             providers: [
                 {
@@ -42,6 +47,9 @@ describe("AppComponent", () => {
                             })
                         },
                         allTags: () => {
+                            return of([])
+                        },
+                        bookmarksByTags: () => {
                             return of([])
                         }
                     }
@@ -145,8 +153,14 @@ describe("AppComponent", () => {
         });
     });
 
-    it("should call the backend when onTest() is called", () => {
-        component.onTest();
-        expect(component.backendConfig).toBe('{"AWSRegion":"middleearth","tableName":"mordor"}');
-    })
+    describe("with bookmarks", () => {
+        it("has an app-bookmark for each bookmark", () => {
+            component.bookmarks.push(new Bookmark("id1", "url1", "title1", ["tag11", "tag12"]));
+            component.bookmarks.push(new Bookmark("id2", "url2", "title2", ["tag21", "tag22"]));
+            fixture.detectChanges();
+            const elements = debugElement.queryAll(By.css("app-bookmark"));
+
+            expect(elements.length).toBe(2);
+        });
+    });
 });

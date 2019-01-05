@@ -1,0 +1,7 @@
+.card {
+    margin-top: -0.1rem;
+}
+
+.card-text,.tags {
+    font-size: smaller;
+}

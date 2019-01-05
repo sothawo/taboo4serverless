@@ -43,10 +43,6 @@ class Bookmark {
         }
     }
 
-    joinedTags() {
-        return this.tags.getElements().join(", ");
-    }
-
     simplify() {
         return {
             url: this.url,

@@ -12,27 +12,32 @@
                 (click)="onAvailableTagsVisibleClicked()">available
         </button>
         <input id="log" class="btn btn-outline-dark btn-sm ml-auto" type="image" data-toggle="button"
-                (click)="onLogVisibleClicked()" src="assets/report.svg">
+               (click)="onLogVisibleClicked()" src="assets/report.svg">
         <input id="settings" class="btn btn-outline-dark btn-sm" type="image" data-toggle="button"
                (click)="onSettingsVisibleClicked()" src="assets/settings.svg">
     </div>
 </nav>
+
 <app-settings *ngIf="settingsVisible"></app-settings>
+
 <app-tags *ngIf="selectedTagsVisible"
           header="selected tags" [tags]="selectedTags"
           (selected)="onSelectedTagsClicked($event)"></app-tags>
+
 <app-tags *ngIf="availableTagsVisible"
           header="available tags"
           [tags]="availableTags"
           (selected)="onAvailableTagsClicked($event)"></app-tags>
-<div class="row justify-content-center">
 
+<app-bookmark *ngFor="let bookmark of bookmarks; even as e" [bookmark]="bookmark" [even]="e"></app-bookmark>
+
+<app-log *ngIf="logVisible"></app-log>
+
+<div id="test" class="row justify-content-center">
     <div class="card col-sm-8">
         <div class="card-body">
-            <button class="btn btn-outline-dark btn-sm" (click)="onTest()">config</button>
+            <button class="btn btn-outline-dark btn-sm" (click)="onTest()">Test</button>
             {{backendConfig}}
         </div>
     </div>
-
 </div>
-<app-log *ngIf="logVisible"></app-log>

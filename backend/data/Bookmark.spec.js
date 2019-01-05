@@ -127,16 +127,6 @@ describe("a Bookmark", () => {
         bookmark.tags.should.deep.equal(new TabooSet(["tag1"]));
     });
 
-    it("has a sorted joined string", () => {
-        const url = "http://some.url";
-        const title = " a test title";
-        const tags = ["tag2", "tag1"];
-
-        const bookmark = new Bookmark(url, title, tags);
-
-        bookmark.joinedTags().should.equal("tag1, tag2");
-    });
-
     it("has a simplified version with an array of tags", () => {
         const url = "http://some.url";
         const title = " a test title";
