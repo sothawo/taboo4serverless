@@ -124,9 +124,25 @@ describe("AppComponent", () => {
             button.triggerEventHandler("click", null);
             expect(component.selectedTagsVisible).toBeTruthy();
         });
+        it("selected-xs", () => {
+            let button = debugElement.query(By.css("#selected-xs"));
+            expect(button).toBeTruthy();
+            component.selectedTagsVisible = false;
+            fixture.detectChanges();
+            button.triggerEventHandler("click", null);
+            expect(component.selectedTagsVisible).toBeTruthy();
+        });
 
         it("available", () => {
             let button = debugElement.query(By.css("#available"));
+            expect(button).toBeTruthy();
+            component.availableTagsVisible = false;
+            fixture.detectChanges();
+            button.triggerEventHandler("click", null);
+            expect(component.availableTagsVisible).toBeTruthy();
+        });
+        it("available-xs", () => {
+            let button = debugElement.query(By.css("#available-xs"));
             expect(button).toBeTruthy();
             component.availableTagsVisible = false;
             fixture.detectChanges();

@@ -1,21 +1,32 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-secondary fixed-top">
-    <div class="navbar-brand">
-        <img src="assets/sothawofant-32.png" width="32" height="32" alt="">
-    </div>
     <div class="flex-fill d-flex">
-        <input id="init" class="btn btn-outline-dark btn-sm" type="image"
-               (click)="initialLoad()" src="assets/sync.svg" alt="init">
+        <img id="init" src="assets/sothawofant-32.png" width="32" height="32" alt="init"
+             (click)="initialLoad()" >
 
-        <button type="button" id="selected" class="btn btn-outline-dark btn-sm active"
+        <!-- hidden only on xs -->
+        <button type="button" id="selected" class="btn btn-outline-dark btn-sm d-none d-sm-block"
                 [class.active]="selectedTagsVisible"
                 (click)="onSelectedTagsVisibleClicked()"
         >selected
         </button>
+        <!-- visible only on xs -->
+        <button type="button" id="selected-xs" class="btn btn-outline-dark btn-sm d-block d-sm-none"
+                [class.active]="selectedTagsVisible"
+                (click)="onSelectedTagsVisibleClicked()"
+        >sel...
+        </button>
 
-        <button  type="button" id="available" class="btn btn-outline-dark btn-sm active"
+        <!-- hidden only on xs -->
+        <button  type="button" id="available" class="btn btn-outline-dark btn-sm d-none d-sm-block"
                 [class.active]="availableTagsVisible"
                 (click)="onAvailableTagsVisibleClicked()"
         >available
+        </button>
+        <!-- visible only on xs -->
+        <button  type="button" id="available-xs" class="btn btn-outline-dark btn-sm d-block d-sm-none"
+                [class.active]="availableTagsVisible"
+                (click)="onAvailableTagsVisibleClicked()"
+        >ava...
         </button>
 
         <input id="log" class="btn btn-outline-dark btn-sm ml-auto" type="image" data-toggle="button"
