@@ -2,6 +2,6 @@
     margin-top: -0.1rem;
 }
 
-.card-text,.tags {
-    font-size: smaller;
+#edit, #delete {
+    margin-left: 0.5rem;
 }

@@ -1,7 +1,11 @@
 <div class="card" [class.bg-light]="even">
     <div class="card-body">
-        <h6 class="card-title">{{bookmark.title}}</h6>
+        <h5 class="card-title d-flex">{{bookmark.title}}</h5>
         <div class="card-text"><a href="{{bookmark.url}}" target="_blank">{{bookmark.url}}</a></div>
-        <div class="tags">{{bookmark.joinedTags()}}</div>
+        <div class="tags d-flex">{{bookmark.joinedTags()}}
+            <input id="edit" class="btn btn-outline-secondary btn-sm ml-auto" type="image"
+                   src="assets/pencil.svg" (click)="onEdit()">
+            <input id="delete" class="btn btn-outline-secondary btn-sm " type="image"
+                   src="assets/trashcan.svg" (click)="onDelete()"></div>
     </div>
 </div>

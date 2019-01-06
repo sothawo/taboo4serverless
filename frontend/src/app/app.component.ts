@@ -27,7 +27,8 @@ export class AppComponent {
     }
 
     ngOnInit() {
-        this.initialLoad();
+        // this.initialLoad();
+        // this.bookmarks.push(new Bookmark("id", "url", "title", ["tag1", "tag2"]));
     }
 
     onSettingsVisibleClicked() {
@@ -127,6 +128,8 @@ export class AppComponent {
     }
 
     private onTest() {
+        this.selectedTags.clear();
+        this.selectedTags.add("taboo4");
         this.loadBookmarks();
     }
 }

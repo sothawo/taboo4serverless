@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from "@angular/core";
 import {Bookmark} from "../data/bookmark";
+import {LogService} from "../log/log.service";
 
 @Component({
     selector: "app-bookmark",
@@ -14,10 +15,17 @@ export class BookmarkComponent implements OnInit {
     @Input()
     even: boolean
 
-    constructor() {
+    constructor(private logger: LogService) {
     }
 
     ngOnInit() {
     }
 
+    onEdit() {
+        this.logger.warn(`edit of "${this.bookmark.title}" requested`);
+    }
+
+    onDelete() {
+        this.logger.warn(`delete of id "${this.bookmark.title}" requested`);
+    }
 }
