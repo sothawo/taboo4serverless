@@ -48,7 +48,7 @@
           [tags]="availableTags"
           (selected)="onAvailableTagsClicked($event)"></app-tags>
 
-<app-bookmark *ngFor="let bookmark of bookmarks; even as e" [bookmark]="bookmark" [even]="e"></app-bookmark>
+<app-bookmark *ngFor="let bookmark of bookmarks" [bookmark]="bookmark"></app-bookmark>
 
 <app-log *ngIf="logVisible"></app-log>
 

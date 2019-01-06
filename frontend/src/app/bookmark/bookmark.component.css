@@ -1,5 +1,9 @@
 .card {
-    margin-top: -0.1rem;
+    margin-top: 0.1rem;
+}
+
+.card-body .tags {
+    font-size: smaller;
 }
 
 #edit, #delete {

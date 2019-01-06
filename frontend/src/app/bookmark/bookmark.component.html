@@ -1,11 +1,13 @@
-<div class="card" [class.bg-light]="even">
+<div class="card">
+    <div class="card-header d-flex align-items-center">
+        <span>{{bookmark.title}}</span>
+        <input id="edit" class="btn btn-outline-secondary btn-sm ml-auto" type="image" width="32" height="32"
+               src="assets/pencil.svg" (click)="onEdit()">
+        <input id="delete" class="btn btn-outline-secondary btn-sm " type="image" width="32" height="32"
+               src="assets/trashcan.svg" (click)="onDelete()">
+    </div>
     <div class="card-body">
-        <h5 class="card-title d-flex">{{bookmark.title}}</h5>
         <div class="card-text"><a href="{{bookmark.url}}" target="_blank">{{bookmark.url}}</a></div>
-        <div class="tags d-flex">{{bookmark.joinedTags()}}
-            <input id="edit" class="btn btn-outline-secondary btn-sm ml-auto" type="image"
-                   src="assets/pencil.svg" (click)="onEdit()">
-            <input id="delete" class="btn btn-outline-secondary btn-sm " type="image"
-                   src="assets/trashcan.svg" (click)="onDelete()"></div>
+        <div class="card-text tags">{{bookmark.joinedTags()}}</div>
     </div>
 </div>

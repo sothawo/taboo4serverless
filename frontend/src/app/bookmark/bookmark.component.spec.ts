@@ -41,8 +41,8 @@ describe("BookmarkComponent", () => {
             expect(nativeElement.querySelector("div .card-body")).toBeTruthy();
         });
 
-        it("has a .card-title containing the bookmark title", () => {
-            const elementTitle = nativeElement.querySelector("div .card-title");
+        it("has a .card-header containing the bookmark title", () => {
+            const elementTitle = nativeElement.querySelector("div .card-header");
 
             expect(elementTitle).toBeTruthy();
             expect(elementTitle.textContent).toBe(bookmark.title);

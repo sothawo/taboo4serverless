@@ -12,9 +12,6 @@ export class BookmarkComponent implements OnInit {
     @Input()
     bookmark: Bookmark;
 
-    @Input()
-    even: boolean
-
     constructor(private logger: LogService) {
     }
 
