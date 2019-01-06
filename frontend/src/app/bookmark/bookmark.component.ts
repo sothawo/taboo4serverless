@@ -24,5 +24,25 @@ export class BookmarkComponent implements OnInit {
 
     onDelete() {
         this.logger.warn(`delete of id "${this.bookmark.title}" requested`);
+        // @ts-ignore
+        bootbox.confirm({
+            message: 'Are you sure to delete ' + this.bookmark.url + '?',
+            buttons: {
+                confirm: {
+                    label: "yes",
+                    className: "btn-secondary"
+                },
+                cancel: {
+                    label: "no",
+                    className: "btn-outline-secondary"
+                }
+            },
+            callback: (confirmed) => {
+                if (confirmed) {
+                    this.logger.info("deleting bookmark...");
+                    // todo: delete
+                }
+            }
+        });
     }
 }

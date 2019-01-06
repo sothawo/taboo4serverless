@@ -91,10 +91,9 @@ export class AppComponent {
      * when tags are selected, loads the corresponding bookmarks and rebuilds the available tags from them.
      */
     private loadBookmarks() {
+        this.bookmarks = [];
         if (this.selectedTags.size > 0) {
-            // todo recalculate tags
-            // this.availableTags.clear();
-            this.bookmarks = [];
+            this.availableTags.clear();
             let start = Date.now();
             this.backend.bookmarksByTags(Array.from(this.selectedTags))
                 .subscribe((bookmarks: Bookmark[]) => {
