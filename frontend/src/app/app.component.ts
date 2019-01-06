@@ -51,8 +51,6 @@ export class AppComponent {
         // remove from selected
         this.selectedTags.delete(tag);
         this.loadBookmarks();
-        // for the time being, add to available
-        this.availableTags.add(tag);
 
     }
 
@@ -60,8 +58,6 @@ export class AppComponent {
         this.logger.debug(`tag ${tag} from available tags clicked`);
         this.selectedTags.add(tag);
         this.loadBookmarks();
-        // for the time being, remove from available
-        this.availableTags.delete(tag);
     }
 
     loadBackendConfig() {
@@ -103,17 +99,33 @@ export class AppComponent {
                 .subscribe((bookmarks: Bookmark[]) => {
                         this.logger.info(`got bookmarks after ${Date.now() - start} ms.`)
                         this.logger.debug(bookmarks);
-                        bookmarks.map( it => new Bookmark(it.id, it.url, it.title, it.tags))
-                            .forEach(it=> this.bookmarks.push(it));
+                        bookmarks.map(it => new Bookmark(it.id, it.url, it.title, it.tags))
+                            .forEach(it => this.bookmarks.push(it));
 
-                        // todo rebuild tags
-                    this.availableTagsVisible = false;
+                        this.buildAvailableTags()
                     },
                     error => {
                         this.logger.error(error);
                     });
+        } else {
+            this.initialLoad();
         }
     }
+
+    /**
+     * builds the available tags from the displayed bookmarks. available are the bookmarks tags without the selected tags.
+     */
+    private buildAvailableTags() {
+        const bookmarksTags: Set<string> = new Set();
+        // no flatMap yet available
+        this.bookmarks.forEach(bookmark => {
+            bookmark.tags.forEach(tag => bookmarksTags.add(tag))
+        });
+
+        this.availableTags = new Set(Array.from(bookmarksTags)
+            .filter(tag => !this.selectedTags.has(tag)));
+    }
+
     private onTest() {
         this.loadBookmarks();
     }
