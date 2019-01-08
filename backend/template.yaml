@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: SAM definitions for serverless functions, used for local tests
+Resources:
+    LambdaConfig:
+        Type: AWS::Serverless::Function
+        Properties:
+            Environment:
+                Variables:
+                    DYNAMODB_URL: "http://localhost:4569"
+            Handler: aws/config.handler
+            Runtime: nodejs8.10
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /config
+                        Method: get

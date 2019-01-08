@@ -271,24 +271,36 @@ $ npm test
 
 === Local integration tests
 
+Local test can be done either by using the `sls invoke local` command or by using SAM local.
+The AWS infrastructure components are provided using the _localstack_ image that provides AWS services in a local docker container.
+
+==== Docker
+
+First a network for the container must be created:
+
+[source, shell]
+----
+docker network create taboo4
+----
+
 ==== DynamoDB
 
-To set up DynamoDB running in docker, exposed to port 8000:
+Start localstack (all in one line):
 
 [source,shell]
 ----
-$ docker run --name dynamodb -d -p 8000:8000 amazon/dynamodb-local
+$ TMPDIR=/private$TMPDIR SERVICES=dynamodb DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up & 
 ----
 
 To access this instance, AWS credentials must be set, any fake credential in the environment will do.
 
 ==== Running functions locally
 
-To test the functions locally, the DynamoDB endpoint must be passed as an environment variable to the serverless command, i.e.:
+To test the functions locally, the DynamoDB endpoint must be passed as an environment variable to the serverless command, first the `sls` calls are shown.
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f config
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f config
 ----
 
 ==== Preparing the table in the local DynamoDB
@@ -299,7 +311,7 @@ To create the table, a serverless function is implemented which can be called li
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f createTable
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f createTable
 ----
 
 This function is not available via an endpoint and can only be invoked with the `sls` command.
@@ -308,7 +320,7 @@ This function is not available via an endpoint and can only be invoked with the 
 
 [source,shell]
 ----
-aws dynamodb list-tables --endpoint-url http://localhost:8000
+aws dynamodb list-tables --endpoint-url http://localhost:4569
 ----
 
 ===== Delete the table
@@ -317,7 +329,7 @@ The table can be deleted by running:
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f deleteTable
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f deleteTable
 ----
 
 This function as well is only callable by using the `sls` command.
@@ -328,7 +340,7 @@ There is a sample event in the _testdata_ directory with which a bookmark can be
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:8000 sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
 ----
 
 ===== List table content
@@ -337,8 +349,26 @@ Only feasible for small tables in local development:
 
 [source,shell]
 ----
-$ aws dynamodb scan --table-name taboo4-dev --endpoint=http://localhost:8000
+$ aws dynamodb scan --table-name taboo4-dev --endpoint=http://localhost:4569
 ----
+
+==== Using SAM local
+
+.Installation
+
+[source,shell]
+----
+$ pip install --user aws-sam-cli
+----
+
+.Starting SAM local
+
+[source,shell]
+----
+$ DYNAMODB_URL=http://localhost:4569 sam local start-api --docker-network taboo4 [--skip-pull-image]
+----
+
+This starts an API gateway with all the resources configured in _template.yaml_
 
 == Deployment
 
