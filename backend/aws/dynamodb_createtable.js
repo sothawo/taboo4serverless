@@ -37,6 +37,8 @@ module.exports.handler = async () => {
         }
     };
 
+    console.log(`create table ${TableName} at ${DynamoDBURL}`);
+
     return new Promise((resolve, reject) => {
         DynamoDB.createTable(params, (err, data) => {
             if (err) {

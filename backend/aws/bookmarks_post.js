@@ -26,8 +26,13 @@ const docClient = new AWS.DynamoDB.DocumentClient();
  * @returns {Promise<{body, statusCode}>}
  */
 module.exports.handler = async (event) => {
-    const bookmarks = JSON.parse(event.body).map(item => new Bookmark(item.url, item.title, item.tags));
-    const message = await new Taboo4Service(docClient, TableName).saveBookmarks(bookmarks)
-
-    return corsResponse(200, message);
+    try {
+        const bookmarks = JSON.parse(event.body).map(item => new Bookmark(item.url, item.title, item.tags));
+        console.log(bookmarks);
+        const message = await new Taboo4Service(docClient, TableName).saveBookmarks(bookmarks);
+        return corsResponse(200, message);
+    }
+    catch(error) {
+        return corsResponse(500, error);
+    }
 };

@@ -7,7 +7,8 @@ Resources:
         Properties:
             Environment:
                 Variables:
-                    DYNAMODB_URL: "http://localhost:4569"
+                    DYNAMODB_URL: "http://backend_localstack_1:4569"
+                    DYNAMODB_TABLE: "taboo4-dev"
             Handler: aws/config.handler
             Runtime: nodejs8.10
             Events:
@@ -15,4 +16,49 @@ Resources:
                     Type: Api
                     Properties:
                         Path: /config
+                        Method: get
+    LambdaDumpEvent:
+        Type: AWS::Serverless::Function
+        Properties:
+            Environment:
+                Variables:
+                    DYNAMODB_URL: "http://backend_localstack_1:4569"
+                    DYNAMODB_TABLE: "taboo4-dev"
+            Handler: aws/dumpevent.handler
+            Runtime: nodejs8.10
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /dumpevent
+                        Method: get
+    LambdaPostBookmark:
+        Type: AWS::Serverless::Function
+        Properties:
+            Environment:
+                Variables:
+                    DYNAMODB_URL: "http://backend_localstack_1:4569"
+                    DYNAMODB_TABLE: "taboo4-dev"
+            Handler: aws/bookmark_post.handler
+            Runtime: nodejs8.10
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmark
+                        Method: post
+    LambdaGetBookmarks:
+        Type: AWS::Serverless::Function
+        Properties:
+            Environment:
+                Variables:
+                    DYNAMODB_URL: "http://backend_localstack_1:4569"
+                    DYNAMODB_TABLE: "taboo4-dev"
+            Handler: aws/bookmarks_get.handler
+            Runtime: nodejs8.10
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmarks
                         Method: get

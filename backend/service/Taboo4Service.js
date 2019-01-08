@@ -58,6 +58,8 @@ class Taboo4Service {
             Item: dbEntry
         };
 
+        console.log(params);
+
         return new Promise((resolve, reject) => {
             this.dynamoDBcDocClient.put(params, (err, data) => {
                 if (err) {
@@ -112,6 +114,7 @@ class Taboo4Service {
             ExpressionAttributeValues: {":srt": "id"}
         };
 
+        console.log(params);
         return new Promise((resolve, reject) => {
             const bookmarks = [];
 
@@ -163,10 +166,10 @@ class Taboo4Service {
                 tags.map(async tag => {
                     let bookmarks = (await this.bookmarkByTag(tag));
                     bookmarks.forEach(bookmark => {
-                            if (bookmark.tags.intersection(requiredTags).size() == requiredTags.size()) {
-                                allBookmarks.set(bookmark.id, bookmark);
-                            }
-                        });
+                        if (bookmark.tags.intersection(requiredTags).size() == requiredTags.size()) {
+                            allBookmarks.set(bookmark.id, bookmark);
+                        }
+                    });
                 })
             );
         }

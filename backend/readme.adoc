@@ -311,7 +311,7 @@ To create the table, a serverless function is implemented which can be called li
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f createTable
+$ DYNAMODB_URL=http://localhost:4569 DYNAMODB_TABLE=taboo4-local sls invoke local -f createTable
 ----
 
 This function is not available via an endpoint and can only be invoked with the `sls` command.
@@ -320,7 +320,7 @@ This function is not available via an endpoint and can only be invoked with the 
 
 [source,shell]
 ----
-aws dynamodb list-tables --endpoint-url http://localhost:4569
+$ aws dynamodb list-tables --endpoint-url http://localhost:4569
 ----
 
 ===== Delete the table
@@ -329,7 +329,7 @@ The table can be deleted by running:
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f deleteTable
+$ DYNAMODB_URL=http://localhost:4569 DYNAMODB_TABLE=taboo4-local sls invoke local -f deleteTable
 ----
 
 This function as well is only callable by using the `sls` command.
@@ -340,7 +340,7 @@ There is a sample event in the _testdata_ directory with which a bookmark can be
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
+$ DYNAMODB_URL=http://localhost:4569 DYNAMODB_TABLE=taboo4-local sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
 ----
 
 ===== List table content
@@ -349,7 +349,7 @@ Only feasible for small tables in local development:
 
 [source,shell]
 ----
-$ aws dynamodb scan --table-name taboo4-dev --endpoint=http://localhost:4569
+$ aws dynamodb scan --table-name taboo4-local --endpoint=http://localhost:4569
 ----
 
 ==== Using SAM local
@@ -365,7 +365,7 @@ $ pip install --user aws-sam-cli
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 sam local start-api --docker-network taboo4 [--skip-pull-image]
+sam local start-api --docker-network taboo4 [--skip-pull-image]
 ----
 
 This starts an API gateway with all the resources configured in _template.yaml_
