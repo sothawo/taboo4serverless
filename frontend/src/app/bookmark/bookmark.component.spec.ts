@@ -3,6 +3,8 @@ import {async, ComponentFixture, TestBed} from "@angular/core/testing";
 import {BookmarkComponent} from "./bookmark.component";
 import {DebugElement} from "@angular/core";
 import {Bookmark} from "../data/bookmark";
+import {BackendService} from "../backend.service";
+import {of} from "rxjs";
 
 describe("BookmarkComponent", () => {
     let component: BookmarkComponent;
@@ -14,7 +16,13 @@ describe("BookmarkComponent", () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [BookmarkComponent]
+            declarations: [BookmarkComponent],
+            providers: [
+                {
+                    provide: BackendService, useValue: {
+                    }
+                }
+            ]
         })
             .compileComponents();
     }));

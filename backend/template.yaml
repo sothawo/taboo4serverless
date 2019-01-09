@@ -123,6 +123,16 @@ Resources:
                     Properties:
                         Path: /bookmark
                         Method: options
+    OptionsBookmarkId:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmark/{id}
+                        Method: options
     OptionsBookmarks:
         Type: AWS::Serverless::Function
         Properties:

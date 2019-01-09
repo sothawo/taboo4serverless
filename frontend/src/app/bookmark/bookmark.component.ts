@@ -1,6 +1,7 @@
-import {Component, Input, OnInit} from "@angular/core";
+import {Component, EventEmitter, Input, OnInit, Output} from "@angular/core";
 import {Bookmark} from "../data/bookmark";
 import {LogService} from "../log/log.service";
+import {BackendService} from "../backend.service";
 
 @Component({
     selector: "app-bookmark",
@@ -9,10 +10,10 @@ import {LogService} from "../log/log.service";
 })
 export class BookmarkComponent implements OnInit {
 
-    @Input()
-    bookmark: Bookmark;
+    @Input() bookmark: Bookmark;
+    @Output() deleted = new EventEmitter<string>();
 
-    constructor(private logger: LogService) {
+    constructor(private logger: LogService, private backend: BackendService) {
     }
 
     ngOnInit() {
@@ -40,9 +41,11 @@ export class BookmarkComponent implements OnInit {
             callback: (confirmed) => {
                 if (confirmed) {
                     this.logger.info("deleting bookmark...");
-                    // todo: delete
+                    this.backend.deleteBookmark(this.bookmark.id).subscribe((msg) => {
+                        this.deleted.emit(this.bookmark.id);
+                    });
                 }
             }
-        });
+        })
     }
 }

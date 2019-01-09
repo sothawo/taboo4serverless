@@ -74,7 +74,7 @@ export class AppComponent {
     private initialLoad() {
         this.availableTags.clear();
         this.selectedTags.clear();
-
+        this.bookmarks = [];
         let start = Date.now();
         this.backend.allTags()
             .subscribe((tags: string[]) => {

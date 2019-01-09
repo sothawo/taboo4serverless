@@ -54,4 +54,10 @@ export class BackendService {
         this.preCallLogging(url, "POST", body);
         return this.http.post<Bookmark[]>(url, body, this.httpOptions());
     }
+
+    deleteBookmark(id: string): Observable<string> {
+        const url = `${this.apiUrl}/bookmark/${id}`;
+        this.preCallLogging(url, "DELETE");
+        return this.http.delete<string>(url, this.httpOptions());
+    }
 }

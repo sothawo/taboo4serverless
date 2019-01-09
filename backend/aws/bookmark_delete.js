@@ -23,12 +23,8 @@ module.exports.handler = async (event) => {
 
     const msg = await new Taboo4Service(docClient, TableName).deleteBookmarkById(id);
     if (msg) {
-        return {
-            statusCode: 200,
-            body: JSON.stringify("deleted")
-        };
+        return corsResponse(200, "deleted")
     } else {
         return corsResponse(404, "bookmark with id " + id + " not found");
-        
     }
 };

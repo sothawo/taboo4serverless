@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-secondary fixed-top">
     <div class="flex-fill d-flex">
         <img id="init" src="assets/sothawofant-32.png" width="32" height="32" alt="init"
-             (click)="initialLoad()" >
+             (click)="initialLoad()">
 
         <!-- hidden only on xs -->
         <button type="button" id="selected" class="btn btn-outline-dark btn-sm d-none d-sm-block"
@@ -17,13 +17,13 @@
         </button>
 
         <!-- hidden only on xs -->
-        <button  type="button" id="available" class="btn btn-outline-dark btn-sm d-none d-sm-block"
+        <button type="button" id="available" class="btn btn-outline-dark btn-sm d-none d-sm-block"
                 [class.active]="availableTagsVisible"
                 (click)="onAvailableTagsVisibleClicked()"
         >available
         </button>
         <!-- visible only on xs -->
-        <button  type="button" id="available-xs" class="btn btn-outline-dark btn-sm d-block d-sm-none"
+        <button type="button" id="available-xs" class="btn btn-outline-dark btn-sm d-block d-sm-none"
                 [class.active]="availableTagsVisible"
                 (click)="onAvailableTagsVisibleClicked()"
         >ava...
@@ -41,14 +41,21 @@
 
 <app-tags *ngIf="selectedTagsVisible"
           header="selected tags" [tags]="selectedTags"
-          (selected)="onSelectedTagsClicked($event)"></app-tags>
+          (selected)="onSelectedTagsClicked($event)">
+
+</app-tags>
 
 <app-tags *ngIf="availableTagsVisible"
           header="available tags"
           [tags]="availableTags"
-          (selected)="onAvailableTagsClicked($event)"></app-tags>
+          (selected)="onAvailableTagsClicked($event)">
 
-<app-bookmark *ngFor="let bookmark of bookmarks" [bookmark]="bookmark"></app-bookmark>
+</app-tags>
+
+<app-bookmark *ngFor="let bookmark of bookmarks"
+              [bookmark]="bookmark"
+              (deleted)="loadBookmarks()">
+</app-bookmark>
 
 <app-log *ngIf="logVisible"></app-log>
 
