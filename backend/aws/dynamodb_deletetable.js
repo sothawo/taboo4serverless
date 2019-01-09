@@ -8,14 +8,7 @@ const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
 const DynamoDBURL   = process.env.DYNAMODB_URL;
 // @formatter:on
 
-if (DynamoDBURL !== undefined) {
-    AWS.config.update({
-        region: AWSRegion,
-        endpoint: DynamoDBURL
-    });
-}
-
-const DynamoDB = new AWS.DynamoDB();
+const DynamoDB = new AWS.DynamoDB({region: AWSRegion, endpoint: DynamoDBURL});
 
 /**
  * function to drop the table in DynamoDB. Needed for local integration testing.

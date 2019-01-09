@@ -274,6 +274,8 @@ $ npm test
 Local test can be done either by using the `sls invoke local` command or by using SAM local.
 The AWS infrastructure components are provided using the _localstack_ image that provides AWS services in a local docker container.
 
+The configuration files and this document assume that for local test the stage value is set to _local_.
+
 ==== Docker
 
 First a network for the container must be created:
@@ -300,7 +302,7 @@ To test the functions locally, the DynamoDB endpoint must be passed as an enviro
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f config
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f config -stage=local
 ----
 
 ==== Preparing the table in the local DynamoDB
@@ -311,7 +313,7 @@ To create the table, a serverless function is implemented which can be called li
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 DYNAMODB_TABLE=taboo4-local sls invoke local -f createTable
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f createTable -stage=local
 ----
 
 This function is not available via an endpoint and can only be invoked with the `sls` command.
@@ -329,7 +331,7 @@ The table can be deleted by running:
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 DYNAMODB_TABLE=taboo4-local sls invoke local -f deleteTable
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f deleteTable -stage=local
 ----
 
 This function as well is only callable by using the `sls` command.
@@ -340,7 +342,7 @@ There is a sample event in the _testdata_ directory with which a bookmark can be
 
 [source,shell]
 ----
-$ DYNAMODB_URL=http://localhost:4569 DYNAMODB_TABLE=taboo4-local sls invoke local -f postBookmark -p testdata/postBookmarkEvent.json
+$ DYNAMODB_URL=http://localhost:4569 sls invoke local -f postBookmark -stage=local -p testdata/postBookmarkEvent.json
 ----
 
 ===== List table content
@@ -354,6 +356,7 @@ $ aws dynamodb scan --table-name taboo4-local --endpoint=http://localhost:4569
 
 ==== Using SAM local
 
+SAM local starts a docker container when running the functions. Therefore for the SAM local environment, the database host is **not** _localhost_ but _backend_localstack_1_.
 .Installation
 
 [source,shell]

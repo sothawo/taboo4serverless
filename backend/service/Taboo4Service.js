@@ -58,8 +58,6 @@ class Taboo4Service {
             Item: dbEntry
         };
 
-        console.log(params);
-
         return new Promise((resolve, reject) => {
             this.dynamoDBcDocClient.put(params, (err, data) => {
                 if (err) {
@@ -114,7 +112,6 @@ class Taboo4Service {
             ExpressionAttributeValues: {":srt": "id"}
         };
 
-        console.log(params);
         return new Promise((resolve, reject) => {
             const bookmarks = [];
 

@@ -1,16 +1,22 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: SAM definitions for serverless functions, used for local tests
+Globals:
+    Function:
+        Runtime: nodejs8.10
+        Timeout: 30
+        Environment:
+            Variables:
+                DYNAMODB_URL: "http://backend_localstack_1:4569"
+                DYNAMODB_TABLE: "taboo4-local"
+    Api:
+        Cors:
+            AllowOrigin: "'*'"
 Resources:
     LambdaConfig:
         Type: AWS::Serverless::Function
         Properties:
-            Environment:
-                Variables:
-                    DYNAMODB_URL: "http://backend_localstack_1:4569"
-                    DYNAMODB_TABLE: "taboo4-dev"
             Handler: aws/config.handler
-            Runtime: nodejs8.10
             Events:
                 Api:
                     Type: Api
@@ -20,12 +26,7 @@ Resources:
     LambdaDumpEvent:
         Type: AWS::Serverless::Function
         Properties:
-            Environment:
-                Variables:
-                    DYNAMODB_URL: "http://backend_localstack_1:4569"
-                    DYNAMODB_TABLE: "taboo4-dev"
             Handler: aws/dumpevent.handler
-            Runtime: nodejs8.10
             Events:
                 Api:
                     Type: Api
@@ -35,30 +36,110 @@ Resources:
     LambdaPostBookmark:
         Type: AWS::Serverless::Function
         Properties:
-            Environment:
-                Variables:
-                    DYNAMODB_URL: "http://backend_localstack_1:4569"
-                    DYNAMODB_TABLE: "taboo4-dev"
             Handler: aws/bookmark_post.handler
-            Runtime: nodejs8.10
             Events:
                 Api:
                     Type: Api
                     Properties:
                         Path: /bookmark
                         Method: post
+    LambdaPostBookmarks:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/bookmarks_post.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmarks
+                        Method: post
+    LambdaGetBookmark:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/bookmark_get.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmark/{id}
+                        Method: get
     LambdaGetBookmarks:
         Type: AWS::Serverless::Function
         Properties:
-            Environment:
-                Variables:
-                    DYNAMODB_URL: "http://backend_localstack_1:4569"
-                    DYNAMODB_TABLE: "taboo4-dev"
             Handler: aws/bookmarks_get.handler
-            Runtime: nodejs8.10
             Events:
                 Api:
                     Type: Api
                     Properties:
                         Path: /bookmarks
                         Method: get
+    OptionssGetBookmarks:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmarks
+                        Method: options
+    LambdaGetTags:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/tags_get.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /tags
+                        Method: get
+    LambdaPostBookmarksQuery:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/bookmarksquery_post.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmarks/query
+                        Method: post
+    OptionsBookmark:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmark
+                        Method: options
+    OptionsBookmarks:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmarks
+                        Method: options
+    OptionsBookmarksQuery:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmarks/query
+                        Method: options
+    OptionsTags:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /tags
+                        Method: options

@@ -5,11 +5,10 @@ const corsResponse  = require("./utils").corsResponse;
 
 // @formatter:on
 
-
 /**
- *  info function returning theinput event
+ *  info function returning some configuration information
  * @returns {Promise<{body, statusCode}>}
  */
-module.exports.handler = async (event) => {
-    return corsResponse(200, event);
+module.exports.handler = async (event, context) => {
+    return corsResponse(200, "");
 };

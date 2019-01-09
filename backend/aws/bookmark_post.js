@@ -11,12 +11,6 @@ const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
 const DynamoDBURL   = process.env.DYNAMODB_URL || undefined;
 // @formatter:on
 
-// if (DynamoDBURL !== undefined) {
-//     AWS.config.update({
-//         region: AWSRegion,
-//         endpoint: DynamoDBURL
-//     });
-// }
 
 const docClient = new AWS.DynamoDB.DocumentClient({region: AWSRegion, endpoint: DynamoDBURL});
 
@@ -27,11 +21,7 @@ const docClient = new AWS.DynamoDB.DocumentClient({region: AWSRegion, endpoint: 
  */
 module.exports.handler = async (event) => {
     try {
-        console.log(docClient);
-        console.log(event);
         const body = JSON.parse(event.body);
-        console.log(body);
-
         const bookmark = new Bookmark(body.url, body.title, body.tags);
 
         const savedBookmark = await new Taboo4Service(docClient, TableName).saveBookmark(bookmark);

@@ -10,14 +10,8 @@ const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
 const DynamoDBURL   = process.env.DYNAMODB_URL;
 // @formatter:on
 
-if (DynamoDBURL !== undefined) {
-    AWS.config.update({
-        region: AWSRegion,
-        endpoint: DynamoDBURL
-    });
-}
 
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({region: AWSRegion, endpoint: DynamoDBURL});
 
 /**
  * loads a Bookmark from the database.

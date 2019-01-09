@@ -11,14 +11,7 @@ const AWSRegion     = process.env.AWS_REGION || "eu-central-1";
 const DynamoDBURL   = process.env.DYNAMODB_URL;
 // @formatter:on
 
-if (DynamoDBURL !== undefined) {
-    AWS.config.update({
-        region: AWSRegion,
-        endpoint: DynamoDBURL
-    });
-}
-
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient({region: AWSRegion, endpoint: DynamoDBURL});
 
 /**
  * stores an array of Bookmarks in the database.
@@ -28,7 +21,6 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 module.exports.handler = async (event) => {
     try {
         const bookmarks = JSON.parse(event.body).map(item => new Bookmark(item.url, item.title, item.tags));
-        console.log(bookmarks);
         const message = await new Taboo4Service(docClient, TableName).saveBookmarks(bookmarks);
         return corsResponse(200, message);
     }
