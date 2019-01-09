@@ -141,7 +141,7 @@ describe("a Taboo4Service", () => {
             foundTags.should.deep.equal(["tag06", "tag07", "tag08", "tag09"]);
         });
 
-        describe ("by tags", () => {
+        describe("by tags", () => {
             it("returns empty array for unknown tags", async () => {
                 const docClientFuncQuery = sinon.stub(docClient, "query");
                 docClientFuncQuery.onCall(0).callsArgWith(1, null, {Items: []});
@@ -168,6 +168,66 @@ describe("a Taboo4Service", () => {
                 foundBookmarks.length.should.equal(1);
                 foundBookmarks.should.deep.include(bookmark1);
             });
-        })
+        });
+    });
+
+    describe("when deleting", () => {
+
+        it("a single DBEntry calls the documentclient", async () => {
+            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const docClientFuncDelete = sinon.stub(docClient, "delete");
+            docClientFuncDelete.callsArg(1); // let the stub call the callback function that is passed as second arg
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+
+            await taboo4Service.deleteDBEntry(bookmark.id, "id");
+
+            docClientFuncDelete.calledOnce.should.be.true;
+
+            const params = docClientFuncDelete.firstCall.args[0];
+            params.TableName.should.equal(TableName);
+            params.Key.partition.should.equal(bookmark.id)
+            params.Key.sort.should.equal("id");
+        });
+
+        it("a bookmark deletes DBEntry objects for the id and for each tag", async () => {
+            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const expectedKeys = new TabooSet();
+            expectedKeys.add([bookmark.id, "id"]);
+            expectedKeys.add(["tag01", bookmark.id]);
+            expectedKeys.add(["tag02", bookmark.id]);
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+            const taboo4ServiceFuncDeleteDbEntry = sinon.stub(taboo4Service, "deleteDBEntry");
+            taboo4ServiceFuncDeleteDbEntry.resolves("success");
+
+            await taboo4Service.deleteBookmark(bookmark);
+
+            taboo4ServiceFuncDeleteDbEntry.callCount.should.equal(3);
+            const realKeys = new TabooSet();
+            taboo4ServiceFuncDeleteDbEntry
+                .getCalls()
+                .forEach(call => {
+                    realKeys.add([call.args[0], call.args[1]]);
+                });
+
+            realKeys.should.deep.equal(expectedKeys);
+        });
+
+        it("by id it retrieves the bookmark first", async () => {
+            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+            const taboo4Service = new Taboo4Service(docClient, TableName);
+            const taboo4ServiceFuncLoadBookmark = sinon.stub(taboo4Service, "loadBookmark");
+            taboo4ServiceFuncLoadBookmark.resolves(bookmark);
+            const taboo4ServiceFuncDeleteBookmark = sinon.stub(taboo4Service, "deleteBookmark");
+            taboo4ServiceFuncDeleteBookmark.resolves("success");
+
+            await taboo4Service.deleteBookmarkById(bookmark.id);
+
+            taboo4ServiceFuncLoadBookmark.callCount.should.equal(1);
+            taboo4ServiceFuncLoadBookmark.firstCall.args[0].should.equal(bookmark.id);
+
+            taboo4ServiceFuncDeleteBookmark.callCount.should.equal(1);
+            taboo4ServiceFuncDeleteBookmark.firstCall.args[0].should.deep.equal(bookmark);
+        });
+
     });
 });

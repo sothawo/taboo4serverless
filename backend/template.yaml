@@ -63,6 +63,16 @@ Resources:
                     Properties:
                         Path: /bookmark/{id}
                         Method: get
+    LambdaDeleteBookmark:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/bookmark_delete.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /bookmark/{id}
+                        Method: delete
     LambdaGetBookmarks:
         Type: AWS::Serverless::Function
         Properties:

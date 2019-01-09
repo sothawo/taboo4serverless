@@ -93,7 +93,7 @@ class Taboo4Service {
                             const found = data.Item.bookmark;
                             resolve(new Bookmark(found.url, found.title, found.tags.bag_))
                         } else {
-                            resolve({});
+                            resolve(undefined);
                         }
                     }
                 });
@@ -204,6 +204,55 @@ class Taboo4Service {
                 });
             }
         );
+    }
+
+    /**
+     * deletes the database entry with the given partition and sort key.
+     * @param partition
+     * @param sort
+     * @return {Promise<string>}
+     */
+    async deleteDBEntry(partition, sort) {
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                partition: partition,
+                sort: sort
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            this.dynamoDBcDocClient.delete(params, (err, data) => {
+                if (err) {
+                    reject(new Error("Unable to delete DBEntry. Error JSON:" + JSON.stringify(err, null, 2)));
+                } else {
+                    resolve("DBEntry stored.");
+                }
+            });
+
+        });
+    }
+
+    /**
+     * deletes a bookmark from the database.
+     * @param bookmark
+     * @return {Promise<string>}
+     */
+    async deleteBookmark(bookmark) {
+        if (bookmark) {
+            await this.deleteDBEntry(bookmark.id, "id");
+            await Promise.all(
+                bookmark.tags.getElements()
+                    .map(async tag => {
+                        await this.deleteDBEntry(tag, bookmark.id);
+                    })
+            );
+            return "deleted";
+        }
+    }
+
+    async deleteBookmarkById(id) {
+        return this.deleteBookmark(await this.loadBookmark(id));
     }
 }
 
