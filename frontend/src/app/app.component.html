@@ -39,6 +39,13 @@
 
 <app-settings *ngIf="settingsVisible"></app-settings>
 
+<app-editor *ngIf="editorVisible"
+            [bookmark]="editorBookmark"
+            (editOk)="saveBookmark($event)"
+            (editCancelled)="restoreLayout()">
+
+</app-editor>
+
 <app-tags *ngIf="selectedTagsVisible"
           header="selected tags" [tags]="selectedTags"
           (selected)="onSelectedTagsClicked($event)">
@@ -52,10 +59,13 @@
 
 </app-tags>
 
-<app-bookmark *ngFor="let bookmark of bookmarks"
-              [bookmark]="bookmark"
-              (deleted)="loadBookmarks()">
-</app-bookmark>
+<div *ngIf="bookmarksVisible">
+    <app-bookmark *ngFor="let bookmark of bookmarks"
+                  [bookmark]="bookmark"
+                  (deleted)="loadBookmarks()"
+                  (toEdit)="editBookmark($event)">
+    </app-bookmark>
+</div>
 
 <app-log *ngIf="logVisible"></app-log>
 

@@ -1,20 +1,20 @@
-import {Component, OnInit} from "@angular/core";
-import {LocalStorage} from "ngx-store";
-import {LogData, LogLevel} from "../log/log-listener";
-import {LogService} from "../log/log.service";
+import {Component, OnInit} from '@angular/core';
+import {LocalStorage} from 'ngx-store';
+import {LogData, LogLevel} from '../log/log-listener';
+import {LogService} from '../log/log.service';
 
 @Component({
-    selector: "app-settings",
-    templateUrl: "./settings.component.html",
-    styleUrls: ["./settings.component.css"]
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
 
     @LocalStorage()
-    apiUrl: string = "";
+    apiUrl: string = '';
 
     @LocalStorage()
-    apiKey: string = "";
+    apiKey: string = '';
 
     logLevels: LogLevel[] = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
 

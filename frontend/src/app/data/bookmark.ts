@@ -1,5 +1,10 @@
 export class Bookmark {
 
+    id: string;
+    url: string;
+    title: string;
+    tags: string[];
+
     constructor(id: string, url: string, title: string, tags: string[]) {
         this.id = id;
         this.url = url;
@@ -7,13 +12,8 @@ export class Bookmark {
         this.tags = tags;
     }
 
-    id: string;
-    url: string;
-    title: string;
-    tags: string[];
-
     joinedTags() {
-        return this.tags.sort().join(", ");
+        return this.tags.sort().join(', ');
     }
 }
 

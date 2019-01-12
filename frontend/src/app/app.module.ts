@@ -9,6 +9,7 @@ import {HttpClientModule} from "@angular/common/http";
 import { TagsComponent } from './tags/tags.component';
 import { LogComponent } from './log/log.component';
 import { BookmarkComponent } from './bookmark/bookmark.component';
+import { EditorComponent } from './editor/editor.component';
 
 @NgModule({
     declarations: [
@@ -16,7 +17,8 @@ import { BookmarkComponent } from './bookmark/bookmark.component';
         SettingsComponent,
         TagsComponent,
         LogComponent,
-        BookmarkComponent
+        BookmarkComponent,
+        EditorComponent
     ],
     imports: [
         BrowserModule,

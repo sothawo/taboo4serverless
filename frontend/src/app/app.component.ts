@@ -1,27 +1,32 @@
-import {Component} from "@angular/core";
-import {LogService} from "./log/log.service";
-import {BackendService} from "./backend.service";
-import {Config} from "./settings/config";
-import {Bookmark} from "./data/bookmark";
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {LogService} from './log/log.service';
+import {BackendService} from './backend.service';
+import {Config} from './settings/config';
+import {Bookmark} from './data/bookmark';
+import {EditorComponent} from './editor/editor.component';
 
 @Component({
-    selector: "app-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.css"]
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
     settingsVisible = false;
-    selectedTagsVisible: boolean = true;
-    availableTagsVisible: boolean = true;
-    logVisible: boolean = false;
+    selectedTagsVisible = true;
+    availableTagsVisible = true;
+    logVisible = false;
+    editorVisible = false;
+    bookmarksVisible = true;
+    private layoutSettings: boolean[];
 
     selectedTags: Set<string> = new Set();
     availableTags: Set<string> = new Set();
 
-    backendConfig = "{?}";
+    backendConfig = '{?}';
 
     bookmarks: Bookmark[] = [];
+    editorBookmark: Bookmark;
 
     constructor(private logger: LogService, private backend: BackendService) {
     }
@@ -62,23 +67,29 @@ export class AppComponent {
     }
 
     loadBackendConfig() {
-        let start = Date.now();
+        const start = Date.now();
         this.backend.config()
             .subscribe((config: Config) => {
-                this.logger.info(`got config after ${Date.now() - start} ms.`)
+                this.logger.info(`got config after ${Date.now() - start} ms.`);
                 this.logger.debug(config);
                 this.backendConfig = JSON.stringify(config);
             });
+    }
+
+    editBookmark(bookmark: Bookmark) {
+        this.logger.debug(`editing ${bookmark}`);
+        this.editorBookmark = bookmark;
+        this.storeLayout();
     }
 
     private initialLoad() {
         this.availableTags.clear();
         this.selectedTags.clear();
         this.bookmarks = [];
-        let start = Date.now();
+        const start = Date.now();
         this.backend.allTags()
             .subscribe((tags: string[]) => {
-                    this.logger.info(`got tags after ${Date.now() - start} ms.`)
+                    this.logger.info(`got tags after ${Date.now() - start} ms.`);
                     this.logger.debug(tags);
                     tags.forEach(tag => this.availableTags.add(tag));
                 },
@@ -94,15 +105,15 @@ export class AppComponent {
         this.bookmarks = [];
         if (this.selectedTags.size > 0) {
             this.availableTags.clear();
-            let start = Date.now();
+            const start = Date.now();
             this.backend.bookmarksByTags(Array.from(this.selectedTags))
                 .subscribe((bookmarks: Bookmark[]) => {
-                        this.logger.info(`got bookmarks after ${Date.now() - start} ms.`)
+                        this.logger.info(`got bookmarks after ${Date.now() - start} ms.`);
                         this.logger.debug(bookmarks);
                         bookmarks.map(it => new Bookmark(it.id, it.url, it.title, it.tags))
                             .forEach(it => this.bookmarks.push(it));
 
-                        this.buildAvailableTags()
+                        this.buildAvailableTags();
                     },
                     error => {
                         this.logger.error(error);
@@ -119,7 +130,7 @@ export class AppComponent {
         const bookmarksTags: Set<string> = new Set();
         // no flatMap yet available
         this.bookmarks.forEach(bookmark => {
-            bookmark.tags.forEach(tag => bookmarksTags.add(tag))
+            bookmark.tags.forEach(tag => bookmarksTags.add(tag));
         });
 
         this.availableTags = new Set(Array.from(bookmarksTags)
@@ -128,7 +139,42 @@ export class AppComponent {
 
     private onTest() {
         this.selectedTags.clear();
-        this.selectedTags.add("taboo4");
+        this.selectedTags.add('taboo4');
         this.loadBookmarks();
+    }
+
+    /**
+     * called when a bookmark was added/edited.
+     */
+    saveBookmark(bookmark: Bookmark) {
+        this.logger.info(`saving bookmark`);
+        this.logger.debug(bookmark);
+
+        this.restoreLayout();
+    }
+
+    storeLayout() {
+        this.logger.debug('store layout...')
+        this.layoutSettings = [];
+        this.layoutSettings.push(this.selectedTagsVisible);
+        this.layoutSettings.push(this.availableTagsVisible);
+        this.layoutSettings.push(this.logVisible);
+        this.layoutSettings.push(this.settingsVisible);
+        this.selectedTagsVisible = false;
+        this.availableTagsVisible = false;
+        this.settingsVisible = false;
+        this.bookmarksVisible = false;
+        this.editorVisible = true;
+    }
+
+    restoreLayout() {
+        this.logger.debug('restore layout...')
+        this.editorVisible = false;
+        this.bookmarksVisible = true;
+        this.selectedTagsVisible = this.layoutSettings[0];
+        this.availableTagsVisible = this.layoutSettings[1];
+        this.logVisible = this.layoutSettings[2];
+        this.settingsVisible = this.layoutSettings[3];
+        this.layoutSettings = [];
     }
 }
