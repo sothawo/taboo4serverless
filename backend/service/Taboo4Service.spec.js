@@ -103,7 +103,7 @@ describe("a Taboo4Service", () => {
 
             const foundBookmark = await taboo4Service.loadBookmark("someid");
 
-            foundBookmark.should.deep.equal({})
+            expect(foundBookmark).to.be.undefined
         });
 
         it("returns all bookmarks", async () => {
