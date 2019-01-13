@@ -4,6 +4,17 @@
              (click)="initialLoad()">
 
         <!-- hidden only on xs -->
+        <button type="button" id="add" class="btn btn-outline-dark btn-sm d-none d-sm-block active"
+                (click)="onAddBookmark()"
+        >add bookmark
+        </button>
+        <!-- visible only on xs -->
+        <button type="button" id="add-xs" class="btn btn-outline-dark btn-sm d-block d-sm-none active"
+                (click)="onAddBookmark()"
+        >add...
+        </button>
+
+        <!-- hidden only on xs -->
         <button type="button" id="selected" class="btn btn-outline-dark btn-sm d-none d-sm-block"
                 [class.active]="selectedTagsVisible"
                 (click)="onSelectedTagsVisibleClicked()"

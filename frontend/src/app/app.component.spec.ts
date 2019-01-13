@@ -77,15 +77,6 @@ describe('AppComponent', () => {
     });
 
     describe('should toggle states of', () => {
-
-        it('the settingsVisible flag', () => {
-            expect(component.settingsVisible).toBeFalsy();
-            component.onSettingsVisibleClicked();
-            expect(component.settingsVisible).toBeTruthy();
-            component.onSettingsVisibleClicked();
-            expect(component.settingsVisible).toBeFalsy();
-        });
-
         it('the selectedTagsVisible flag', () => {
             expect(component.selectedTagsVisible).toBeTruthy();
             component.onSelectedTagsVisibleClicked();
@@ -109,11 +100,20 @@ describe('AppComponent', () => {
             component.onLogVisibleClicked();
             expect(component.logVisible).toBeFalsy();
         });
+
+        it('the settingsVisible flag', () => {
+            expect(component.settingsVisible).toBeFalsy();
+            component.onSettingsVisibleClicked();
+            expect(component.settingsVisible).toBeTruthy();
+            component.onSettingsVisibleClicked();
+            expect(component.settingsVisible).toBeFalsy();
+        });
+
     });
 
     describe('buttons exist and call the handler', () => {
         it('initial load', () => {
-            let button = debugElement.query(By.css('#init'));
+            const button = debugElement.query(By.css('#init'));
             expect(button).toBeTruthy();
             component.availableTags.add('remove-me');
             fixture.detectChanges();
@@ -121,8 +121,27 @@ describe('AppComponent', () => {
             expect(component.availableTags.size).toBe(0);
         });
 
+        it('add', () => {
+            const button = debugElement.query(By.css('#add'));
+            expect(button).toBeTruthy();
+            component.editorVisible = false;
+            fixture.detectChanges();
+            button.triggerEventHandler('click', null);
+            expect(component.editorVisible).toBeTruthy();
+            expect(component.bookmarksVisible).toBeFalsy();
+        });
+        it('add-xs', () => {
+            const button = debugElement.query(By.css('#add-xs'));
+            expect(button).toBeTruthy();
+            component.editorVisible = false;
+            fixture.detectChanges();
+            button.triggerEventHandler('click', null);
+            expect(component.editorVisible).toBeTruthy();
+            expect(component.bookmarksVisible).toBeFalsy();
+        });
+
         it('selected', () => {
-            let button = debugElement.query(By.css('#selected'));
+            const button = debugElement.query(By.css('#selected'));
             expect(button).toBeTruthy();
             component.selectedTagsVisible = false;
             fixture.detectChanges();
@@ -130,7 +149,7 @@ describe('AppComponent', () => {
             expect(component.selectedTagsVisible).toBeTruthy();
         });
         it('selected-xs', () => {
-            let button = debugElement.query(By.css('#selected-xs'));
+            const button = debugElement.query(By.css('#selected-xs'));
             expect(button).toBeTruthy();
             component.selectedTagsVisible = false;
             fixture.detectChanges();
@@ -139,7 +158,7 @@ describe('AppComponent', () => {
         });
 
         it('available', () => {
-            let button = debugElement.query(By.css('#available'));
+            const button = debugElement.query(By.css('#available'));
             expect(button).toBeTruthy();
             component.availableTagsVisible = false;
             fixture.detectChanges();
@@ -147,7 +166,7 @@ describe('AppComponent', () => {
             expect(component.availableTagsVisible).toBeTruthy();
         });
         it('available-xs', () => {
-            let button = debugElement.query(By.css('#available-xs'));
+            const button = debugElement.query(By.css('#available-xs'));
             expect(button).toBeTruthy();
             component.availableTagsVisible = false;
             fixture.detectChanges();
@@ -156,7 +175,7 @@ describe('AppComponent', () => {
         });
 
         it('log', () => {
-            let button = debugElement.query(By.css('#log'));
+            const button = debugElement.query(By.css('#log'));
             expect(button).toBeTruthy();
             component.logVisible = false;
             fixture.detectChanges();
@@ -165,7 +184,7 @@ describe('AppComponent', () => {
         });
 
         it('settings', () => {
-            let button = debugElement.query(By.css('#settings'));
+            const button = debugElement.query(By.css('#settings'));
             expect(button).toBeTruthy();
             component.settingsVisible = false;
             fixture.detectChanges();

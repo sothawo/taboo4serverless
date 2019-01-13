@@ -8,27 +8,25 @@ import {LogService} from '../log/log.service';
     styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnChanges {
+    @Input() bookmark: Bookmark;
+    @Output() editCancelled = new EventEmitter<string>();
+    @Output() editOk = new EventEmitter<Bookmark>();
     private id: string;
     private url: string;
     private title: string;
     private tags: string;
 
-    @Input() bookmark: Bookmark;
-    @Output() editCancelled = new EventEmitter<string>();
-    @Output() editOk = new EventEmitter<Bookmark>();
-
     constructor(private logger: LogService,) {
     }
 
     ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
-        console.log(changes);
         this.setBookmark(changes.bookmark.currentValue);
     }
 
     setBookmark(bookmark: Bookmark) {
-        this.logger.info('editing bookmark');
-        this.logger.debug(bookmark);
         if (bookmark) {
+            this.logger.info('editing bookmark');
+            this.logger.debug(bookmark);
             this.id = bookmark.id;
             this.url = bookmark.url;
             this.title = bookmark.title;
@@ -37,9 +35,14 @@ export class EditorComponent implements OnChanges {
     }
 
     onOk() {
-        const tags = this.splitTags(this.tags);
-        const bookmark = new Bookmark(this.id, this.url, this.title, tags);
-        this.editOk.emit(bookmark);
+        if (!this.url || this.url.search(/^https?:\/\//i)) {
+            // @ts-ignore
+            bootbox.alert(`Invalid URL: "${this.url}"`);
+        } else {
+            const tags = this.tags ? this.splitTags(this.tags) : [];
+            const bookmark = new Bookmark(this.id, this.url, this.title, tags);
+            this.editOk.emit(bookmark);
+        }
     }
 
     splitTags(tags: string) {

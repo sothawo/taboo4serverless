@@ -1,9 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component} from '@angular/core';
 import {LogService} from './log/log.service';
 import {BackendService} from './backend.service';
 import {Config} from './settings/config';
 import {Bookmark} from './data/bookmark';
-import {EditorComponent} from './editor/editor.component';
 
 @Component({
     selector: 'app-root',
@@ -11,29 +10,21 @@ import {EditorComponent} from './editor/editor.component';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
     settingsVisible = false;
     selectedTagsVisible = true;
     availableTagsVisible = true;
     logVisible = false;
     editorVisible = false;
     bookmarksVisible = true;
-    private layoutSettings: boolean[];
-
     selectedTags: Set<string> = new Set();
     availableTags: Set<string> = new Set();
-
     backendConfig = '{?}';
-
     bookmarks: Bookmark[] = [];
     editorBookmark: Bookmark;
+    private layoutSettings: boolean[];
 
     constructor(private logger: LogService, private backend: BackendService) {
-    }
-
-    ngOnInit() {
-        // this.initialLoad();
-        // this.bookmarks.push(new Bookmark("id", "url", "title", ["tag1", "tag2"]));
     }
 
     onSettingsVisibleClicked() {
@@ -80,6 +71,59 @@ export class AppComponent implements OnInit {
         this.logger.debug(`editing ${bookmark}`);
         this.editorBookmark = bookmark;
         this.storeLayout();
+    }
+
+    onAddBookmark() {
+        this.logger.debug(`editing new bookmark`);
+        this.editorBookmark = undefined;
+        this.storeLayout();
+    }
+
+    /**
+     * called when a bookmark was added/edited.
+     */
+    saveBookmark(bookmark: Bookmark) {
+        this.logger.info(`saving bookmark`);
+        this.logger.debug(bookmark);
+        const start = Date.now();
+        this.backend.saveBookmark(bookmark)
+            .subscribe((savedBookmark: Bookmark) => {
+                    this.logger.info(`saved bookmark after ${Date.now() - start} ms.`);
+                    this.logger.debug(savedBookmark);
+                    this.selectedTags.clear();
+                    savedBookmark.tags.forEach(it => this.selectedTags.add(it));
+                    this.loadBookmarks();
+                    this.restoreLayout();
+                },
+                error => {
+                    this.logger.error(error);
+                });
+
+    }
+
+    storeLayout() {
+        this.logger.debug('store layout...');
+        this.layoutSettings = [];
+        this.layoutSettings.push(this.selectedTagsVisible);
+        this.layoutSettings.push(this.availableTagsVisible);
+        this.layoutSettings.push(this.logVisible);
+        this.layoutSettings.push(this.settingsVisible);
+        this.selectedTagsVisible = false;
+        this.availableTagsVisible = false;
+        this.settingsVisible = false;
+        this.bookmarksVisible = false;
+        this.editorVisible = true;
+    }
+
+    restoreLayout() {
+        this.logger.debug('restore layout...');
+        this.editorVisible = false;
+        this.bookmarksVisible = true;
+        this.selectedTagsVisible = this.layoutSettings[0];
+        this.availableTagsVisible = this.layoutSettings[1];
+        this.logVisible = this.layoutSettings[2];
+        this.settingsVisible = this.layoutSettings[3];
+        this.layoutSettings = [];
     }
 
     private initialLoad() {
@@ -141,52 +185,5 @@ export class AppComponent implements OnInit {
         this.selectedTags.clear();
         this.selectedTags.add('taboo4');
         this.loadBookmarks();
-    }
-
-    /**
-     * called when a bookmark was added/edited.
-     */
-    saveBookmark(bookmark: Bookmark) {
-        this.logger.info(`saving bookmark`);
-        this.logger.debug(bookmark);
-        const start = Date.now();
-        this.backend.saveBookmark(bookmark)
-            .subscribe((savedBookmark: Bookmark) => {
-                    this.logger.info(`saved bookmark after ${Date.now() - start} ms.`);
-                    this.logger.debug(savedBookmark);
-                    this.selectedTags.clear();
-                    savedBookmark.tags.forEach(it => this.selectedTags.add(it));
-                    this.loadBookmarks();
-                    this.restoreLayout();
-                },
-                error => {
-                    this.logger.error(error);
-                });
-
-    }
-
-    storeLayout() {
-        this.logger.debug('store layout...')
-        this.layoutSettings = [];
-        this.layoutSettings.push(this.selectedTagsVisible);
-        this.layoutSettings.push(this.availableTagsVisible);
-        this.layoutSettings.push(this.logVisible);
-        this.layoutSettings.push(this.settingsVisible);
-        this.selectedTagsVisible = false;
-        this.availableTagsVisible = false;
-        this.settingsVisible = false;
-        this.bookmarksVisible = false;
-        this.editorVisible = true;
-    }
-
-    restoreLayout() {
-        this.logger.debug('restore layout...')
-        this.editorVisible = false;
-        this.bookmarksVisible = true;
-        this.selectedTagsVisible = this.layoutSettings[0];
-        this.availableTagsVisible = this.layoutSettings[1];
-        this.logVisible = this.layoutSettings[2];
-        this.settingsVisible = this.layoutSettings[3];
-        this.layoutSettings = [];
     }
 }

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {Bookmark} from '../data/bookmark';
 import {LogService} from '../log/log.service';
 import {BackendService} from '../backend.service';
@@ -8,16 +8,13 @@ import {BackendService} from '../backend.service';
     templateUrl: './bookmark.component.html',
     styleUrls: ['./bookmark.component.css']
 })
-export class BookmarkComponent implements OnInit {
+export class BookmarkComponent {
 
     @Input() bookmark: Bookmark;
     @Output() deleted = new EventEmitter<string>();
     @Output() toEdit = new EventEmitter<Bookmark>();
 
     constructor(private logger: LogService, private backend: BackendService) {
-    }
-
-    ngOnInit() {
     }
 
     onEdit() {
