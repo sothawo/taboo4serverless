@@ -24,7 +24,12 @@ module.exports.handler = async (event) => {
         const body = JSON.parse(event.body);
         const bookmark = new Bookmark(body.url, body.title, body.tags);
 
-        const savedBookmark = await new Taboo4Service(docClient, TableName).saveBookmark(bookmark);
+        let previousId = "";
+        if (event.queryStringParameters && event.queryStringParameters.previousId) {
+            previousId = event.queryStringParameters.previousId;
+        }
+
+        const savedBookmark = await new Taboo4Service(docClient, TableName).saveBookmark(bookmark, previousId);
 
         return corsResponse(201,
             savedBookmark.simplify(),

@@ -58,6 +58,11 @@ functions:
           method: get
           cors: true
           private: true
+      - http:
+          path: dumpevent
+          method: post
+          cors: true
+          private: true
   postBookmark:
     handler: aws/bookmark_post.handler
     events:

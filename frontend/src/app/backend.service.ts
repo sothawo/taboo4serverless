@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {LocalStorage} from 'ngx-store';
 import {Config} from './settings/config';
 import {LogService} from './log/log.service';
 import {Bookmark} from './data/bookmark';
+import {HttpParamsOptions} from '@angular/common/http/src/params';
 
 @Injectable({
     providedIn: 'root'
@@ -19,18 +20,23 @@ export class BackendService {
     constructor(private logger: LogService, private http: HttpClient) {
     }
 
-    private httpOptions() {
+    private httpOptions(params: any = null) {
+        const httpHeaders = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'X-Api-Key': this.apiKey
+        });
+
+        const httpParamsOptions: HttpParamsOptions = {fromObject: params} as HttpParamsOptions;
+        const httpParams = new HttpParams(httpParamsOptions);
         return {
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-                'X-Api-Key': this.apiKey
-            })
+            headers: httpHeaders,
+            params: httpParams
         };
     }
 
-    private preCallLogging(url: string, method: string, payload: any = null) {
+    private preCallLogging(url: string, method: string, options, payload: any = null) {
         this.logger.info(`${method} to ${url}`);
-        this.logger.debug(`api key: ${this.apiKey}`);
+        this.logger.debug(options);
         if (payload) {
             this.logger.debug(payload);
         }
@@ -38,26 +44,38 @@ export class BackendService {
 
     config(): Observable<Config> {
         const url = `${this.apiUrl}/config`;
-        this.preCallLogging(url, 'GET');
-        return this.http.get<Config>(url, this.httpOptions());
+        const options = this.httpOptions();
+        this.preCallLogging(url, 'GET', options);
+        return this.http.get<Config>(url, options);
     }
 
     allTags(): Observable<string[]> {
         const url = `${this.apiUrl}/tags`;
-        this.preCallLogging(url, 'GET');
-        return this.http.get<string[]>(url, this.httpOptions());
+        const options = this.httpOptions();
+        this.preCallLogging(url, 'GET', options);
+        return this.http.get<string[]>(url, options);
     }
 
     bookmarksByTags(tags: string[]): Observable<Bookmark[]> {
         const url = `${this.apiUrl}/bookmarks/query`;
         const body = {'tags': tags};
-        this.preCallLogging(url, 'POST', body);
-        return this.http.post<Bookmark[]>(url, body, this.httpOptions());
+        const options = this.httpOptions();
+        this.preCallLogging(url, 'POST', options, body);
+        return this.http.post<Bookmark[]>(url, body, options);
     }
 
     deleteBookmark(id: string): Observable<string> {
         const url = `${this.apiUrl}/bookmark/${id}`;
-        this.preCallLogging(url, 'DELETE');
-        return this.http.delete<string>(url, this.httpOptions());
+        const options = this.httpOptions();
+        this.preCallLogging(url, 'DELETE', options);
+        return this.http.delete<string>(url, options);
+    }
+
+    saveBookmark(bookmark: Bookmark) {
+        const url = `${this.apiUrl}/bookmark`;
+        const body = bookmark;
+        const options = this.httpOptions({previousId: bookmark.id});
+        this.preCallLogging(url, 'POST', options, body);
+        return this.http.post<Bookmark>(url, body, options);
     }
 }

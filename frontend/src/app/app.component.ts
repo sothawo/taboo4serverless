@@ -149,8 +149,20 @@ export class AppComponent implements OnInit {
     saveBookmark(bookmark: Bookmark) {
         this.logger.info(`saving bookmark`);
         this.logger.debug(bookmark);
+        const start = Date.now();
+        this.backend.saveBookmark(bookmark)
+            .subscribe((savedBookmark: Bookmark) => {
+                    this.logger.info(`saved bookmark after ${Date.now() - start} ms.`);
+                    this.logger.debug(savedBookmark);
+                    this.selectedTags.clear();
+                    savedBookmark.tags.forEach(it => this.selectedTags.add(it));
+                    this.loadBookmarks();
+                    this.restoreLayout();
+                },
+                error => {
+                    this.logger.error(error);
+                });
 
-        this.restoreLayout();
     }
 
     storeLayout() {

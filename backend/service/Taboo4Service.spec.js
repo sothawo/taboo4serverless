@@ -41,29 +41,70 @@ describe("a Taboo4Service", () => {
             params.Item.getBookmark().should.deep.equal(bookmark);
         });
 
-        it("a bookmark saves DBEntry objects for the id and for each tag", async () => {
-            const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
-            const expectedPrimaryKeys = new TabooSet();
-            expectedPrimaryKeys.add([bookmark.id, "id"]);
-            expectedPrimaryKeys.add(["tag01", bookmark.id]);
-            expectedPrimaryKeys.add(["tag02", bookmark.id]);
-            const taboo4Service = new Taboo4Service(docClient, TableName);
-            const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
-            taboo4ServiceFuncSaveDbEntry.resolves("success");
+        describe(" a single bookmark", () => {
+            it("deletes an entry with a different previous id", async () => {
+                const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+                const taboo4Service = new Taboo4Service(docClient, TableName);
+                const taboo4ServiceFuncDeleteBookmarkById = sinon.stub(taboo4Service, "deleteBookmarkById");
+                taboo4ServiceFuncDeleteBookmarkById.resolves("deleted");
+                const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+                taboo4ServiceFuncSaveDbEntry.resolves("success");
 
-            await taboo4Service.saveBookmark(bookmark);
+                await taboo4Service.saveBookmark(bookmark, "someid");
 
-            taboo4ServiceFuncSaveDbEntry.callCount.should.equal(3);
-            const realPrimaryKeys = new TabooSet();
-            taboo4ServiceFuncSaveDbEntry
-                .getCalls()
-                .map(it => it.args[0])
-                .forEach(dbEntry => {
-                    realPrimaryKeys.add([dbEntry.partition, dbEntry.sort]);
-                    dbEntry.getBookmark().should.deep.equal(bookmark);
-                });
+                expect(taboo4ServiceFuncDeleteBookmarkById.callCount).to.equal(1);
+            });
 
-            realPrimaryKeys.should.deep.equal(expectedPrimaryKeys);
+            it("does not delete an entry with the same previous id", async () => {
+                const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+                const taboo4Service = new Taboo4Service(docClient, TableName);
+                const taboo4ServiceFuncDeleteBookmarkById = sinon.stub(taboo4Service, "deleteBookmarkById");
+                taboo4ServiceFuncDeleteBookmarkById.resolves("deleted");
+                const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+                taboo4ServiceFuncSaveDbEntry.resolves("success");
+
+                await taboo4Service.saveBookmark(bookmark, bookmark.id);
+
+                expect(taboo4ServiceFuncDeleteBookmarkById.callCount).to.equal(0);
+            });
+
+            it("does not delete an entry when no previous id is given", async () => {
+                const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+                const taboo4Service = new Taboo4Service(docClient, TableName);
+                const taboo4ServiceFuncDeleteBookmarkById = sinon.stub(taboo4Service, "deleteBookmarkById");
+                taboo4ServiceFuncDeleteBookmarkById.resolves("deleted");
+                const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+                taboo4ServiceFuncSaveDbEntry.resolves("success");
+
+                await taboo4Service.saveBookmark(bookmark, "");
+
+                expect(taboo4ServiceFuncDeleteBookmarkById.callCount).to.equal(0);
+            });
+
+            it("saves DBEntry objects for the id and for each tag", async () => {
+                const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
+                const expectedPrimaryKeys = new TabooSet();
+                expectedPrimaryKeys.add([bookmark.id, "id"]);
+                expectedPrimaryKeys.add(["tag01", bookmark.id]);
+                expectedPrimaryKeys.add(["tag02", bookmark.id]);
+                const taboo4Service = new Taboo4Service(docClient, TableName);
+                const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+                taboo4ServiceFuncSaveDbEntry.resolves("success");
+
+                await taboo4Service.saveBookmark(bookmark);
+
+                taboo4ServiceFuncSaveDbEntry.callCount.should.equal(3);
+                const realPrimaryKeys = new TabooSet();
+                taboo4ServiceFuncSaveDbEntry
+                    .getCalls()
+                    .map(it => it.args[0])
+                    .forEach(dbEntry => {
+                        realPrimaryKeys.add([dbEntry.partition, dbEntry.sort]);
+                        dbEntry.getBookmark().should.deep.equal(bookmark);
+                    });
+
+                realPrimaryKeys.should.deep.equal(expectedPrimaryKeys);
+            });
         });
 
         it("saves an array ", async () => {

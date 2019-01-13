@@ -19,9 +19,14 @@ class Taboo4Service {
     /**
      * saves a bookmark to the database. creates an entry for the ID and one for each tag.
      * @param bookmark the bookmark to save
+     * @param previousId on updats the id of the bookmark to change. This might be different to the bookmark's id when the url was updated.
      * @return {Promise<Bookmark>}
      */
-    async saveBookmark(bookmark) {
+    async saveBookmark(bookmark, previousId = undefined) {
+        console.log("saving", bookmark, previousId);
+        if (previousId && previousId != "" && bookmark.id !== previousId) {
+            await this.deleteBookmarkById(previousId);
+        }
         await this.saveDBEntry(new DBEntry(bookmark.id, "id", bookmark));
         await Promise.all(
             bookmark.tags.getElements()

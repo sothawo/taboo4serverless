@@ -28,11 +28,16 @@ Resources:
         Properties:
             Handler: aws/dumpevent.handler
             Events:
-                Api:
+                Get:
                     Type: Api
                     Properties:
                         Path: /dumpevent
                         Method: get
+                Post:
+                    Type: Api
+                    Properties:
+                        Path: /dumpevent
+                        Method: post
     LambdaPostBookmark:
         Type: AWS::Serverless::Function
         Properties:

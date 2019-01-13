@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChange} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChange} from '@angular/core';
 import {Bookmark} from '../data/bookmark';
 import {LogService} from '../log/log.service';
 
@@ -17,10 +17,10 @@ export class EditorComponent implements OnChanges {
     @Output() editCancelled = new EventEmitter<string>();
     @Output() editOk = new EventEmitter<Bookmark>();
 
-    constructor(private logger: LogService, ) {
+    constructor(private logger: LogService,) {
     }
 
-    ngOnChanges(changes: {[propKey: string]: SimpleChange}) {
+    ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
         console.log(changes);
         this.setBookmark(changes.bookmark.currentValue);
     }
@@ -42,7 +42,7 @@ export class EditorComponent implements OnChanges {
         this.editOk.emit(bookmark);
     }
 
-     splitTags(tags: string) {
+    splitTags(tags: string) {
         return tags.split(/[\s;,.]/).filter(it => it !== '');
     }
 
