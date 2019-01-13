@@ -55,7 +55,7 @@ describe("a Taboo4Service", () => {
                 expect(taboo4ServiceFuncDeleteBookmarkById.callCount).to.equal(1);
             });
 
-            it("does not delete an entry with the same previous id", async () => {
+            it("deletes an entry with the same previous id", async () => {
                 const bookmark = new Bookmark("url01", "title01", ["tag01", "tag02"]);
                 const taboo4Service = new Taboo4Service(docClient, TableName);
                 const taboo4ServiceFuncDeleteBookmarkById = sinon.stub(taboo4Service, "deleteBookmarkById");
@@ -65,7 +65,7 @@ describe("a Taboo4Service", () => {
 
                 await taboo4Service.saveBookmark(bookmark, bookmark.id);
 
-                expect(taboo4ServiceFuncDeleteBookmarkById.callCount).to.equal(0);
+                expect(taboo4ServiceFuncDeleteBookmarkById.callCount).to.equal(1);
             });
 
             it("does not delete an entry when no previous id is given", async () => {
@@ -271,4 +271,12 @@ describe("a Taboo4Service", () => {
         });
 
     });
+
+    it("can load a website's title", async () => {
+        const taboo4Service = new Taboo4Service(docClient, TableName);
+
+        const title = await taboo4Service.loadTitle("https://www.sothawo.com/");
+
+        expect(title).to.equal("sothawo | software: ( design | development | knowledge )");
+    })
 });

@@ -1,9 +1,9 @@
-// @formatter:off
 const DBEntry = require("../data/DBEntry");
 const Bookmark = require("../data/Bookmark");
 const TabooSet = require("../data/TabooSet");
-
-// @formatter:on
+const http = require("http");
+const https = require("https");
+const cheerio = require("cheerio");
 
 /**
  * the taboo4 service implementing the logic for managing the bookmarks.
@@ -259,6 +259,27 @@ class Taboo4Service {
 
     async deleteBookmarkById(id) {
         return this.deleteBookmark(await this.loadBookmark(id));
+    }
+
+    async loadTitle(url) {
+        return new Promise((resolve) => {
+            let callback = response => {
+                let body = "";
+                response.on("data", d => {
+                    return body += d;
+                });
+                response.on("end", () => {
+                    const html = cheerio.load(body);
+                    const title = html('title').html();
+                    resolve(title);
+                })
+            };
+            if (url.startsWith("https://")) {
+                https.get(url, callback);
+            } else {
+                http.get(url, callback);
+            }
+        });
     }
 }
 
