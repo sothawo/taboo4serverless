@@ -23,8 +23,9 @@ class Taboo4Service {
      * @return {Promise<Bookmark>}
      */
     async saveBookmark(bookmark, previousId = undefined) {
-        console.log("saving", bookmark, previousId);
-        if (previousId && previousId != "" && bookmark.id !== previousId) {
+        // delete the previous version and readd it even if the id is not changed. Otherwise we would need to load the
+        // old version and match the tags to the new one to find if some tags were removed
+        if (previousId && previousId != "") {
             await this.deleteBookmarkById(previousId);
         }
         await this.saveDBEntry(new DBEntry(bookmark.id, "id", bookmark));

@@ -368,7 +368,7 @@ $ pip install --user aws-sam-cli
 
 [source,shell]
 ----
-sam local start-api --docker-network taboo4 [--skip-pull-image]
+$ sam local start-api --docker-network taboo4 [--skip-pull-image]
 ----
 
 This starts an API gateway with all the resources configured in _template.yaml_
