@@ -20,28 +20,6 @@ export class BackendService {
     constructor(private logger: LogService, private http: HttpClient) {
     }
 
-    private httpOptions(params: any = null) {
-        const httpHeaders = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'X-Api-Key': this.apiKey
-        });
-
-        const httpParamsOptions: HttpParamsOptions = {fromObject: params} as HttpParamsOptions;
-        const httpParams = new HttpParams(httpParamsOptions);
-        return {
-            headers: httpHeaders,
-            params: httpParams
-        };
-    }
-
-    private preCallLogging(url: string, method: string, options, payload: any = null) {
-        this.logger.info(`${method} to ${url}`);
-        this.logger.debug(options);
-        if (payload) {
-            this.logger.debug(payload);
-        }
-    }
-
     config(): Observable<Config> {
         const url = `${this.apiUrl}/config`;
         const options = this.httpOptions();
@@ -71,11 +49,41 @@ export class BackendService {
         return this.http.delete<string>(url, options);
     }
 
-    saveBookmark(bookmark: Bookmark) {
+    saveBookmark(bookmark: Bookmark): Observable<Bookmark> {
         const url = `${this.apiUrl}/bookmark`;
         const body = bookmark;
         const options = this.httpOptions({previousId: bookmark.id});
         this.preCallLogging(url, 'POST', options, body);
         return this.http.post<Bookmark>(url, body, options);
+    }
+
+    loadTitle(titleUrl: string): Observable<string> {
+        const url = `${this.apiUrl}/title`;
+        const body = {'url': titleUrl};
+        const options = this.httpOptions();
+        this.preCallLogging(url, 'POST', options, body);
+        return this.http.post<string>(url, body, options);
+    }
+
+    private httpOptions(params: any = null) {
+        const httpHeaders = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'X-Api-Key': this.apiKey
+        });
+
+        const httpParamsOptions: HttpParamsOptions = {fromObject: params} as HttpParamsOptions;
+        const httpParams = new HttpParams(httpParamsOptions);
+        return {
+            headers: httpHeaders,
+            params: httpParams
+        };
+    }
+
+    private preCallLogging(url: string, method: string, options, payload: any = null) {
+        this.logger.info(`${method} to ${url}`);
+        this.logger.debug(options);
+        if (payload) {
+            this.logger.debug(payload);
+        }
     }
 }

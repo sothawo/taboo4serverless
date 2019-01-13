@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, Output, SimpleChange} from '@angular/core';
 import {Bookmark} from '../data/bookmark';
 import {LogService} from '../log/log.service';
+import {BackendService} from '../backend.service';
 
 @Component({
     selector: 'app-editor',
@@ -16,7 +17,7 @@ export class EditorComponent implements OnChanges {
     private title: string;
     private tags: string;
 
-    constructor(private logger: LogService) {
+    constructor(private logger: LogService, private backend: BackendService) {
     }
 
     ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
@@ -59,5 +60,18 @@ export class EditorComponent implements OnChanges {
 
     onCancel() {
         this.editCancelled.emit('cancelled');
+    }
+
+    onLoadTitle() {
+        const start = Date.now();
+        this.backend.loadTitle(this.url)
+            .subscribe((title) => {
+                    this.logger.info(`got tile after ${Date.now() - start} ms.`);
+                    this.logger.debug(title);
+                    this.title = title;
+                },
+                error => {
+                    this.logger.error(error);
+                });
     }
 }

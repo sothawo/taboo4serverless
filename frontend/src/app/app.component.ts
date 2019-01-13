@@ -102,7 +102,6 @@ export class AppComponent implements OnInit {
                 error => {
                     this.logger.error(error);
                 });
-
     }
 
     storeLayout() {

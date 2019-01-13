@@ -118,6 +118,16 @@ Resources:
                     Properties:
                         Path: /bookmarks/query
                         Method: post
+    LambdaPostTitle:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/title_post.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /title
+                        Method: post
     OptionsBookmark:
         Type: AWS::Serverless::Function
         Properties:
@@ -167,4 +177,14 @@ Resources:
                     Type: Api
                     Properties:
                         Path: /tags
+                        Method: options
+    OptionsTitle:
+        Type: AWS::Serverless::Function
+        Properties:
+            Handler: aws/cors_options.handler
+            Events:
+                Api:
+                    Type: Api
+                    Properties:
+                        Path: /title
                         Method: options
