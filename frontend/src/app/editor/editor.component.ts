@@ -16,7 +16,7 @@ export class EditorComponent implements OnChanges {
     private title: string;
     private tags: string;
 
-    constructor(private logger: LogService,) {
+    constructor(private logger: LogService) {
     }
 
     ngOnChanges(changes: { [propKey: string]: SimpleChange }) {
@@ -37,7 +37,15 @@ export class EditorComponent implements OnChanges {
     onOk() {
         if (!this.url || this.url.search(/^https?:\/\//i)) {
             // @ts-ignore
-            bootbox.alert(`Invalid URL: "${this.url}"`);
+            bootbox.alert({
+                message: `Invalid URL: "${this.url}"`,
+                buttons: {
+                    ok: {
+                        label: 'ok',
+                        className: 'btn-secondary'
+                    }
+                }
+            });
         } else {
             const tags = this.tags ? this.splitTags(this.tags) : [];
             const bookmark = new Bookmark(this.id, this.url, this.title, tags);

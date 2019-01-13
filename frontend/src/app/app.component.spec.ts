@@ -195,12 +195,17 @@ describe('AppComponent', () => {
 
     describe('with bookmarks', () => {
         it('has an app-bookmark for each bookmark', () => {
-            component.bookmarks.push(new Bookmark('id1', 'url1', 'title1', ['tag11', 'tag12']));
-            component.bookmarks.push(new Bookmark('id2', 'url2', 'title2', ['tag21', 'tag22']));
             fixture.detectChanges();
-            const elements = debugElement.queryAll(By.css('app-bookmark'));
+            // wait for ngOnInit to be finished
+            fixture.whenStable()
+                .then(() => {
+                    component.bookmarks.push(new Bookmark('id1', 'url1', 'title1', ['tag11', 'tag12']));
+                    component.bookmarks.push(new Bookmark('id2', 'url2', 'title2', ['tag21', 'tag22']));
+                    fixture.detectChanges();
+                    const elements = debugElement.queryAll(By.css('app-bookmark'));
 
-            expect(elements.length).toBe(2);
+                    expect(elements.length).toBe(2);
+                });
         });
     });
 });

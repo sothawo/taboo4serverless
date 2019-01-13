@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {LogService} from './log/log.service';
 import {BackendService} from './backend.service';
 import {Config} from './settings/config';
@@ -10,7 +10,7 @@ import {Bookmark} from './data/bookmark';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
     settingsVisible = false;
     selectedTagsVisible = true;
     availableTagsVisible = true;
@@ -25,6 +25,10 @@ export class AppComponent {
     private layoutSettings: boolean[];
 
     constructor(private logger: LogService, private backend: BackendService) {
+    }
+
+    ngOnInit(): void {
+        this.initialLoad();
     }
 
     onSettingsVisibleClicked() {
@@ -110,6 +114,8 @@ export class AppComponent {
         this.layoutSettings.push(this.settingsVisible);
         this.selectedTagsVisible = false;
         this.availableTagsVisible = false;
+        // let the logs be visible
+        // this.logVisible = false;
         this.settingsVisible = false;
         this.bookmarksVisible = false;
         this.editorVisible = true;
