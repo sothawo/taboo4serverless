@@ -36,6 +36,7 @@ class Taboo4Service {
 
                 })
         );
+        await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
         return bookmark;
     }
 
@@ -126,6 +127,7 @@ class Taboo4Service {
                     reject(err);
                 } else {
                     data.Items
+                        .filter( it => (it && it.bookmark))
                         .map(it => it.bookmark)
                         .map(it => new Bookmark(it.url, it.title, it.tags.bag_))
                         .forEach(it => bookmarks.push(it));
@@ -142,10 +144,40 @@ class Taboo4Service {
     }
 
     /**
-     * retrieves all tags as sorted array.
+     * returns all Bookmarks from the correspondig db entry.
      * @return {Promise<[String]>}
      */
     async allTags() {
+        const params = {
+            TableName: this.tableName,
+            Key: {
+                partition: "all tags",
+                sort: "all tags"
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+                this.dynamoDBcDocClient.get(params, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        if (data.Item && data.Item.bookmark) {
+                            resolve(data.Item.bookmark)
+                        } else {
+                            resolve(undefined);
+                        }
+                    }
+                });
+            }
+        );
+    }
+
+    /**
+     * retrieves all tags as sorted array.
+     * @return {Promise<[String]>}
+     */
+    async allTagsFromDB() {
         return this.allBookmarks().then(bookmarks => {
             let tagSet = new TabooSet();
             bookmarks.forEach(bookmark => {
@@ -253,6 +285,7 @@ class Taboo4Service {
                         await this.deleteDBEntry(tag, bookmark.id);
                     })
             );
+            await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
             return "deleted";
         }
     }
@@ -271,7 +304,7 @@ class Taboo4Service {
                 response.on("end", () => {
                     const html = cheerio.load(body);
                     const title = html('title').html();
-                    resolve(title);
+                    resolve(title.trim());
                 })
             };
             if (url.startsWith("https://")) {
