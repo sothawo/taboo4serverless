@@ -22,11 +22,11 @@ class Taboo4Service {
      * @param previousId on updats the id of the bookmark to change. This might be different to the bookmark's id when the url was updated.
      * @return {Promise<Bookmark>}
      */
-    async saveBookmark(bookmark, previousId = undefined) {
+    async saveBookmark(bookmark, previousId = undefined, buildAllTags = true) {
         // delete the previous version and readd it even if the id is not changed. Otherwise we would need to load the
         // old version and match the tags to the new one to find if some tags were removed
         if (previousId && previousId != "") {
-            await this.deleteBookmarkById(previousId);
+            await this.deleteBookmarkById(previousId, false);
         }
         await this.saveDBEntry(new DBEntry(bookmark.id, "id", bookmark));
         await Promise.all(
@@ -36,7 +36,9 @@ class Taboo4Service {
 
                 })
         );
-        await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
+        if (buildAllTags) {
+            await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
+        }
         return bookmark;
     }
 
@@ -48,9 +50,10 @@ class Taboo4Service {
     async saveBookmarks(bookmarks) {
         await Promise.all(
             bookmarks.map(async bookmark => {
-                await this.saveBookmark(bookmark);
+                await this.saveBookmark(bookmark, undefined, false);
             })
         );
+        await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
         return "Bookmarks saved"
     }
 
@@ -273,10 +276,11 @@ class Taboo4Service {
 
     /**
      * deletes a bookmark from the database.
-     * @param bookmark
+     * @param bookmark the bookmark to delete
+     * @parambuildAllTags wether to build the alltags entry after deleting
      * @return {Promise<string>}
      */
-    async deleteBookmark(bookmark) {
+    async deleteBookmark(bookmark, buildAllTags = true) {
         if (bookmark) {
             await this.deleteDBEntry(bookmark.id, "id");
             await Promise.all(
@@ -285,13 +289,15 @@ class Taboo4Service {
                         await this.deleteDBEntry(tag, bookmark.id);
                     })
             );
-            await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
+            if (buildAllTags) {
+                await this.saveDBEntry(new DBEntry("all tags", "all tags", await this.allTagsFromDB()));
+            }
             return "deleted";
         }
     }
 
-    async deleteBookmarkById(id) {
-        return this.deleteBookmark(await this.loadBookmark(id));
+    async deleteBookmarkById(id, buildAllTags = true) {
+        return this.deleteBookmark(await this.loadBookmark(id), buildAllTags);
     }
 
     async loadTitle(url) {
