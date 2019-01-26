@@ -18,8 +18,11 @@ provider:
   stackName: ${self:service}-${self:provider.stage}
   tags:
     app: "taboo4"
+
   environment:
     DYNAMODB_TABLE: ${self:provider.stackName}
+    UPLOAD_BUCKET: com.sothawo.${self:provider.stackName}.upload
+
   apiKeys:
     - ${self:provider.stackName}
   usagePlan:
@@ -30,6 +33,7 @@ provider:
     throttle:
       burstLimit: 100
       rateLimit:  50
+
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -40,6 +44,10 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "arn:aws:s3:::${self:provider.environment.UPLOAD_BUCKET}/*"
 
 functions:
   config:
@@ -135,6 +143,11 @@ functions:
           method: post
           cors: true
           private: true
+  bookmarksFromBucket:
+    handler: aws/bookmarks_bucket.handler
+    timeout: 600
+    events:
+      - s3: ${self:provider.environment.UPLOAD_BUCKET}
   createTable:
     handler: aws/dynamodb_createtable.handler
   deleteTable:

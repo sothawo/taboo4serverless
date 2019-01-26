@@ -291,7 +291,7 @@ Start localstack (all in one line):
 
 [source,shell]
 ----
-$ TMPDIR=/private$TMPDIR SERVICES=dynamodb DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up & 
+$ TMPDIR=/private$TMPDIR SERVICES=dynamodb,s3 DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up & 
 ----
 
 To access this instance, AWS credentials must be set, any fake credential in the environment will do.
