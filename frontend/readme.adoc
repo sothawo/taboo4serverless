@@ -8,3 +8,7 @@ Description of the frontend for the _taboo4_ tagged bookmark service.
 == Technology
 
 The frontend is implemented using Angular 7.1.4. The implementation language is TypeScript, testing is set up by angular to be done with _Jasmine_ and _Karma_. This is the test setup that Angular provides and is different from the techniques used in the backend. I did not change the backend to use the same as I think it's good to know and use different technologies.
+
+== Deployment
+
+After running `ng build --prod` the contents of the _dist/frontend/_ folder must be copied to the web provider of choice.

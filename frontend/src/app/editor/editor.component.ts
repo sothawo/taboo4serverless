@@ -13,9 +13,9 @@ export class EditorComponent implements OnChanges {
     @Output() editCancelled = new EventEmitter<string>();
     @Output() editOk = new EventEmitter<Bookmark>();
     private id: string;
-    private url: string;
-    private title: string;
-    private tags: string;
+    url: string;
+    title: string;
+    tags: string;
 
     constructor(private logger: LogService, private backend: BackendService) {
     }

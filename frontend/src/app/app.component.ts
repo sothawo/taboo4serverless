@@ -131,7 +131,7 @@ export class AppComponent implements OnInit {
         this.layoutSettings = [];
     }
 
-    private initialLoad() {
+    initialLoad() {
         this.availableTags.clear();
         this.selectedTags.clear();
         this.bookmarks = [];
