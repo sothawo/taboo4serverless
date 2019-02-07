@@ -113,10 +113,14 @@ describe("a Taboo4Service", () => {
         it("saves an array ", async () => {
             const bookmark1 = new Bookmark("url01", "title01", ["tag01", "tag02"]);
             const bookmark2 = new Bookmark("url02", "title02", ["tag02", "tag03"]);
-
+            const allTags = ["tag01", "tag02", "tag03"];
             const taboo4Service = new Taboo4Service(docClient, TableName);
             const taboo4ServiceFuncSaveBookmark = sinon.stub(taboo4Service, "saveBookmark");
             taboo4ServiceFuncSaveBookmark.resolves("success");
+            const taboo4ServiceFuncSaveDbEntry = sinon.stub(taboo4Service, "saveDBEntry");
+            taboo4ServiceFuncSaveDbEntry.resolves("success");
+            const taboo4ServiceFuncAllTags = sinon.stub(taboo4Service, "allTagsFromDB");
+            taboo4ServiceFuncAllTags.resolves(allTags);
 
             await taboo4Service.saveBookmarks([bookmark1, bookmark2]);
 

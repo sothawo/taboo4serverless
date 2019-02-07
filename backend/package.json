@@ -11,7 +11,8 @@
     "aws-sdk": "^2.381.0",
     "chai": "^4.2.0",
     "mocha": "^5.2.0",
-    "sinon": "^7.2.2"
+    "sinon": "^7.2.2",
+    "serverless-offline": "^4.2.2"
   },
   "scripts": {
     "test": "npm run test-unit",
