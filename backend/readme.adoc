@@ -271,19 +271,14 @@ $ npm test
 
 === Local integration tests
 
-Local test can be done either by using the `sls invoke local` command or by using SAM local.
+Local test can be done either by using the `sls invoke local` command or by using the https://github.com/dherault/serverless-offline[serverless-offline] plugin, which is configured in the _serverless.yml file.
 The AWS infrastructure components are provided using the _localstack_ image that provides AWS services in a local docker container.
 
 The configuration files and this document assume that for local test the stage value is set to _local_.
 
 ==== Docker
 
-First a network for the container must be created:
-
-[source, shell]
-----
-docker network create taboo4
-----
+Docker must be installed and running.
 
 ==== DynamoDB
 
@@ -291,7 +286,7 @@ Start localstack (all in one line):
 
 [source,shell]
 ----
-$ TMPDIR=/private$TMPDIR SERVICES=dynamodb,s3 DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up & 
+$ TMPDIR=/private$TMPDIR SERVICES=dynamodb DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up & 
 ----
 
 To access this instance, AWS credentials must be set, any fake credential in the environment will do.
@@ -354,24 +349,15 @@ Only feasible for small tables in local development:
 $ aws dynamodb scan --table-name taboo4-local --endpoint=http://localhost:4569
 ----
 
-==== Using SAM local
+==== Using serverless-offline
 
-SAM local starts a docker container when running the functions. Therefore for the SAM local environment, the database host is **not** _localhost_ but _backend_localstack_1_.
-.Installation
 
 [source,shell]
 ----
-$ pip install --user aws-sam-cli
+$ DYNAMODB_URL=http://localhost:4569 sls offline -stage=local
 ----
 
-.Starting SAM local
-
-[source,shell]
-----
-$ sam local start-api --docker-network taboo4 [--skip-pull-image]
-----
-
-This starts an API gateway with all the resources configured in _template.yaml_
+This starts an API gateway with all the resources configured in _serverless.yml_. On startup the API-Key which must be used to access the functions is printed to the console.
 
 == Deployment
 

@@ -1,6 +1,9 @@
 
 service: taboo4
 
+plugins:
+  - serverless-offline
+
 package:
   exclude:
     - "testdata/**"
