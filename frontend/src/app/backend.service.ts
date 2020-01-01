@@ -5,7 +5,6 @@ import {LocalStorage} from 'ngx-store';
 import {Config} from './settings/config';
 import {LogService} from './log/log.service';
 import {Bookmark} from './data/bookmark';
-import {HttpParamsOptions} from '@angular/common/http/src/params';
 
 @Injectable({
     providedIn: 'root'
@@ -71,8 +70,7 @@ export class BackendService {
             'X-Api-Key': this.apiKey
         });
 
-        const httpParamsOptions: HttpParamsOptions = {fromObject: params} as HttpParamsOptions;
-        const httpParams = new HttpParams(httpParamsOptions);
+        const httpParams = new HttpParams({fromObject: params});
         return {
             headers: httpHeaders,
             params: httpParams
