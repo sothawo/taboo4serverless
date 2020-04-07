@@ -1,37 +1,45 @@
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 
-import {LogData, LogLevel, LogListener} from "./log-listener";
-import {LocalStorage} from "ngx-store";
+import {LogData, LogLevel, LogListener} from './log-listener';
+import {LocalStorageService} from '../local-storage.service';
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class LogService {
 
     listeners: Set<LogListener> = new Set();
     messages: LogData[] = [];
 
-    @LocalStorage()
-    logLevel: LogLevel = LogLevel.INFO;
-
-    constructor() {
-        //add a console listener
+    constructor(private localStorageService: LocalStorageService) {
+        // add a console listener
         this.listeners.add(new class implements LogListener {
             log(logData: LogData) {
                 console.log(logData.level, logData.data);
             }
         });
+
+        this.localStorageService.get('logLevel', LogLevel.INFO);
+    }
+
+    set logLevel(logLevel: LogLevel) {
+        this.localStorageService.set('logLevel', logLevel);
+    }
+
+    get logLevel(): LogLevel {
+        const logLevel = this.localStorageService.get('logLevel', 'INFO');
+        return LogLevel[logLevel];
     }
 
     static format(o: any): string {
-        let msg = "";
-        if (typeof o === "string") {
+        let msg = '';
+        if (typeof o === 'string') {
             msg = o;
         } else {
             msg = JSON.stringify(o, null, 2);
         }
         return msg;
-    };
+    }
 
     addListener(listener: LogListener) {
         this.listeners.add(listener);
@@ -42,7 +50,7 @@ export class LogService {
     }
 
     log(logData: LogData) {
-        if (this.logLevelNum(logData.level) >= this.logLevelNum(this.logLevel)) {
+        if (this.logLevelNum(logData.level) >= this.logLevelNum(LogLevel[this.localStorageService.get('logLevel')])) {
             this.messages.push(logData);
             this.listeners.forEach(listener => listener.log(logData));
         }

@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {LocalStorage} from 'ngx-store';
+import {Component, Input, OnInit} from '@angular/core';
 import {LogData, LogLevel} from '../log/log-listener';
 import {LogService} from '../log/log.service';
+import {LocalStorageService} from '../local-storage.service';
 
 @Component({
     selector: 'app-settings',
@@ -10,18 +10,33 @@ import {LogService} from '../log/log.service';
 })
 export class SettingsComponent implements OnInit {
 
-    @LocalStorage()
-    apiUrl: string = '';
+    @Input()
+    set apiUrl(apiUrl: string) {
+        this.localStorageService.set('apiUrl', apiUrl);
+    }
+    get apiUrl(): string {
+        return this.localStorageService.get('apiUrl');
+    }
 
-    @LocalStorage()
-    apiKey: string = '';
+    @Input()
+    set apiKey(apiKey: string) {
+        this.localStorageService.set('apiKey', apiKey);
+    }
+    get apiKey(): string {
+        return this.localStorageService.get('apiKey');
+    }
 
     logLevels: LogLevel[] = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
 
-    @LocalStorage()
-    logLevel: LogLevel = LogLevel.INFO;
+    @Input()
+    set logLevel(logLevel: LogLevel) {
+        this.localStorageService.set('logLevel', logLevel.toString());
+    }
+    get logLevel(): LogLevel {
+        return LogLevel[this.localStorageService.get('logLevel')];
+    }
 
-    constructor(private logger: LogService) {
+    constructor(private logger: LogService, private localStorageService: LocalStorageService) {
     }
 
     ngOnInit() {

@@ -1,40 +1,35 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {LocalStorage} from 'ngx-store';
 import {Config} from './settings/config';
 import {LogService} from './log/log.service';
 import {Bookmark} from './data/bookmark';
+import {LocalStorageService} from './local-storage.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class BackendService {
-    @LocalStorage()
-    apiUrl = '';
 
-    @LocalStorage()
-    apiKey = '';
-
-    constructor(private logger: LogService, private http: HttpClient) {
+    constructor(private logger: LogService, private http: HttpClient, private localStorageService: LocalStorageService) {
     }
 
     config(): Observable<Config> {
-        const url = `${this.apiUrl}/config`;
+        const url = `${this.localStorageService.get('apiUrl')}/config`;
         const options = this.httpOptions();
         this.preCallLogging(url, 'GET', options);
         return this.http.get<Config>(url, options);
     }
 
     allTags(): Observable<string[]> {
-        const url = `${this.apiUrl}/tags`;
+        const url = `${this.localStorageService.get('apiUrl')}/tags`;
         const options = this.httpOptions();
         this.preCallLogging(url, 'GET', options);
         return this.http.get<string[]>(url, options);
     }
 
     bookmarksByTags(tags: string[]): Observable<Bookmark[]> {
-        const url = `${this.apiUrl}/bookmarks/query`;
+        const url = `${this.localStorageService.get('apiUrl')}/bookmarks/query`;
         const body = {'tags': tags};
         const options = this.httpOptions();
         this.preCallLogging(url, 'POST', options, body);
@@ -42,14 +37,14 @@ export class BackendService {
     }
 
     deleteBookmark(id: string): Observable<string> {
-        const url = `${this.apiUrl}/bookmark/${id}`;
+        const url = `${this.localStorageService.get('apiUrl')}/bookmark/${id}`;
         const options = this.httpOptions();
         this.preCallLogging(url, 'DELETE', options);
         return this.http.delete<string>(url, options);
     }
 
     saveBookmark(bookmark: Bookmark): Observable<Bookmark> {
-        const url = `${this.apiUrl}/bookmark`;
+        const url = `${this.localStorageService.get('apiUrl')}/bookmark`;
         const body = bookmark;
         const options = this.httpOptions({previousId: bookmark.id});
         this.preCallLogging(url, 'POST', options, body);
@@ -57,7 +52,7 @@ export class BackendService {
     }
 
     loadTitle(titleUrl: string): Observable<string> {
-        const url = `${this.apiUrl}/title`;
+        const url = `${this.localStorageService.get('apiUrl')}/title`;
         const body = {'url': titleUrl};
         const options = this.httpOptions();
         this.preCallLogging(url, 'POST', options, body);
@@ -67,7 +62,7 @@ export class BackendService {
     private httpOptions(params: any = null) {
         const httpHeaders = new HttpHeaders({
             'Content-Type': 'application/json',
-            'X-Api-Key': this.apiKey
+            'X-Api-Key': this.localStorageService.get('apiKey')
         });
 
         const httpParams = new HttpParams({fromObject: params});

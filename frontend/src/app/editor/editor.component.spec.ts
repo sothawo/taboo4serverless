@@ -1,5 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule} from '@angular/forms';
+import {HttpClient, HttpHandler} from '@angular/common/http';
 
 import {EditorComponent} from './editor.component';
 import {DebugElement} from '@angular/core';
@@ -14,7 +15,10 @@ describe('EditorComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [EditorComponent],
-            imports: [FormsModule]
+            imports: [FormsModule],
+            providers: [
+                HttpClient, HttpHandler
+            ]
         }).compileComponents();
     }));
 
