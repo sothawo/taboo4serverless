@@ -1,0 +1,12 @@
+#init-app:hover {
+    cursor: pointer;
+}
+
+nav button {
+    margin: 0 0.25rem;
+    text-overflow: ellipsis;
+}
+
+nav input, #init-app {
+    margin: 0 0.25rem;
+}
