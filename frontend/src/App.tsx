@@ -4,6 +4,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {Button, Col, Container, Row} from "react-bootstrap";
+import {PJ} from "./PJ";
 
 function App() {
     return (
@@ -12,6 +13,11 @@ function App() {
                 <Row>
                     <Col>
                         <Button variant="warning"> I am a button!</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <PJ/>
                     </Col>
                 </Row>
             </Container>
