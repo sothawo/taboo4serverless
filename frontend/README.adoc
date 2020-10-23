@@ -16,6 +16,20 @@ After that, bootstrap was installed with
 yarn add react-bootstrap bootstrap
 ----
 
+Storybook was added with
+[source,shell]
+----
+npx sb init
+----
+
+It is necessary to
+----
+rm yarn.lock
+yarn install
+----
+
+to get storybook running
+
 == Available Scripts
 
 In the project directory, you can run:
