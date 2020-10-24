@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import {NavBar} from './NavBar';
+import {Header} from './Header';
 
-describe('NavBar tests', () =>{
+describe('Header tests', () =>{
 
     test("renders the sothawofant image", () => {
-        render(<NavBar />);
+        render(<Header />);
         let elements = screen.getAllByAltText("init-app");
         expect(elements[0]).toBeDefined()
     })
