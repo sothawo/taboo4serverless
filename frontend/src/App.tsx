@@ -2,12 +2,16 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {NavBar} from "./NavBar";
+import {NavBar, NavBarEvent} from "./NavBar";
 
 function App() {
+    const navbarHandler = (evt: NavBarEvent) => {
+        console.log(`NavBar event with id: ${evt.id}`)
+    }
+
     return (
         <div className="App">
-            <NavBar/>
+            <NavBar onClick={navbarHandler}/>
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo"/>
                 <p>
