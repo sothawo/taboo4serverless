@@ -8,8 +8,10 @@ describe("a TagList", () => {
 
         const tagListProps: TagListProps = {
             title: "some title",
-            tags: ["tag1"]
+            tags: ["tag1"],
+            onSelect: (tag) => {}
         }
+
         render(<TagList {...tagListProps} />);
 
         let element = screen.getByText(tagListProps.title);
@@ -19,7 +21,8 @@ describe("a TagList", () => {
     test("should render the tags", () => {
         const tagListProps: TagListProps = {
             title: "some title",
-            tags: ["tag1", "hello", "world"]
+            tags: ["tag1", "hello", "world"],
+            onSelect: (tag) => {}
         }
         render(<TagList {...tagListProps} />);
 

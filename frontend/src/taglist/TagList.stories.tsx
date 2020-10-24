@@ -7,11 +7,11 @@ export default {
     component: TagList
 } as Meta;
 
-const Template: Story<TagListProps> = (args: TagListProps) => <TagList {...args}/>
+const Template: Story<TagListProps> = (args: TagListProps) => <TagList {...args} />;
 
 export const TagListIsEmpty = Template.bind({})
 TagListIsEmpty.args = {
-    title: "some tags"
+    title: "no tags here"
 }
 
 export const TagListIsNotEmpty = Template.bind({})
