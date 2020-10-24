@@ -1,0 +1,33 @@
+.card {
+    margin-top: 1rem;
+}
+
+div .msg {
+    border-bottom: 1px solid #ddd;
+    font-size: smaller;
+}
+
+div .msg:first-child {
+    border-top: 1px solid #ddd;
+}
+
+div .msg pre {
+    margin-bottom: 0px;
+    padding: 0.3rem;
+}
+
+.msg .DEBUG {
+    background-color: lightskyblue;
+}
+
+.msg .INFO {
+    background-color: lightgreen;
+}
+
+.msg .ERROR {
+    background-color: red;
+}
+
+.msg .WARN {
+    background-color: yellow;
+}
