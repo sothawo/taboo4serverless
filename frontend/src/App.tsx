@@ -11,7 +11,9 @@ function App() {
 
     const headerProps : HeaderProps = {
         availableActive: false,
-        selectedActive: false
+        selectedActive: false,
+        logsActive: false,
+        settingsActive: false
     }
 
     return (

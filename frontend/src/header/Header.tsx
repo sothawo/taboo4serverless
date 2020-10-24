@@ -1,5 +1,7 @@
 import React from "react";
 import sothawofant from "../assets/sothawofant-32.png";
+import logs from "../assets/report.svg";
+import settings from "../assets/settings.svg";
 import "./Header.css";
 
 import {Button, ButtonProps, Image, Navbar} from "react-bootstrap";
@@ -7,8 +9,12 @@ import {Button, ButtonProps, Image, Navbar} from "react-bootstrap";
 export interface HeaderProps {
     /** if the selected button should be set to active. */
     selectedActive: boolean,
-    /** if the active button should be set to active. */
+    /** if the available button should be set to active. */
     availableActive: boolean
+    /** if the logs button should be set to active. */
+    logsActive: boolean
+    /** if the settings button should be set to active. */
+    settingsActive: boolean
     /**
      * Handler to be called when any of the Navbar elements is clicked.
      * @param evt the HeaderEvent
@@ -59,6 +65,20 @@ export const Header = (props: HeaderProps) => {
         onClick: () => clickHandler("available")
     }
 
+    const logsButtonProps: ButtonProps = {
+        ...commonButtonProps,
+        id: "logs",
+        active: props.logsActive,
+        onClick: () => clickHandler("logs")
+    }
+
+    const settingsButtonProps: ButtonProps = {
+        ...commonButtonProps,
+        id: "setiings",
+        active: props.settingsActive,
+        onClick: () => clickHandler("settings")
+    }
+
     return (
         <Navbar expand={"sm"} variant={"dark"} fixed={"top"} bg={"secondary"}>
             <div className="flex-fill d-flex">
@@ -75,7 +95,12 @@ export const Header = (props: HeaderProps) => {
                     <span className={"d-none d-sm-block"}>available</span>
                     <span className={"d-block d-sm-none"}>ava...</span>
                 </Button>
-                <Button size={"sm"} className={"ml-auto"}>...</Button>
+                <Button {...logsButtonProps} className={"ml-auto"}>
+                    <Image src={logs}/>
+                </Button>
+                <Button {...settingsButtonProps} >
+                    <Image src={settings}/>
+                </Button>
             </div>
         </Navbar>
     );
