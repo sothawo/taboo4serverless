@@ -1,6 +1,6 @@
 import React from "react";
-import {Header, HeaderProps} from './Header';
 import {Meta, Story} from "@storybook/react";
+import {Header, HeaderProps} from './Header';
 
 export default {
     title: "taboo4/Header",
@@ -10,6 +10,14 @@ export default {
 const Template: Story<HeaderProps> = (args: HeaderProps) => <Header {...args}/>;
 
 
-export const InitialSetup = Template.bind({});
-InitialSetup.args = {
+export const ToggleButtonsNotActive = Template.bind({});
+ToggleButtonsNotActive.args = {
+}
+
+export const ToggleButtonsActive = Template.bind({});
+ToggleButtonsActive.args = {
+    selectedActive: true,
+    availableActive: true,
+    logsActive: true,
+    settingsActive: true
 }

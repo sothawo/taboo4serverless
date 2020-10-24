@@ -17,9 +17,9 @@ export interface HeaderProps {
     settingsActive: boolean
     /**
      * Handler to be called when any of the Navbar elements is clicked.
-     * @param evt the HeaderEvent
+     * @param the id of the clicked button
      */
-    onClick?: (evt: HeaderEvent) => void
+    onClick: (id: string) => void
 }
 
 /**
@@ -37,8 +37,6 @@ export interface HeaderEvent {
  */
 export const Header = (props: HeaderProps) => {
 
-    const clickHandler = (id: string) => props.onClick && props.onClick({id: id})
-
     const commonButtonProps: ButtonProps = {
         variant: "outline-dark",
         size: "sm"
@@ -48,41 +46,41 @@ export const Header = (props: HeaderProps) => {
         ...commonButtonProps,
         id: "add",
         active: true,
-        onClick: () => clickHandler("add")
+        onClick: () => props.onClick("add")
     }
 
     const selectedButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "selected",
         active: props.selectedActive,
-        onClick: () => clickHandler("selected")
+        onClick: () => props.onClick("selected")
     }
 
     const availableButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "available",
         active: props.availableActive,
-        onClick: () => clickHandler("available")
+        onClick: () => props.onClick("available")
     }
 
     const logsButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "logs",
         active: props.logsActive,
-        onClick: () => clickHandler("logs")
+        onClick: () => props.onClick("logs")
     }
 
     const settingsButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "setiings",
         active: props.settingsActive,
-        onClick: () => clickHandler("settings")
+        onClick: () => props.onClick("settings")
     }
 
     return (
         <Navbar expand={"sm"} variant={"dark"} fixed={"top"} bg={"secondary"}>
             <div className="flex-fill d-flex">
-                <Image id="init-app" src={sothawofant} width="32" height="32" alt="init-app" onClick={() => clickHandler("init-app")}/>
+                <Image id="init-app" src={sothawofant} width="32" height="32" alt="init-app" onClick={() => props.onClick("init-app")}/>
                 <Button {...addButtonProps}>
                     <span className={"d-none d-sm-block"}>add bookmark</span>
                     <span className={"d-block d-sm-none"}>add...</span>

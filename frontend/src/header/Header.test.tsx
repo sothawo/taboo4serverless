@@ -2,15 +2,16 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import {Header, HeaderProps} from './Header';
 
-describe('Header tests', () =>{
+describe('a Header', () =>{
 
-    test("renders the sothawofant image", () => {
+    test("should renders the sothawofant image", () => {
 
         const headerProps: HeaderProps = {
             selectedActive: true,
             availableActive: true,
             logsActive: true,
-            settingsActive: true
+            settingsActive: true,
+            onClick: (id) => {}
         }
         render(<Header {...headerProps} />);
         let elements = screen.getAllByAltText("init-app");
