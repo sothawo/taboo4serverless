@@ -1,0 +1,19 @@
+.card {
+    margin-top: 0.1rem;
+}
+
+.card-header {
+    align-items: center;
+}
+
+.card-text {
+    margin-bottom: 0;
+}
+
+.card-body .tags {
+    font-size: smaller;
+}
+
+#edit, #delete {
+    margin-left: 0.5rem;
+}
