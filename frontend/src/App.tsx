@@ -1,23 +1,24 @@
 import React from 'react';
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Header, HeaderEvent, HeaderProps} from "./header/Header";
+import './App.css';
+import {Header, HeaderProps} from "./header/Header";
 
 function App() {
-    const navbarHandler = (evt: HeaderEvent) => {
-        console.log(`Header event with id: ${evt.id}`)
+    const navbarHandler = (id: string) => {
+        console.log(`Header event with id: ${id}`)
     }
 
     const headerProps: HeaderProps = {
         availableActive: false,
         selectedActive: false,
         logsActive: false,
-        settingsActive: false
+        settingsActive: false,
+        onClick: navbarHandler
     }
 
     return (
         <div className="App">
-            <Header {...headerProps} onClick={navbarHandler}/>
+            <Header {...headerProps} />
         </div>
     );
 }
