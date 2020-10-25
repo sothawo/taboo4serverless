@@ -2,18 +2,18 @@
     margin-top: 0.1rem;
 }
 
-.card-header {
+.cardHeader {
     align-items: center;
 }
 
-.card-text {
+.cardText {
     margin-bottom: 0;
 }
 
-.card-body .tags {
+.cardBodyTags {
     font-size: smaller;
 }
 
-#edit, #delete {
+.edit, .delete {
     margin-left: 0.5rem;
 }

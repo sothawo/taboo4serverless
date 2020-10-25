@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Card} from "react-bootstrap";
-import "./TagList.css";
+import styles from "./TagList.module.css";
 
 /**
  * TagList properties
@@ -20,12 +20,12 @@ export interface TagListProps {
  * @constructor
  */
 export const TagList = (props: TagListProps) =>
-    <Card>
+    <Card className={styles.card}>
         <Card.Header>{props.title}</Card.Header>
-        <Card.Body>
+        <Card.Body className={styles.cardBody}>
             {props.tags && sortedTags(props.tags).map((tag, index) => {
                 return <Button variant={"outline-secondary"} size={"sm"} key={index}
-                               className={"taglist-entry"} onClick={() => props.onSelect(tag)}>
+                               className={styles.taglistEntry} onClick={() => props.onSelect(tag)}>
                     {tag}
                 </Button>
             })}

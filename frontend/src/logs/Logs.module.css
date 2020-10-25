@@ -3,12 +3,12 @@
 }
 
 div .msg {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #999;
     font-size: smaller;
 }
 
 div .msg:first-child {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #999;
 }
 
 div .msg pre {
@@ -16,18 +16,18 @@ div .msg pre {
     padding: 0.3rem;
 }
 
-.msg .DEBUG {
+.DEBUG {
     background-color: lightskyblue;
 }
 
-.msg .INFO {
+.INFO {
     background-color: lightgreen;
 }
 
-.msg .ERROR {
+.ERROR {
     background-color: red;
 }
 
-.msg .WARN {
+.WARN {
     background-color: yellow;
 }

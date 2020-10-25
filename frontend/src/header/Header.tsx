@@ -2,7 +2,7 @@ import React from "react";
 import sothawofant from "../assets/sothawofant-32.png";
 import logs from "../assets/report.svg";
 import settings from "../assets/settings.svg";
-import "./Header.css";
+import styles from "./Header.module.css";
 
 import {Button, ButtonProps, Image, Navbar} from "react-bootstrap";
 
@@ -80,7 +80,7 @@ export const Header = (props: HeaderProps) => {
     return (
         <Navbar expand={"sm"} variant={"dark"} fixed={"top"} bg={"secondary"}>
             <div className="flex-fill d-flex">
-                <Image id="init-app" src={sothawofant} width="32" height="32" alt="init-app" onClick={() => props.onClick("init-app")}/>
+                <Image className={styles.initApp} src={sothawofant} width="32" height="32" alt="init-app" onClick={() => props.onClick("init-app")}/>
                 <Button {...addButtonProps}>
                     <span className={"d-none d-sm-block"}>add bookmark</span>
                     <span className={"d-block d-sm-none"}>add...</span>

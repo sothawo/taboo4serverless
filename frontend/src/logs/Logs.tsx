@@ -1,8 +1,8 @@
 import React from "react";
 import {Button, Card, Image} from "react-bootstrap";
-import "./Logs.css"
-import trashcan from "../assets/trashcan.svg";
 import {LogData} from "./LogData";
+import styles from "./Logs.module.css"
+import trashcan from "../assets/trashcan.svg";
 
 /**
  * Logs properties.
@@ -15,7 +15,7 @@ export interface LogsProps {
 }
 
 export const Logs = (props: LogsProps) =>
-    <Card>
+    <Card className={styles.card}>
         <Card.Header className={"d-flex"}>logs
             <Button variant={"outline-dark"} size={"sm"} className={"ml-auto"} onClick={() => props.onClear()}>
                 <Image src={trashcan}/>
@@ -24,8 +24,8 @@ export const Logs = (props: LogsProps) =>
         <Card.Body>
             {props.logs && props.logs.map((logData) => {
                 return (
-                    <div className={"msg"}>
-                        <pre className={logData.level}>{format(logData)}</pre>
+                    <div className={styles.msg}>
+                        <pre className={styles[logData.level]}>{format(logData)}</pre>
                     </div>
                 )
             })}
