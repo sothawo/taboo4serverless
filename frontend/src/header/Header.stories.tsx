@@ -9,7 +9,6 @@ export default {
 
 const Template: Story<HeaderProps> = (args: HeaderProps) => <Header {...args}/>;
 
-
 export const ToggleButtonsNotActive = Template.bind({});
 ToggleButtonsNotActive.args = {
 }

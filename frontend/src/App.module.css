@@ -1,0 +1,4 @@
+.App {
+    /* need additional top padding (besides index.css) because of navbar fixation */
+    padding-top: 3.2rem;
+}
