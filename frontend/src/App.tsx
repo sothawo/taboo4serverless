@@ -7,6 +7,7 @@ import {Logs} from "./logs/Logs";
 import {Bookmarks} from "./bookmarks/Bookmarks";
 import {Bookmark} from "./bookmarks/Bookmark";
 import {LogData, LogLevel} from "./logs/LogData";
+import {LocalStorage} from "./localstorage/LocalStorage";
 
 export interface AppProps {
     availableActive: boolean,
@@ -14,7 +15,8 @@ export interface AppProps {
     logsActive: boolean,
     settingsActive: boolean,
     bookmarks: Bookmark[],
-    logData: LogData[]
+    logData: LogData[],
+    localStorage: LocalStorage
 }
 
 const appProps: AppProps = {
@@ -28,10 +30,11 @@ const appProps: AppProps = {
         new LogData(LogLevel.INFO, {foo: "info", level: 7}),
         new LogData(LogLevel.WARN, "some warn message"),
         new LogData(LogLevel.ERROR, {foo: "bar", level: 42})
-    ]
+    ],
+    localStorage: new LocalStorage()
 }
 
-const toggleComponentAvailability = function (props: AppProps, component: string) : AppProps {
+const toggleComponentAvailability = function (props: AppProps, component: string): AppProps {
     let newProps = {...props};
     switch (component) {
         case "available":
@@ -56,23 +59,31 @@ export function App() {
 
     const [props, setProps] = useState(appProps)
 
+    console.log(props)
+    console.log(props.localStorage.get("foo", "nix da"));
+    props.localStorage.set("foo", "bar");
+
     const navbarHandler = (id: string) => {
         console.log(`Header event with id: ${id}`)
         setProps(toggleComponentAvailability(props, id));
     }
 
-    const selectTag = (tag: string) => {}
-    const deselectTag = (tag: string) => {}
-    const editBookmark = (id: string) => {}
-    const deleteBookmark = (id: string) => {}
+    const selectTag = (tag: string) => {
+    }
+    const deselectTag = (tag: string) => {
+    }
+    const editBookmark = (id: string) => {
+    }
+    const deleteBookmark = (id: string) => {
+    }
     const clearLogs = () => setProps({...props, logData: []})
 
     return (
         <div className={styles.App}>
-            <Header {...props} onClick={navbarHandler} />
+            <Header {...props} onClick={navbarHandler}/>
             {props.selectedActive && <TagList title={"selected tags"} onSelect={selectTag}/>}
             {props.availableActive && <TagList title={"available tags"} onSelect={deselectTag}/>}
-            <Bookmarks bookmarks={props.bookmarks} onEdit={editBookmark} onDelete={deleteBookmark} />
+            <Bookmarks bookmarks={props.bookmarks} onEdit={editBookmark} onDelete={deleteBookmark}/>
             {props.logsActive && <Logs logs={props.logData} onClear={clearLogs}/>}
         </div>
     );
