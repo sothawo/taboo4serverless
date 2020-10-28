@@ -78,15 +78,18 @@ export function App() {
     }
     const deleteBookmark = (id: string) => {
     }
+
+    const addLog = (log: LogData) => props.logData.push(log);
     const clearLogs = () => setProps({...props, logData: []})
 
     const handleSettingsClose = () => setProps({...props, showSettings: false})
     const handleSettingsSave = (data: SettingsData) => {
         setProps({...props, showSettings: false})
-        props.localStorage.set("apiKey", data.apiKey);
+        addLog({level: LogLevel.INFO, data: `set apiUrl to ${data.apiUrl}`});
         props.localStorage.set("apiUrl", data.apiUrl);
+        addLog({level: LogLevel.INFO, data: `set apiKey to ${data.apiKey}`});
+        props.localStorage.set("apiKey", data.apiKey);
     }
-
 
     return (
         <div className={styles.App}>
