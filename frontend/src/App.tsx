@@ -8,22 +8,23 @@ import {Bookmarks} from "./bookmarks/Bookmarks";
 import {Bookmark} from "./bookmarks/Bookmark";
 import {LogData, LogLevel} from "./logs/LogData";
 import {LocalStorage} from "./localstorage/LocalStorage";
+import {Settings, SettingsData} from "./settings/Settings";
 
 export interface AppProps {
     availableActive: boolean,
     selectedActive: boolean,
     logsActive: boolean,
-    settingsActive: boolean,
+    showSettings: boolean,
     bookmarks: Bookmark[],
     logData: LogData[],
     localStorage: LocalStorage
 }
 
-const appProps: AppProps = {
+const initialAppProps: AppProps = {
     availableActive: true,
     selectedActive: true,
     logsActive: false,
-    settingsActive: false,
+    showSettings: false,
     bookmarks: [new Bookmark("42", "https://www.sothawo.com", "sothawo-website", ["cool", "unbelievable"])],
     logData: [
         new LogData(LogLevel.DEBUG, "some debug message"),
@@ -33,6 +34,7 @@ const appProps: AppProps = {
     ],
     localStorage: new LocalStorage()
 }
+
 
 const toggleComponentAvailability = function (props: AppProps, component: string): AppProps {
     let newProps = {...props};
@@ -46,9 +48,6 @@ const toggleComponentAvailability = function (props: AppProps, component: string
         case "logs":
             newProps.logsActive = !newProps.logsActive;
             break;
-        case "settings":
-            newProps.settingsActive = !newProps.settingsActive;
-            break;
         default:
             break;
     }
@@ -57,15 +56,18 @@ const toggleComponentAvailability = function (props: AppProps, component: string
 
 export function App() {
 
-    const [props, setProps] = useState(appProps)
-
-    console.log(props)
-    console.log(props.localStorage.get("foo", "nix da"));
-    props.localStorage.set("foo", "bar");
+    const [props, setProps] = useState<AppProps>(initialAppProps)
 
     const navbarHandler = (id: string) => {
         console.log(`Header event with id: ${id}`)
-        setProps(toggleComponentAvailability(props, id));
+        switch (id) {
+            case "settings":
+                setProps({...props, showSettings: true})
+                break;
+            default:
+                setProps(toggleComponentAvailability(props, id));
+                break;
+        }
     }
 
     const selectTag = (tag: string) => {
@@ -78,6 +80,14 @@ export function App() {
     }
     const clearLogs = () => setProps({...props, logData: []})
 
+    const handleSettingsClose = () => setProps({...props, showSettings: false})
+    const handleSettingsSave = (data: SettingsData) => {
+        setProps({...props, showSettings: false})
+        props.localStorage.set("apiKey", data.apiKey);
+        props.localStorage.set("apiUrl", data.apiUrl);
+    }
+
+
     return (
         <div className={styles.App}>
             <Header {...props} onClick={navbarHandler}/>
@@ -85,6 +95,12 @@ export function App() {
             {props.availableActive && <TagList title={"available tags"} onSelect={deselectTag}/>}
             <Bookmarks bookmarks={props.bookmarks} onEdit={editBookmark} onDelete={deleteBookmark}/>
             {props.logsActive && <Logs logs={props.logData} onClear={clearLogs}/>}
+
+            {props.showSettings && <Settings data={{
+                apiUrl: props.localStorage.get("apiUrl") || "",
+                apiKey: props.localStorage.get("apiKey") || ""
+            }}
+                                             handleClose={handleSettingsClose} handleSave={handleSettingsSave}/>}
         </div>
     );
 }

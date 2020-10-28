@@ -13,8 +13,6 @@ export interface HeaderProps {
     availableActive: boolean
     /** if the logs button should be set to active. */
     logsActive: boolean
-    /** if the settings button should be set to active. */
-    settingsActive: boolean
     /**
      * Handler to be called when any of the Navbar elements is clicked.
      * @param the id of the clicked button
@@ -72,8 +70,7 @@ export const Header = (props: HeaderProps) => {
 
     const settingsButtonProps: ButtonProps = {
         ...commonButtonProps,
-        id: "setiings",
-        active: props.settingsActive,
+        id: "settings",
         onClick: () => props.onClick("settings")
     }
 
