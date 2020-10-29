@@ -17,17 +17,17 @@ div .msg pre {
 }
 
 .DEBUG {
-    background-color: lightskyblue;
+    background-color: #d1ecf1;
 }
 
 .INFO {
-    background-color: lightgreen;
+    background-color: #e2e3e5;;
 }
 
 .ERROR {
-    background-color: red;
+    background-color: #f8d7da;
 }
 
 .WARN {
-    background-color: yellow;
+    background-color: #fff3cd;
 }

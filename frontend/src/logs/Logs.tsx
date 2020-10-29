@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Card, Image} from "react-bootstrap";
-import {LogData} from "./LogData";
+import {LogData, LogLevel} from './LogData';
 import styles from "./Logs.module.css"
 import trashcan from "../assets/trashcan.svg";
 
