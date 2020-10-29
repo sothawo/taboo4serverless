@@ -10,6 +10,7 @@ import {LogData, LogLevel} from './logs/LogData';
 import {LocalStorage} from './localstorage/LocalStorage';
 import {Settings, SettingsData} from './settings/Settings';
 import {Logger} from './logs/Logger';
+import {Backend} from './backend/Backend';
 
 export interface AppProps {
     availableActive: boolean,
@@ -54,11 +55,16 @@ export function App() {
 
     const [props, setProps] = useState<AppProps>(initialAppProps);
 
+    const backend = new Backend();
+
     const navbarHandler = (id: string) => {
         console.log(`Header event with id: ${id}`);
         switch (id) {
             case 'settings':
                 setProps({...props, showSettings: true});
+                break;
+            case 'init-app':
+                backend.getIp().subscribe(value => logger.info(value));
                 break;
             default:
                 setProps(toggleComponentAvailability(props, id));
@@ -78,7 +84,7 @@ export function App() {
     const logger = new Logger({
         log: (logData: LogData) => {
             props.logData.push(logData);
-            setProps({...props, logData: props.logData});
+            setProps({...props});
         }
     });
 
