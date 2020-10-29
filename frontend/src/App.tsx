@@ -27,12 +27,7 @@ const initialAppProps: AppProps = {
     logsActive: false,
     showSettings: false,
     bookmarks: [new Bookmark('42', 'https://www.sothawo.com', 'sothawo-website', ['cool', 'unbelievable'])],
-    logData: [
-        new LogData(LogLevel.DEBUG, 'some debug message'),
-        new LogData(LogLevel.INFO, {foo: 'info', level: 7}),
-        new LogData(LogLevel.WARN, 'some warn message'),
-        new LogData(LogLevel.ERROR, {foo: 'bar', level: 42})
-    ],
+    logData: [],
     localStorage: new LocalStorage()
 };
 
@@ -91,11 +86,12 @@ export function App() {
 
     const handleSettingsClose = () => setProps({...props, showSettings: false});
     const handleSettingsSave = (data: SettingsData) => {
-        setProps({...props, showSettings: false});
         logger.info('saving settings:');
         logger.info(data);
         props.localStorage.set('apiUrl', data.apiUrl);
         props.localStorage.set('apiKey', data.apiKey);
+        props.localStorage.set('logLevel', data.logLevel);
+        setProps({...props, showSettings: false});
     };
 
     return (
@@ -109,7 +105,8 @@ export function App() {
             {props.showSettings && <Settings
                 data={{
                     apiUrl: props.localStorage.get('apiUrl') || '',
-                    apiKey: props.localStorage.get('apiKey') || ''
+                    apiKey: props.localStorage.get('apiKey') || '',
+                    logLevel: props.localStorage.get('logLevel') || 'INFO'
                 }}
                 handleClose={handleSettingsClose}
                 handleSave={handleSettingsSave}/>}

@@ -14,10 +14,12 @@ SettingsDialog.args = {
     show: true,
     data: {
         apiUrl: "url",
-        apiKey: "key"
+        apiKey: "key",
+        logLevel: "DEBUG"
     },
     handleClose: () => {
     },
     handleSave: (data: SettingsData) => {
+        console.log(data);
     }
 }

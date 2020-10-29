@@ -24,7 +24,7 @@ export class Logger {
         }
     };
 
-    private logLevel(s: string): LogLevel {
+    logLevel(s: string): LogLevel {
         let logLevel = LogLevel.INFO;
         switch (s) {
             case 'DEBUG':
