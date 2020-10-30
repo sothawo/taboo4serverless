@@ -3,6 +3,7 @@ import {fromFetch} from 'rxjs/fetch';
 import {mergeMap} from 'rxjs/operators';
 import {LocalStorage} from '../localstorage/LocalStorage';
 import {Logger} from '../logs/Logger';
+import {Bookmark} from '../bookmarks/Bookmark';
 
 interface IpApi {
     query: string
@@ -27,33 +28,42 @@ export class Backend {
             .pipe(mergeMap(response => response.json()));
     }
 
-    private buildRequest(method: string, path: string): Request {
+    bookmarksByTags(tags: string[]): Observable<Bookmark[]> {
+        return fromFetch(this.buildRequest('POST', '/bookmarks/query', {tags}))
+            .pipe(mergeMap(response => response.json()));
+    }
+
+    private buildRequest(method: string, path: string, body: any = undefined): Request {
+        let payload = body && JSON.stringify(body);
         const request: Request = new Request(
             `${this.localStorage.get('apiUrl')}${path}`,
             {
                 method: method,
-                headers: this.getHeaders()
+                headers: this.getHeaders(),
+                body: payload
             });
-        this.logRequest(request);
+        this.logRequest(request, payload);
         return request;
     }
 
     private getHeaders(): Headers {
         return new Headers({
             'Accept': 'application/json',
+            'Content-Type': 'application/json',
             'X-Api-Key': `${this.localStorage.get('apiKey')}`
         });
     }
 
-    private logRequest(request: Request) {
+    private logRequest(request: Request, payload?: string) {
 
         this.logger.info(`-> ${request.method} ${request.url}`);
         request.headers.forEach((v, k) => {
             this.logger.debug(`-> ${k}: ${v}`);
         });
 
-        if (request.body) {
-            this.logger.debug(request.body);
+        if (payload) {
+            this.logger.debug("-> data:")
+            this.logger.debug(JSON.parse(payload));
         }
     }
 }

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './App.module.css';
+import {filter, mergeMap, switchMap} from 'rxjs/operators';
 import {Header} from './header/Header';
 import {TagList} from './taglist/TagList';
 import {Logs} from './logs/Logs';
@@ -11,14 +12,15 @@ import {LocalStorage} from './localstorage/LocalStorage';
 import {Settings, SettingsData} from './settings/Settings';
 import {Logger} from './logs/Logger';
 import {Backend} from './backend/Backend';
+import {from, of} from 'rxjs';
 
 export interface AppProps {
     availableActive: boolean,
     selectedActive: boolean,
     logsActive: boolean,
     showSettings: boolean,
-    availableTags: string[],
-    selectedTags: string[],
+    availableTags: Set<string>,
+    selectedTags: Set<string>,
     bookmarks: Bookmark[],
     logData: LogData[],
     localStorage: LocalStorage
@@ -29,8 +31,8 @@ const initialAppProps: AppProps = {
     selectedActive: true,
     logsActive: false,
     showSettings: false,
-    availableTags: [],
-    selectedTags: [],
+    availableTags: new Set(),
+    selectedTags: new Set(),
     bookmarks: [],
     logData: [],
     localStorage: new LocalStorage()
@@ -72,7 +74,7 @@ export function App() {
         console.log(`Header event with id: ${id}`);
         switch (id) {
             case 'init-app':
-                initApp()
+                initApp();
                 break;
             case 'settings':
                 setProps({...props, showSettings: true});
@@ -89,8 +91,8 @@ export function App() {
             logger.debug(allTags);
             const newProps = {
                 ...props,
-                availableTags: allTags,
-                selectedTags: [],
+                availableTags: new Set(allTags),
+                selectedTags: new Set<string>(),
                 bookmarks: []
             };
             setProps(newProps);
@@ -98,6 +100,27 @@ export function App() {
     };
 
     const selectTag = (tag: string) => {
+        // add the tag to the selected tags
+        const selectedTags = new Set(props.selectedTags);
+        selectedTags.add(tag);
+        // get bookmarks for the selected tags
+        backend.bookmarksByTags(Array.from(selectedTags))
+            .pipe(
+                switchMap(bookmarks =>
+                    of(bookmarks.map(it => new Bookmark(it.id, it.url, it.title, it.tags)))
+                )
+            ).subscribe(bookmarks => {
+            logger.debug('<- data:');
+            logger.debug(bookmarks);
+            const availableTags = buildAvailableTags(bookmarks, selectedTags);
+
+            setProps({
+                ...props,
+                availableTags: availableTags,
+                selectedTags: selectedTags,
+                bookmarks: bookmarks
+            });
+        });
     };
     const deselectTag = (tag: string) => {
     };
@@ -118,14 +141,14 @@ export function App() {
         setProps({...props, showSettings: false});
     };
 
+
     return (
         <div className={styles.App}>
             <Header {...props} onClick={navbarHandler}/>
-            {props.selectedActive && <TagList title={'selected tags'} tags={props.selectedTags} onSelect={selectTag}/>}
-            {props.availableActive && <TagList title={'available tags'} tags={props.availableTags} onSelect={deselectTag}/>}
+            {props.selectedActive && <TagList title={'selected tags'} tags={Array.from(props.selectedTags)} onSelect={deselectTag}/>}
+            {props.availableActive && <TagList title={'available tags'} tags={Array.from(props.availableTags)} onSelect={selectTag}/>}
             <Bookmarks bookmarks={props.bookmarks} onEdit={editBookmark} onDelete={deleteBookmark}/>
             {props.logsActive && <Logs logs={props.logData} onClear={clearLogs}/>}
-
             <Settings
                 show={props.showSettings}
                 data={{
@@ -139,4 +162,16 @@ export function App() {
     );
 }
 
-// export default App;
+/**
+ * builds the available tags from the bookmarks. available are the bookmarks tags without the selected tags.
+ */
+const buildAvailableTags = (bookmarks: Bookmark[], selectedTags: Set<string>) => {
+    const availableTags: Set<string> = new Set();
+    from(bookmarks)
+        .pipe(
+            mergeMap(bookmark => bookmark.tags),
+            filter(tag => !selectedTags.has(tag))
+        )
+        .subscribe(tag => availableTags.add(tag));
+    return availableTags;
+};
