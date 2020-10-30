@@ -100,10 +100,8 @@ export function App() {
     };
 
     const selectTag = (tag: string) => {
-        // add the tag to the selected tags
         const selectedTags = new Set(props.selectedTags);
         selectedTags.add(tag);
-        // get bookmarks for the selected tags
         backend.bookmarksByTags(Array.from(selectedTags))
             .pipe(
                 switchMap(bookmarks =>
@@ -122,10 +120,13 @@ export function App() {
             });
         });
     };
+
     const deselectTag = (tag: string) => {
     };
+
     const editBookmark = (id: string) => {
     };
+
     const deleteBookmark = (id: string) => {
     };
 
