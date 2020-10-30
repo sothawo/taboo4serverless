@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './App.module.css';
+import {from, of} from 'rxjs';
 import {filter, mergeMap, switchMap} from 'rxjs/operators';
 import {Header} from './header/Header';
 import {TagList} from './taglist/TagList';
@@ -12,7 +13,6 @@ import {LocalStorage} from './localstorage/LocalStorage';
 import {Settings, SettingsData} from './settings/Settings';
 import {Logger} from './logs/Logger';
 import {Backend} from './backend/Backend';
-import {from, of} from 'rxjs';
 
 export interface AppProps {
     availableActive: boolean,
@@ -99,9 +99,21 @@ export function App() {
         });
     };
 
-    const selectTag = (tag: string) => {
+    const selectTag = (tag: string) => adjustSelectedTags(tag, true);
+
+    const deselectTag = (tag: string) => adjustSelectedTags(tag, false);
+
+    const adjustSelectedTags = (tag: string, add: boolean) => {
         const selectedTags = new Set(props.selectedTags);
-        selectedTags.add(tag);
+        if (add) {
+            selectedTags.add(tag);
+        } else {
+            selectedTags.delete(tag);
+            if (selectedTags.size == 0) {
+                initApp();
+                return;
+            }
+        }
         backend.bookmarksByTags(Array.from(selectedTags))
             .pipe(
                 switchMap(bookmarks =>
@@ -119,9 +131,6 @@ export function App() {
                 bookmarks: bookmarks
             });
         });
-    };
-
-    const deselectTag = (tag: string) => {
     };
 
     const editBookmark = (id: string) => {
