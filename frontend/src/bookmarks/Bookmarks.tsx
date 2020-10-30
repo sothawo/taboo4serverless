@@ -11,7 +11,7 @@ export interface BookmarksProps {
     onDelete: (id: string) => void
 }
 
-export const Bookmarks = (props: BookmarksProps) =>
+export const Bookmarks: React.FunctionComponent<BookmarksProps> = (props) =>
     <>
         {props.bookmarks && props.bookmarks.map((bookmark, index) =>
             <BookmarkEntry key={index} bookmark={bookmark} onEdit={props.onEdit} onDelete={props.onDelete}/>

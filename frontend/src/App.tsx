@@ -90,7 +90,8 @@ export function App() {
             const newProps = {
                 ...props,
                 availableTags: allTags,
-                selectedTags: []
+                selectedTags: [],
+                bookmarks: []
             };
             setProps(newProps);
         });
@@ -125,14 +126,15 @@ export function App() {
             <Bookmarks bookmarks={props.bookmarks} onEdit={editBookmark} onDelete={deleteBookmark}/>
             {props.logsActive && <Logs logs={props.logData} onClear={clearLogs}/>}
 
-            {props.showSettings && <Settings
+            <Settings
+                show={props.showSettings}
                 data={{
                     apiUrl: props.localStorage.get('apiUrl') || '',
                     apiKey: props.localStorage.get('apiKey') || '',
                     logLevel: props.localStorage.get('logLevel') || 'INFO'
                 }}
                 handleClose={handleSettingsClose}
-                handleSave={handleSettingsSave}/>}
+                handleSave={handleSettingsSave}/>
         </div>
     );
 }

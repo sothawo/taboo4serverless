@@ -14,7 +14,7 @@ export interface LogsProps {
     onClear: () => void
 }
 
-export const Logs = (props: LogsProps) =>
+export const Logs: React.FunctionComponent<LogsProps> = (props) =>
     <Card className={styles.card}>
         <Card.Header className={'d-flex'}>logs
             <Button variant={'outline-dark'} size={'sm'} className={'ml-auto'} onClick={() => props.onClear()}>
@@ -32,10 +32,6 @@ export const Logs = (props: LogsProps) =>
         </Card.Body>
     </Card>;
 
-const format = (logData: LogData) => {
-    return `${logData.level}\n${formatMessage(logData.data)}`;
-};
+const format = (logData: LogData): string => `${logData.level}\n${formatMessage(logData.data)}`;
 
-const formatMessage = (o: any): string => {
-    return typeof o === 'string' ? o : JSON.stringify(o, null, 2);
-};
+const formatMessage = (o: any): string => typeof o === 'string' ? o : JSON.stringify(o, null, 2);

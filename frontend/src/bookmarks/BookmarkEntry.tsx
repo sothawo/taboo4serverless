@@ -17,7 +17,7 @@ export interface BookmarkEntryProps {
     onDelete: (id: string) => void
 }
 
-export const BookmarkEntry = (props: BookmarkEntryProps) =>
+export const BookmarkEntry: React.FunctionComponent<BookmarkEntryProps> = (props) =>
     <Card className={styles.card}>
         <Card.Header className={`d-flex ${styles.cardHeader}`}>{props.bookmark.title}
             <Button variant={"outline-dark"} size={"sm"} className={`ml-auto ${styles.edit}`} onClick={() => props.onEdit(props.bookmark.id)}>

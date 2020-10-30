@@ -3,6 +3,7 @@ import {Button, Form, FormCheck, Modal} from 'react-bootstrap';
 import {LogLevel} from '../logs/LogData';
 
 export interface SettingsProps {
+    show: boolean
     data: SettingsData,
     handleClose: () => void;
     handleSave: (data: SettingsData) => void
@@ -14,7 +15,7 @@ export interface SettingsData {
     logLevel: string
 }
 
-export const Settings = (props: SettingsProps) => {
+export const Settings: React.FunctionComponent<SettingsProps> = (props) => {
     const [apiUrl, setApiUrl] = useState(props.data.apiUrl);
     const [apiKey, setApiKey] = useState(props.data.apiKey);
     const [logLevel, setLogLevel] = useState(props.data.logLevel);
@@ -25,7 +26,7 @@ export const Settings = (props: SettingsProps) => {
     const logLevels = [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR];
 
     return (
-        <Modal show={true} onHide={props.handleClose} size={'lg'}>
+        <Modal show={props.show} onHide={props.handleClose} size={'lg'}>
             <Modal.Header closeButton>
                 <Modal.Title>settings</Modal.Title>
             </Modal.Header>

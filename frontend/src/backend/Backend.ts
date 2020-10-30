@@ -13,7 +13,6 @@ export class Backend {
     constructor(private localStorage: LocalStorage, private logger: Logger) {
     }
 
-
     // todo remove
     getIp(): Observable<string> {
         return fromFetch('http://ip-api.com/json').pipe<any, IpApi, string>(
@@ -35,7 +34,7 @@ export class Backend {
                 method: method,
                 headers: this.getHeaders()
             });
-        this.preCallLogging(request);
+        this.logRequest(request);
         return request;
     }
 
@@ -46,7 +45,7 @@ export class Backend {
         });
     }
 
-    private preCallLogging(request: Request) {
+    private logRequest(request: Request) {
 
         this.logger.info(`-> ${request.method} ${request.url}`);
         request.headers.forEach((v, k) => {

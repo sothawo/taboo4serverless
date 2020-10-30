@@ -31,43 +31,37 @@ export interface HeaderEvent {
 /**
  * The header to be displayed on top of the whole application.
  * @param props: HeaderProps
- * @constructor
  */
-export const Header = (props: HeaderProps) => {
+export const Header: React.FunctionComponent<HeaderProps> = (props) => {
 
     const commonButtonProps: ButtonProps = {
         variant: "outline-dark",
         size: "sm"
     }
-
     const addButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "add",
         active: true,
         onClick: () => props.onClick("add")
     }
-
     const selectedButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "selected",
         active: props.selectedActive,
         onClick: () => props.onClick("selected")
     }
-
     const availableButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "available",
         active: props.availableActive,
         onClick: () => props.onClick("available")
     }
-
     const logsButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "logs",
         active: props.logsActive,
         onClick: () => props.onClick("logs")
     }
-
     const settingsButtonProps: ButtonProps = {
         ...commonButtonProps,
         id: "settings",
