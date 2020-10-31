@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from './App.module.css';
-import {from, of} from 'rxjs';
+import {from, Observable, of} from 'rxjs';
 import {filter, mergeMap, switchMap} from 'rxjs/operators';
 import {Header} from './header/Header';
 import {TagList} from './taglist/TagList';
@@ -13,6 +13,7 @@ import {LocalStorage} from './localstorage/LocalStorage';
 import {Settings, SettingsData} from './settings/Settings';
 import {Logger} from './logs/Logger';
 import {Backend} from './backend/Backend';
+import {Edit, EditData} from './edit/Edit';
 
 export interface AppProps {
     availableActive: boolean,
@@ -23,7 +24,9 @@ export interface AppProps {
     selectedTags: Set<string>,
     bookmarks: Bookmark[],
     logData: LogData[],
-    localStorage: LocalStorage
+    localStorage: LocalStorage,
+    showEdit: boolean,
+    editData: EditData
 }
 
 const initialAppProps: AppProps = {
@@ -35,7 +38,9 @@ const initialAppProps: AppProps = {
     selectedTags: new Set(),
     bookmarks: [],
     logData: [],
-    localStorage: new LocalStorage()
+    localStorage: new LocalStorage(),
+    showEdit: false,
+    editData: {}
 };
 
 
@@ -57,6 +62,7 @@ const toggleComponentAvailability = function (props: AppProps, component: string
     return newProps;
 };
 
+
 export function App() {
 
     const [props, setProps] = useState<AppProps>(initialAppProps);
@@ -74,10 +80,13 @@ export function App() {
         console.log(`Header event with id: ${id}`);
         switch (id) {
             case 'init-app':
-                initApp();
+                initApp().subscribe(appProps => setProps(appProps));
                 break;
             case 'settings':
                 setProps({...props, showSettings: true});
+                break;
+            case 'add':
+                setProps({...props, showEdit: true});
                 break;
             default:
                 setProps(toggleComponentAvailability(props, id));
@@ -85,58 +94,73 @@ export function App() {
         }
     };
 
-    const initApp = () => {
-        backend.allTags().subscribe(allTags => {
-            logger.debug(`<- data:`);
-            logger.debug(allTags);
-            const newProps = {
-                ...props,
-                availableTags: new Set(allTags),
-                selectedTags: new Set<string>(),
-                bookmarks: []
-            };
-            setProps(newProps);
-        });
+    const initApp = (): Observable<AppProps> => {
+        return backend.allTags()
+            .pipe(
+                mergeMap(allTags => {
+                    logger.debug(`<- data:`);
+                    logger.debug(allTags);
+                    return of({
+                        ...props,
+                        availableTags: new Set(allTags),
+                        selectedTags: new Set<string>(),
+                        bookmarks: []
+                    });
+                })
+            );
     };
 
-    const selectTag = (tag: string) => adjustSelectedTags(tag, true);
+    const selectTag = (tag: string) => adjustSelectedTags(true, tag)
+        .subscribe(newProps => setProps(newProps));
 
-    const deselectTag = (tag: string) => adjustSelectedTags(tag, false);
+    const deselectTag = (tag: string) => adjustSelectedTags(false, tag)
+        .subscribe(newProps => setProps(newProps));
 
-    const adjustSelectedTags = (tag: string, add: boolean) => {
+    const adjustSelectedTags = (add: boolean, tag?: string): Observable<AppProps> => {
         const selectedTags = new Set(props.selectedTags);
-        if (add) {
-            selectedTags.add(tag);
-        } else {
-            selectedTags.delete(tag);
-            if (selectedTags.size == 0) {
-                initApp();
-                return;
+        if (tag) {
+            if (add) {
+                selectedTags.add(tag);
+            } else {
+                selectedTags.delete(tag);
+                if (selectedTags.size === 0) {
+                    return initApp();
+                }
             }
         }
-        backend.bookmarksByTags(Array.from(selectedTags))
-            .pipe(
+        return backend.bookmarksByTags(Array.from(selectedTags))
+            .pipe<Bookmark[], AppProps>(
                 switchMap(bookmarks =>
                     of(bookmarks.map(it => new Bookmark(it.id, it.url, it.title, it.tags)))
-                )
-            ).subscribe(bookmarks => {
-            logger.debug('<- data:');
-            logger.debug(bookmarks);
-            const availableTags = buildAvailableTags(bookmarks, selectedTags);
+                ),
+                switchMap(bookmarks => {
+                    logger.debug('<- data:');
+                    logger.debug(bookmarks);
+                    const availableTags = buildAvailableTags(bookmarks, selectedTags);
+                    return of({
+                        ...props,
+                        availableTags: availableTags,
+                        selectedTags: selectedTags,
+                        bookmarks: bookmarks
+                    });
+                })
+            );
+    };
 
-            setProps({
-                ...props,
-                availableTags: availableTags,
-                selectedTags: selectedTags,
-                bookmarks: bookmarks
-            });
+    const editBookmark = (bookmark: Bookmark) => {
+        setProps({
+            ...props,
+            showEdit: true,
+            editData: {
+                id: bookmark.id,
+                url: bookmark.url,
+                title: bookmark.title,
+                tags: bookmark.joinedTags()
+            }
         });
     };
 
-    const editBookmark = (id: string) => {
-    };
-
-    const deleteBookmark = (id: string) => {
+    const deleteBookmark = (id?: string) => {
     };
 
     const clearLogs = () => setProps({...props, logData: []});
@@ -151,15 +175,43 @@ export function App() {
         setProps({...props, showSettings: false});
     };
 
+    const handleEditClose = () => setProps({...props, showEdit: false});
+    const handleEditSave = (data: EditData) => {
+        logger.info('-> saving bookmark:');
+        logger.info(data);
+        if (!data.url || data.url.search(/^https?:\/\//i)) {
+// todo error message
+        } else {
+            const tags = data.tags ? splitTags(data.tags) : [];
+            const bookmark = new Bookmark(data.id, data.url, data.title, tags);
+            backend.saveBookmark(bookmark)
+                .subscribe(savedBookmark => {
+                    logger.info('<- saved bookmark:');
+                    logger.info(savedBookmark);
+                    props.bookmarks = [];
+                    props.selectedTags = new Set(bookmark.tags);
+                    adjustSelectedTags(true)
+                        .subscribe(newProps =>
+                            setProps({...newProps, showEdit: false}));
+                });
+        }
+    };
+
+    const loadTitle = (url: string): Observable<string> => backend.loadTitle(url);
 
     return (
         <div className={styles.App}>
             <Header {...props} onClick={navbarHandler}/>
+
             {props.selectedActive && <TagList title={'selected tags'} tags={Array.from(props.selectedTags)} onSelect={deselectTag}/>}
+
             {props.availableActive && <TagList title={'available tags'} tags={Array.from(props.availableTags)} onSelect={selectTag}/>}
+
             <Bookmarks bookmarks={props.bookmarks} onEdit={editBookmark} onDelete={deleteBookmark}/>
+
             {props.logsActive && <Logs logs={props.logData} onClear={clearLogs}/>}
-            <Settings
+
+            {props.showSettings && <Settings
                 show={props.showSettings}
                 data={{
                     apiUrl: props.localStorage.get('apiUrl') || '',
@@ -167,7 +219,13 @@ export function App() {
                     logLevel: props.localStorage.get('logLevel') || 'INFO'
                 }}
                 handleClose={handleSettingsClose}
-                handleSave={handleSettingsSave}/>
+                handleSave={handleSettingsSave}/>}
+
+            {props.showEdit && <Edit show={props.showEdit}
+                                     data={props.editData}
+                                     loadTitle={loadTitle}
+                                     handleClose={handleEditClose}
+                                     handleSave={handleEditSave}/>}
         </div>
     );
 }
@@ -185,3 +243,6 @@ const buildAvailableTags = (bookmarks: Bookmark[], selectedTags: Set<string>) =>
         .subscribe(tag => availableTags.add(tag));
     return availableTags;
 };
+
+const splitTags = (tags: string) =>
+    tags.split(/[\s;,.]/).filter(it => it !== '');

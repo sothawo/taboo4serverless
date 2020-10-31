@@ -33,6 +33,22 @@ export class Backend {
             .pipe(mergeMap(response => response.json()));
     }
 
+    saveBookmark(bookmark: Bookmark): Observable<Bookmark> {
+        const params = (bookmark.id && `?previousId=${bookmark.id}`) || undefined
+        return fromFetch(this.buildRequest('POST', `/bookmark${params && params}`, bookmark))
+            .pipe<any, Bookmark, Bookmark>(
+                mergeMap(response => response.json()),
+                mergeMap( it => of((it as Bookmark))),
+                // create a real Bookmark object
+                mergeMap( it => of(new Bookmark(it.id, it.url, it.title, it.tags)))
+            )
+    }
+
+    loadTitle(url: string): Observable<string>{
+        return fromFetch(this.buildRequest('POST', '/title', {url}))
+            .pipe(mergeMap(response => response.json()));
+    }
+
     private buildRequest(method: string, path: string, body: any = undefined): Request {
         let payload = body && JSON.stringify(body);
         const request: Request = new Request(

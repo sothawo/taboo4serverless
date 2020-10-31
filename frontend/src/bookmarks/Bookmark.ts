@@ -1,11 +1,11 @@
 export class Bookmark {
 
-    id: string;
+    id?: string;
     url: string;
-    title: string;
+    title?: string;
     tags: string[];
 
-    constructor(id: string, url: string, title: string, tags: string[]) {
+    constructor(id: string|undefined, url: string, title: string|undefined, tags: string[]) {
         this.id = id;
         this.url = url;
         this.title = title;

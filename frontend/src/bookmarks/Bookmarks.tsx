@@ -6,9 +6,9 @@ export interface BookmarksProps {
     /** the bookmarks to display.*/
     bookmarks: Bookmark[],
     /** function to call when a bookmark should be edited. */
-    onEdit: (id: string) => void
+    onEdit: (bookmark: Bookmark) => void
     /** function to call when a bookmark should be deleted. */
-    onDelete: (id: string) => void
+    onDelete: (id?: string) => void
 }
 
 export const Bookmarks: React.FunctionComponent<BookmarksProps> = (props) =>
