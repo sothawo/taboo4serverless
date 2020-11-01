@@ -14,6 +14,7 @@ import {Settings, SettingsData} from './settings/Settings';
 import {Logger} from './logs/Logger';
 import {Backend} from './backend/Backend';
 import {Edit, EditData} from './edit/Edit';
+import {ErrorDisplay} from './error/ErrorDisplay';
 
 export interface AppProps {
     availableActive: boolean,
@@ -26,7 +27,9 @@ export interface AppProps {
     logData: LogData[],
     localStorage: LocalStorage,
     showEdit: boolean,
-    editData: EditData
+    editData: EditData,
+    showError: boolean,
+    errorMessage: string
 }
 
 const initialAppProps: AppProps = {
@@ -40,7 +43,9 @@ const initialAppProps: AppProps = {
     logData: [],
     localStorage: new LocalStorage(),
     showEdit: false,
-    editData: {}
+    editData: {},
+    showError: false,
+    errorMessage: ''
 };
 
 
@@ -76,11 +81,22 @@ export function App() {
 
     const backend = new Backend(props.localStorage, logger);
 
+    let showError = function (msg: string, data?: any) {
+        logger.error(msg);
+        if (data) {
+            logger.error(data);
+        }
+        setProps({...props, showError: true, errorMessage: msg});
+    };
+
     const navbarHandler = (id: string) => {
         console.log(`Header event with id: ${id}`);
         switch (id) {
             case 'init-app':
-                initApp().subscribe(appProps => setProps(appProps));
+                allTags().subscribe(
+                    appProps => setProps(appProps),
+                    error => showError('Error loading all tags', error)
+                );
                 break;
             case 'settings':
                 setProps({...props, showSettings: true});
@@ -94,7 +110,7 @@ export function App() {
         }
     };
 
-    const initApp = (): Observable<AppProps> => {
+    const allTags = (): Observable<AppProps> => {
         return backend.allTags()
             .pipe(
                 mergeMap(allTags => {
@@ -124,7 +140,7 @@ export function App() {
             } else {
                 selectedTags.delete(tag);
                 if (selectedTags.size === 0) {
-                    return initApp();
+                    return allTags();
                 }
             }
         }
@@ -180,7 +196,7 @@ export function App() {
         logger.info('-> saving bookmark:');
         logger.info(data);
         if (!data.url || data.url.search(/^https?:\/\//i)) {
-// todo error message
+            showError("URL must start with http:// or https://")
         } else {
             const tags = data.tags ? splitTags(data.tags) : [];
             const bookmark = new Bookmark(data.id, data.url, data.title, tags);
@@ -202,6 +218,11 @@ export function App() {
     return (
         <div className={styles.App}>
             <Header {...props} onClick={navbarHandler}/>
+
+            {props.showError && <ErrorDisplay show={props.showError} message={props.errorMessage} onClose={() => {
+                setProps({...props, showError: false});
+            }}/>
+            }
 
             {props.selectedActive && <TagList title={'selected tags'} tags={Array.from(props.selectedTags)} onSelect={deselectTag}/>}
 
@@ -226,6 +247,7 @@ export function App() {
                                      loadTitle={loadTitle}
                                      handleClose={handleEditClose}
                                      handleSave={handleEditSave}/>}
+
         </div>
     );
 }
