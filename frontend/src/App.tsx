@@ -69,7 +69,7 @@ const toggleComponentAvailability = function (props: AppProps, component: string
 
 
 export function App() {
-
+    const [initialized, setInitailized] = useState(false);
     const [props, setProps] = useState<AppProps>(initialAppProps);
 
     const logger = new Logger({
@@ -215,6 +215,10 @@ export function App() {
 
     const loadTitle = (url: string): Observable<string> => backend.loadTitle(url);
 
+    if (!initialized) {
+        navbarHandler('init-app');
+        setInitailized(true);
+    }
     return (
         <div className={styles.App}>
             <Header {...props} onClick={navbarHandler}/>
