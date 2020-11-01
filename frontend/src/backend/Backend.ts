@@ -35,7 +35,8 @@ export class Backend {
 
     saveBookmark(bookmark: Bookmark): Observable<Bookmark> {
         const params = (bookmark.id && `?previousId=${bookmark.id}`) || undefined
-        return fromFetch(this.buildRequest('POST', `/bookmark${params && params}`, bookmark))
+        const path = params ? `/bookmark${params}` : '/bookmark';
+        return fromFetch(this.buildRequest('POST', path, bookmark))
             .pipe<any, Bookmark, Bookmark>(
                 mergeMap(response => response.json()),
                 mergeMap( it => of((it as Bookmark))),

@@ -102,7 +102,7 @@ export function App() {
                 setProps({...props, showSettings: true});
                 break;
             case 'add':
-                setProps({...props, showEdit: true});
+                setProps({...props, editData: {}, showEdit: true});
                 break;
             default:
                 setProps(toggleComponentAvailability(props, id));
