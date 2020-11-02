@@ -14,7 +14,7 @@ export interface BookmarkEntryProps {
     /** function to call when the bookmark should be edited. */
     onEdit: (bookmark: Bookmark) => void
     /** function to call when the bookmark should be deleted. */
-    onDelete: (id?: string) => void
+    onDelete: (bookmark: Bookmark) => void
 }
 
 export const BookmarkEntry: React.FunctionComponent<BookmarkEntryProps> = (props) =>
@@ -23,7 +23,7 @@ export const BookmarkEntry: React.FunctionComponent<BookmarkEntryProps> = (props
             <Button variant={"outline-dark"} size={"sm"} className={`ml-auto ${styles.edit}`} onClick={() => props.onEdit(props.bookmark)}>
                 <Image src={pencil}/>
             </Button>
-            <Button variant={"outline-dark"} size={"sm"} className={`delete ${styles.delete}`} onClick={() => props.onDelete(props.bookmark.id)}>
+            <Button variant={"outline-dark"} size={"sm"} className={`delete ${styles.delete}`} onClick={() => props.onDelete(props.bookmark)}>
                 <Image src={trashcan}/>
             </Button>
         </Card.Header>

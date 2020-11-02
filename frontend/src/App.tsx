@@ -15,6 +15,7 @@ import {Logger} from './logs/Logger';
 import {Backend} from './backend/Backend';
 import {Edit, EditData} from './edit/Edit';
 import {ErrorDisplay} from './error/ErrorDisplay';
+import {Confirm, ConfirmProps} from './confirm/Confirm';
 
 export interface AppProps {
     availableActive: boolean,
@@ -29,7 +30,9 @@ export interface AppProps {
     showEdit: boolean,
     editData: EditData,
     showError: boolean,
-    errorMessage: string
+    errorMessage: string,
+    showConfirm: boolean,
+    confirmProps?: ConfirmProps,
 }
 
 const initialAppProps: AppProps = {
@@ -45,7 +48,8 @@ const initialAppProps: AppProps = {
     showEdit: false,
     editData: {},
     showError: false,
-    errorMessage: ''
+    errorMessage: '',
+    showConfirm: false,
 };
 
 
@@ -176,8 +180,40 @@ export function App() {
         });
     };
 
-    const deleteBookmark = (id?: string) => {
+    const deleteBookmark = (bookmark: Bookmark) => {
+        setProps({
+            ...props,
+            showConfirm: true,
+            confirmProps: {
+                show: true,
+                title: 'delete bookmark for URL?',
+                message: bookmark.url,
+                onNo: handleDeleteNo,
+                onYes: () => {
+                    handleDeleteYes(bookmark);
+                }
+            }
+        });
     };
+
+    const handleDeleteNo = () => {
+        setProps({...props, showConfirm: false});
+    };
+    const handleDeleteYes = (bookmark: Bookmark) => {
+        if (bookmark.id) {
+            logger.info(`-> deleting bookmark ${bookmark.id}`);
+            backend.deleteBookmark(bookmark.id)
+                .subscribe(msg => {
+                    logger.info(`<- ${msg}`);
+                    const bookmarks = props.bookmarks.filter(it => it.id !== bookmark.id);
+                    setProps({...props, bookmarks: bookmarks, showConfirm: false});
+                });
+        } else {
+            logger.info('cannot delete bookmark without id');
+            setProps({...props, showConfirm: false});
+        }
+    };
+
 
     const clearLogs = () => setProps({...props, logData: []});
 
@@ -196,7 +232,7 @@ export function App() {
         logger.info('-> saving bookmark:');
         logger.info(data);
         if (!data.url || data.url.search(/^https?:\/\//i)) {
-            showError("URL must start with http:// or https://")
+            showError('URL must start with http:// or https://');
         } else {
             const tags = data.tags ? splitTags(data.tags) : [];
             const bookmark = new Bookmark(data.id, data.url, data.title, tags);
@@ -252,6 +288,13 @@ export function App() {
                                      handleClose={handleEditClose}
                                      handleSave={handleEditSave}/>}
 
+            {props.showConfirm && props.confirmProps
+            && <Confirm show={props.showConfirm}
+                        title={props.confirmProps.title}
+                        message={props.confirmProps.message}
+                        onYes={props.confirmProps.onYes}
+                        onNo={props.confirmProps.onNo}
+            />}
         </div>
     );
 }

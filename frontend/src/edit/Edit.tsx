@@ -21,6 +21,7 @@ export interface EditData {
 }
 
 export const Edit: React.FunctionComponent<EditProps> = (props) => {
+    // noinspection JSUnusedLocalSymbols
     const [id, setId] = useState(props.data.id);
     const [url, setUrl] = useState(props.data.url);
     const [title, setTitle] = useState(props.data.title);

@@ -45,6 +45,11 @@ export class Backend {
             )
     }
 
+    deleteBookmark(id: string): Observable<string> {
+        return fromFetch(this.buildRequest('DELETE', `/bookmark/${id}`))
+            .pipe(mergeMap(response => response.json()))
+    }
+
     loadTitle(url: string): Observable<string>{
         return fromFetch(this.buildRequest('POST', '/title', {url}))
             .pipe(mergeMap(response => response.json()));
