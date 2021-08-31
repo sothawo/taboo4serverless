@@ -1,23 +1,24 @@
 {
-  "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
-    "md5": "^2.2.1"
-  },
-  "name": "taboo4",
-  "description": "tagged bookmark service",
-  "version": "1.0.0",
-  "main": "dynamoTest01.js",
-  "devDependencies": {
-    "aws-sdk": "^2.381.0",
-    "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "sinon": "^7.2.2",
-    "serverless-offline": "^4.2.2"
-  },
-  "scripts": {
-    "test": "npm run test-unit",
-    "test-unit": "NODE_ENV=test mocha './**/*.spec.js'"
-  },
-  "author": "P.J.",
-  "license": "ISC"
+    "dependencies": {
+        "cheerio": "^1.0.0-rc.2",
+        "md5": "^2.2.1"
+    },
+    "name": "taboo4",
+    "description": "tagged bookmark service",
+    "version": "1.0.0",
+    "main": "dynamoTest01.js",
+    "devDependencies": {
+        "aws-sdk": "^2.381.0",
+        "chai": "^4.2.0",
+        "mocha": "^5.2.0",
+        "sinon": "^7.2.2",
+        "serverless-offline": "^4.2.2",
+        "trim-newlines": "^3.0.1"
+    },
+    "scripts": {
+        "test": "npm run test-unit",
+        "test-unit": "NODE_ENV=test mocha './**/*.spec.js'"
+    },
+    "author": "P.J.",
+    "license": "ISC"
 }
