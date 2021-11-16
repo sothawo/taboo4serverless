@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "aws-sdk": "^2.381.0"
+    "aws-sdk": "^2.814.0"
   },
   "name": "dynamotest",
   "description": "A simple Node.js application showing usage of the AWS SDK for Node.js.",
