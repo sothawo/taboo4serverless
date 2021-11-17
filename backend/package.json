@@ -9,7 +9,7 @@
     "version": "1.0.0",
     "main": "dynamoTest01.js",
     "devDependencies": {
-        "aws-sdk": "^2.381.0",
+        "aws-sdk": "^2.814.0",
         "chai": "^4.2.0",
         "mocha": "^5.2.0",
         "sinon": "^7.2.2",
