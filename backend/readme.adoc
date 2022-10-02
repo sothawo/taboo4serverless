@@ -20,7 +20,7 @@ The Lambda functions are written in Javascript, for the tests _mocha_, _chaijs_ 
 
 === 02.10.2022
 
-Updated node locally to 18 and sls to 3.22, there were warning in the install, but it seems to
+Updated node locally to 16 and sls to 3.22, there were warning in the install, but it seems to
 run. The config file needed some adjustments.
 
 
