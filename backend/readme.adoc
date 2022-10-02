@@ -9,9 +9,19 @@ Description of the backend for the _taboo4_ tagged bookmark service.
 
 == Technology
 
-The backend is implemented in Amazon AWS using Lambda functions based on a NodeJS 8.10 runtime and DynamoDB as a storage backend. The access to the lambda functions is by an API Gateway. The whole deployment is managed by using the https://serverless.com[serverless framework].  In this document the short command `sls` is used instead of `serverless`.
+The backend is implemented in Amazon AWS using Lambda functions based on a NodeJS 8.10 runtime and DynamoDB as a
+storage backend. The access to the lambda functions is by an API Gateway. The whole deployment is managed by using
+the https://serverless.com[serverless framework].  In this document the short command `sls` is used instead of
+`serverless`.
 
 The Lambda functions are written in Javascript, for the tests _mocha_, _chaijs_ and _sinon_ are used.
+
+== Changelog
+
+=== 02.10.2022
+
+Updated node locally to 18 and sls to 3.22, there were warning in the install, but it seems to
+run. The config file needed some adjustments.
 
 
 == Setup
@@ -286,7 +296,7 @@ Start localstack (all in one line):
 
 [source,shell]
 ----
-$ TMPDIR=/private$TMPDIR SERVICES=dynamodb DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up & 
+$ TMPDIR=/private$TMPDIR SERVICES=dynamodb DEFAULT_REGION=eu-central-1 PORT_WEB_UI=28080 docker-compose up &
 ----
 
 To access this instance, AWS credentials must be set, any fake credential in the environment will do.
